@@ -2,7 +2,17 @@ import { useEffect, useState } from 'react'
 import type { FriendsMap, Settings, Show, Tracking, WatchStatus } from '../types'
 import { fetchSubject, type SubjectInfo } from '../lib/api'
 import { airedEps, behindCount } from '../lib/progress'
-import { WEEKDAY_CN, displayTz, epNumberAt, nextOccurrence, pad, partsInZone, relTime, slotFor } from '../lib/time'
+import {
+  WEEKDAY_CN,
+  displayTz,
+  epNumberAt,
+  isCarryOver,
+  nextOccurrence,
+  pad,
+  partsInZone,
+  relTime,
+  slotFor,
+} from '../lib/time'
 
 interface Props {
   show: Show
@@ -96,6 +106,7 @@ export default function DetailModal(props: Props) {
               ) : null}
               {show.watchers ? <>{show.watchers} 人在看 · </> : null}
               {show.sourceType ?? ''}
+              {isCarryOver(show, now) ? <> · 上季续播</> : null}
             </div>
             {show.tags && show.tags.length > 0 && (
               <div className="dm-tags">

@@ -145,6 +145,22 @@ export function currentSeason(now: number) {
   return { yyyymm: `${p.y}${pad(startMonth)}`, label: `${p.y}年${startMonth}月` }
 }
 
+/** 当季季度起点(JST 当季首月 1 日 0 点)的时刻 */
+export function seasonStartInstant(now: number): number {
+  const p = partsInZone(now, JST)
+  const startMonth = Math.floor((p.mo - 1) / 3) * 3 + 1
+  return Date.UTC(p.y, startMonth - 1, 1) - 9 * 3600_000
+}
+
+/**
+ * 上季续播:开播早于本季起点 20 天以上(留出提前首播的容差)。
+ * 无精确开播时间的按新番处理。
+ */
+export function isCarryOver(show: Show, now: number): boolean {
+  if (!show.begin) return false
+  return show.begin < seasonStartInstant(now) - 20 * DAY_MS
+}
+
 export function dayOrder(weekStart: 1 | 7): number[] {
   return weekStart === 1 ? [1, 2, 3, 4, 5, 6, 7] : [7, 1, 2, 3, 4, 5, 6]
 }

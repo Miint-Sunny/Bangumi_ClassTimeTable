@@ -12,7 +12,7 @@
         var s = localStorage.getItem('btt:v1');
         if (s) {
           var theme = JSON.parse(s).settings?.theme;
-          if (theme === 'light' || theme === 'dark')
+          if (theme === 'light' || theme === 'dark' || theme === 'contrast')
             document.documentElement.setAttribute('data-theme', theme);
         }
       } catch (_) {}

@@ -29,6 +29,23 @@ export default function SettingsPanel({ settings, friendErrors, onChange, onExpo
         <h2 style={{ margin: '0 0 10px', fontWeight: 'normal', fontSize: 16, color: 'var(--pink-strong)' }}>设置</h2>
 
         <div className="set-row">
+          <span className="lbl">主题</span>
+          <span className="seg small">
+            {(
+              [
+                ['dark', '深色'],
+                ['light', '浅色'],
+                ['contrast', '高对比'],
+              ] as const
+            ).map(([k, label]) => (
+              <button key={k} className={settings.theme === k ? 'on' : ''} onClick={() => onChange({ theme: k })}>
+                {label}
+              </button>
+            ))}
+          </span>
+        </div>
+
+        <div className="set-row">
           <span className="lbl">周起始</span>
           <span className="seg small">
             <button className={settings.weekStart === 1 ? 'on' : ''} onClick={() => onChange({ weekStart: 1 })}>

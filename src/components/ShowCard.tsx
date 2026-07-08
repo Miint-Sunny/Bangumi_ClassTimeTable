@@ -1,5 +1,6 @@
 import type { FriendsMap, Show, Tracking } from '../types'
 import { airedEps, behindCount } from '../lib/progress'
+import { isCarryOver } from '../lib/time'
 
 interface Props {
   show: Show
@@ -47,6 +48,11 @@ export default function ShowCard({ show, tracking, now, friendsMap, airedMark, o
           ) : null}
           {behind > 0 ? <span className="behind">落后{behind}</span> : null}
           {friendCount > 0 ? <span className="friends">友{friendCount}</span> : null}
+          {isCarryOver(show, now) ? (
+            <span className="cont" title="上季开始播出,本季继续">
+              续
+            </span>
+          ) : null}
           {!show.fromCalendar ? <span className="streamtag">流媒体</span> : null}
           {offWeek ? <span>本周无</span> : null}
         </span>

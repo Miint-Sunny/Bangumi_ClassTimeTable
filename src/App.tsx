@@ -4,7 +4,7 @@ import { fetchCalendar, fetchSubject, fetchUserWatching, type SubjectInfo } from
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
 import { behindCount } from './lib/progress'
-import { currentSeason } from './lib/time'
+import { currentSeason, isCarryOver } from './lib/time'
 import { buildIcs, downloadIcs } from './lib/ics'
 import { loadPersisted, savePersisted } from './lib/store'
 import WeekView from './components/WeekView'
@@ -14,14 +14,20 @@ import DetailModal from './components/DetailModal'
 import SettingsPanel from './components/SettingsPanel'
 
 type View = 'day' | 'week' | 'month'
-type Filter = 'all' | 'mine' | 'watching' | 'wish'
+type Filter = 'all' | 'mine' | 'watching' | 'wish' | 'new' | 'carry'
 
 const FILTERS: { k: Filter; label: string }[] = [
   { k: 'all', label: '全部' },
   { k: 'mine', label: '我的课表' },
   { k: 'watching', label: '在看' },
   { k: 'wish', label: '想看' },
+  { k: 'new', label: '本季新番' },
+  { k: 'carry', label: '上季续播' },
 ]
+
+const THEME_NEXT = { dark: 'light', light: 'contrast', contrast: 'dark' } as const
+const THEME_ICON = { dark: '🌙', light: '☀', contrast: '◐' } as const
+const THEME_NAME = { dark: '深色', light: '浅色', contrast: '高对比' } as const
 
 export default function App() {
   const init = useRef(loadPersisted())
@@ -159,13 +165,15 @@ export default function App() {
       if (filter === 'mine' && st !== 'watching' && st !== 'wish') return false
       if (filter === 'watching' && st !== 'watching') return false
       if (filter === 'wish' && st !== 'wish') return false
+      if (filter === 'new' && isCarryOver(s, now)) return false
+      if (filter === 'carry' && !isCarryOver(s, now)) return false
       if (q) {
         const hay = `${s.nameCn} ${s.nameJp} ${(s.tags ?? []).join(' ')}`.toLowerCase()
         if (!hay.includes(q)) return false
       }
       return true
     })
-  }, [shows, filter, query, tracking.status])
+  }, [shows, filter, query, tracking.status, now])
 
   const stats = useMemo(() => {
     if (!shows) return null
@@ -262,10 +270,10 @@ export default function App() {
         </span>
         <button
           className="iconbtn"
-          title="切换主题"
-          onClick={() => patchSettings({ theme: settings.theme === 'dark' ? 'light' : 'dark' })}
+          title={`主题:${THEME_NAME[settings.theme]}(点击切换)`}
+          onClick={() => patchSettings({ theme: THEME_NEXT[settings.theme] })}
         >
-          {settings.theme === 'dark' ? '☀' : '🌙'}
+          {THEME_ICON[settings.theme]}
         </button>
         <button className="iconbtn" onClick={() => setShowSettings(true)}>
           ⚙ 设置
@@ -290,11 +298,11 @@ export default function App() {
       ) : shows === null ? (
         <div className="loading">正在拉取本季放送表…</div>
       ) : (
-        <>
+        <div className="view-area">
           {view === 'week' && <WeekView shows={visibleShows} {...viewProps} />}
           {view === 'day' && <DayView shows={visibleShows} {...viewProps} />}
           {view === 'month' && <MonthView shows={visibleShows} {...viewProps} />}
-        </>
+        </div>
       )}
 
       {openShow && (

@@ -24,36 +24,67 @@
   --red-bg: #fde9ef;
   --shadow-hover: 0 2px 8px rgba(240, 145, 153, 0.35);
   --overlay: rgba(60, 50, 52, 0.45);
+  --accent-ink: #fff;
 }
 
 :root,
 :root[data-theme='dark'] {
-  --bg: #15171c;
-  --card: #1c1e24;
-  --border: #2b2d34;
-  --border-soft: #25272d;
-  --text: #d8d8dc;
-  --text-soft: #8a8a93;
-  --text-subtle: #5a5c63;
-  --axis-bg: #191b20;
-  --chip-bg: #24262c;
-  --today-bg: #2a2228;
-  --band-night: #1a1824;
-  --pink: #e8959c;
-  --pink-strong: #f0a7ae;
-  --pink-soft: #3a2b2f;
-  --blue: #5ab0d3;
-  --gold: #d4a94a;
-  --green: #5aae82;
-  --red: #ff7b94;
-  --red-bg: #2d1f23;
-  --shadow-hover: 0 2px 10px rgba(232, 149, 156, 0.35);
-  --overlay: rgba(0, 0, 0, 0.6);
+  --bg: #0d0e12;
+  --card: #16171d;
+  --border: #33363f;
+  --border-soft: #26282f;
+  --text: #e6e6eb;
+  --text-soft: #a2a3ad;
+  --text-subtle: #71737e;
+  --axis-bg: #101117;
+  --chip-bg: #1f2127;
+  --today-bg: #291d24;
+  --band-night: #141220;
+  --pink: #ec9aa2;
+  --pink-strong: #f5aeb6;
+  --pink-soft: #402c31;
+  --blue: #6fc0e2;
+  --gold: #ddb35c;
+  --green: #6cc094;
+  --red: #ff87a0;
+  --red-bg: #34202a;
+  --shadow-hover: 0 2px 10px rgba(236, 154, 162, 0.4);
+  --overlay: rgba(0, 0, 0, 0.68);
+  --accent-ink: #fff;
+}
+
+/* ── 高对比主题:纯黑底、亮字、粗边 ───────────── */
+:root[data-theme='contrast'] {
+  --bg: #000000;
+  --card: #0a0a0c;
+  --border: #565a66;
+  --border-soft: #3c3f48;
+  --text: #ffffff;
+  --text-soft: #d2d3da;
+  --text-subtle: #a6a8b3;
+  --axis-bg: #050506;
+  --chip-bg: #121216;
+  --today-bg: #26101a;
+  --band-night: #0c0c16;
+  --pink: #ff9db2;
+  --pink-strong: #ffb6c6;
+  --pink-soft: #4d2432;
+  --blue: #85d4ff;
+  --gold: #ffd166;
+  --green: #7fe6ab;
+  --red: #ff8fa8;
+  --red-bg: #43172a;
+  --shadow-hover: 0 0 0 2px var(--pink);
+  --overlay: rgba(0, 0, 0, 0.85);
+  --accent-ink: #14060a;
 }
 
 * { box-sizing: border-box; }
 
-html, body {
+html, body, #root {
+  height: 100%;
+}
+body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
@@ -64,7 +95,12 @@ a { color: var(--blue); text-decoration: none; }
 a:hover { text-decoration: underline; }
 button { font: inherit; cursor: pointer; }
 
-.container { max-width: 1440px; margin: 0 auto; padding: 16px 18px 60px; }
+/* 顶栏与工具条固定,内容区自己滚动 —— 表头跟着浏览走 */
+.container {
+  max-width: 1440px; margin: 0 auto; padding: 12px 18px 0;
+  height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
+}
+.view-area { flex: 1 1 auto; min-height: 0; overflow: auto; padding-bottom: 40px; }
 
 /* ── 顶栏 ─────────────────────────────────────── */
 
@@ -95,7 +131,7 @@ button { font: inherit; cursor: pointer; }
   padding: 4px 14px; border-right: 1px solid var(--border);
 }
 .seg button:last-child { border-right: none; }
-.seg button.on { background: var(--pink); color: #fff; }
+.seg button.on { background: var(--pink); color: var(--accent-ink); }
 .seg.small button { padding: 3px 9px; }
 
 .chip {
@@ -119,41 +155,57 @@ button { font: inherit; cursor: pointer; }
 .loading, .error-box { padding: 60px 0; text-align: center; color: var(--text-soft); font-size: 14px; }
 .error-box { color: var(--red); }
 
-/* ── 周视图:课表网格 ─────────────────────────── */
+/* ── 周视图:课表网格(边框绘制,便于表头/时间轴吸附) ── */
 
-.week-scroll { overflow-x: auto; }
 .week-grid {
   display: grid;
   grid-template-columns: 52px repeat(7, minmax(120px, 1fr));
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  overflow: hidden;
   min-width: 940px;
-  background: var(--border-soft);
-  gap: 1px;
+  border-left: 1px solid var(--border);
 }
-.wg-corner, .wg-dayhead, .wg-time, .wg-cell { background: var(--card); }
+.wg-corner, .wg-dayhead, .wg-time, .wg-cell, .wg-now-time, .wg-now {
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.wg-corner {
+  position: sticky; top: 0; left: 0; z-index: 12;
+  background: var(--axis-bg); border-top: 1px solid var(--border);
+}
 .wg-dayhead {
+  position: sticky; top: 0; z-index: 10;
   text-align: center; padding: 7px 4px 5px;
   color: var(--text-soft);
+  background: var(--axis-bg); border-top: 1px solid var(--border);
 }
 .wg-dayhead .d1 { font-size: 15px; color: var(--text); }
 .wg-dayhead.today { background: var(--today-bg); }
 .wg-dayhead.today .d1 { color: var(--pink-strong); }
 .wg-dayhead.today .d2::after { content: ' · 今天'; color: var(--pink-strong); }
 .wg-time {
+  position: sticky; left: 0; z-index: 8;
   background: var(--axis-bg); color: var(--text-soft);
   display: flex; align-items: flex-start; justify-content: center;
   padding-top: 8px; font-family: ui-monospace, monospace; font-size: 11px;
 }
-.wg-time.night, .wg-cell.night { background: var(--band-night); }
-.wg-time.night { color: var(--gold); }
+.wg-time.night { background: var(--band-night); color: var(--gold); }
+.wg-cell.night { background: var(--band-night); }
 .wg-cell { padding: 4px; min-height: 46px; display: flex; flex-direction: column; gap: 4px; }
 .wg-cell.today { background: var(--today-bg); }
 .wg-cell .conflict {
   align-self: flex-start; font-size: 10px; color: var(--red);
   background: var(--red-bg); border-radius: 8px; padding: 0 6px;
 }
+
+/* 当前时刻线:横穿整周的一道粉线 */
+.wg-now-time {
+  position: sticky; left: 0; z-index: 8;
+  background: var(--pink); color: var(--accent-ink);
+  font-size: 9px; font-family: ui-monospace, monospace;
+  text-align: center; line-height: 1.5; padding: 0 1px;
+  border-right-color: var(--pink);
+}
+.wg-now { border-top: 2px solid var(--pink); min-height: 4px; padding: 0; }
 
 /* ── 番剧卡片 ─────────────────────────────────── */
 
@@ -180,6 +232,10 @@ button { font: inherit; cursor: pointer; }
 .show-card .meta .behind { color: var(--red); background: var(--red-bg); border-radius: 7px; padding: 0 5px; }
 .show-card .meta .friends { color: var(--green); }
 .show-card .meta .streamtag { color: var(--pink-strong); }
+.show-card .meta .cont {
+  color: var(--gold); border: 1px solid var(--gold);
+  border-radius: 3px; padding: 0 3px; line-height: 1.3;
+}
 
 .show-card.st-wish { border-left-color: var(--gold); }
 .show-card.st-watching { border-left-color: var(--pink-strong); }
@@ -220,11 +276,20 @@ button { font: inherit; cursor: pointer; }
 .month-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .month-nav .m-title { font-size: 16px; color: var(--text); min-width: 110px; text-align: center; }
 .month-grid {
-  display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px;
-  background: var(--border-soft); border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  border-left: 1px solid var(--border);
 }
-.mg-head { background: var(--axis-bg); text-align: center; padding: 5px 0; color: var(--text-soft); }
-.mg-cell { background: var(--card); min-height: 92px; padding: 3px 4px; }
+.mg-head, .mg-cell {
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.mg-head {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--axis-bg); border-top: 1px solid var(--border);
+  text-align: center; padding: 5px 0; color: var(--text-soft);
+}
+.mg-cell { min-height: 92px; padding: 3px 4px; }
 .mg-cell.out { opacity: .35; }
 .mg-cell.today { background: var(--today-bg); }
 .mg-cell .date { color: var(--text-soft); font-size: 11px; margin-bottom: 2px; }
@@ -280,10 +345,10 @@ button { font: inherit; cursor: pointer; }
   background: var(--chip-bg); border: 1px solid var(--border); border-radius: 4px;
   color: var(--text-soft); padding: 5px 14px;
 }
-.status-row button.on-wish { background: var(--gold); border-color: var(--gold); color: #fff; }
-.status-row button.on-watching { background: var(--pink-strong); border-color: var(--pink-strong); color: #fff; }
-.status-row button.on-done { background: var(--green); border-color: var(--green); color: #fff; }
-.status-row button.on-dropped { background: var(--text-subtle); border-color: var(--text-subtle); color: #fff; }
+.status-row button.on-wish { background: var(--gold); border-color: var(--gold); color: var(--accent-ink); }
+.status-row button.on-watching { background: var(--pink-strong); border-color: var(--pink-strong); color: var(--accent-ink); }
+.status-row button.on-done { background: var(--green); border-color: var(--green); color: var(--accent-ink); }
+.status-row button.on-dropped { background: var(--text-subtle); border-color: var(--text-subtle); color: var(--accent-ink); }
 
 .ep-stepper { display: flex; align-items: center; gap: 10px; }
 .ep-stepper button {

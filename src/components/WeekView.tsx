@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
 import {
   DAY_MS,
@@ -7,6 +7,7 @@ import {
   displayTz,
   hasEnded,
   nextOccurrence,
+  pad,
   partsInZone,
   slotFor,
   startOfWeekInstant,
@@ -26,9 +27,13 @@ export default function WeekView({ shows, tracking, settings, now, friendsMap, o
   const tz = displayTz(settings)
   const days = dayOrder(settings.weekStart)
 
-  const { rows, cells, unknownByDay, dayHeads, todayWd } = useMemo(() => {
+  const { rows, cells, unknownByDay, dayHeads, todayWd, nowEff } = useMemo(() => {
     const weekStart = startOfWeekInstant(now, tz, settings.weekStart)
-    const todayWd = partsInZone(now, tz).wd
+    const nowP = partsInZone(now, tz)
+    const todayWd = nowP.wd
+    // 当前时刻在时间轴上的位置(深夜表记下 0-6 点折算为 24+)
+    let nowEff = nowP.hh * 60 + nowP.mm
+    if (settings.lateNight && nowP.hh < 6) nowEff += 1440
 
     const slots = shows.map((s) => slotFor(s, settings))
     const rowSet = new Set<number>()
@@ -68,30 +73,47 @@ export default function WeekView({ shows, tracking, settings, now, friendsMap, o
       return { wd, label: `${p.mo}/${p.d}` }
     })
 
-    return { rows, cells, unknownByDay, dayHeads, todayWd }
+    return { rows, cells, unknownByDay, dayHeads, todayWd, nowEff }
   }, [shows, settings, now, tz, days])
 
   const fmtRow = (m: number) =>
     `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
 
   const hasUnknown = unknownByDay.size > 0
+  // 当前时刻线插在第一个晚于现在的时间行之前
+  const nowIdx = (() => {
+    const i = rows.findIndex((m) => m > nowEff)
+    return i === -1 ? rows.length : i
+  })()
+  const nowLabel = `${pad(Math.floor(nowEff / 60))}:${pad(nowEff % 60)}`
+
+  const nowRow = (
+    <>
+      <div className="wg-now-time" title="当前时刻">
+        {nowLabel}
+      </div>
+      {days.map((wd) => (
+        <div key={wd} className="wg-now" />
+      ))}
+    </>
+  )
 
   return (
-    <div className="week-scroll">
-      <div className="week-grid">
-        <div className="wg-corner" />
-        {dayHeads.map((h) => (
-          <div key={h.wd} className={`wg-dayhead${h.wd === todayWd ? ' today' : ''}`}>
-            <div className="d1">周{WEEKDAY_CN[h.wd]}</div>
-            <div className="d2">{h.label}</div>
-          </div>
-        ))}
+    <div className="week-grid">
+      <div className="wg-corner" />
+      {dayHeads.map((h) => (
+        <div key={h.wd} className={`wg-dayhead${h.wd === todayWd ? ' today' : ''}`}>
+          <div className="d1">周{WEEKDAY_CN[h.wd]}</div>
+          <div className="d2">{h.label}</div>
+        </div>
+      ))}
 
-        {rows.map((m) => {
-          const night = m >= 1440 || m < 360
-          return (
+      {rows.map((m, i) => {
+        const night = m >= 1440 || m < 360
+        return (
+          <Fragment key={m}>
+            {i === nowIdx && nowRow}
             <RowFrag
-              key={m}
               minutes={m}
               night={night}
               label={fmtRow(m)}
@@ -103,31 +125,32 @@ export default function WeekView({ shows, tracking, settings, now, friendsMap, o
               friendsMap={friendsMap}
               onOpen={onOpen}
             />
-          )
-        })}
+          </Fragment>
+        )
+      })}
+      {rows.length > 0 && nowIdx === rows.length && nowRow}
 
-        {hasUnknown && (
-          <>
-            <div className="wg-time" title="calendar API 未提供精确时间">
-              未定
+      {hasUnknown && (
+        <>
+          <div className="wg-time" title="calendar API 未提供精确时间">
+            未定
+          </div>
+          {days.map((wd) => (
+            <div key={wd} className={`wg-cell${wd === todayWd ? ' today' : ''}`}>
+              {(unknownByDay.get(wd) ?? []).map((s) => (
+                <ShowCard
+                  key={s.id}
+                  show={s}
+                  tracking={tracking}
+                  now={now}
+                  friendsMap={friendsMap}
+                  onOpen={onOpen}
+                />
+              ))}
             </div>
-            {days.map((wd) => (
-              <div key={wd} className={`wg-cell${wd === todayWd ? ' today' : ''}`}>
-                {(unknownByDay.get(wd) ?? []).map((s) => (
-                  <ShowCard
-                    key={s.id}
-                    show={s}
-                    tracking={tracking}
-                    now={now}
-                    friendsMap={friendsMap}
-                    onOpen={onOpen}
-                  />
-                ))}
-              </div>
-            ))}
-          </>
-        )}
-      </div>
+          ))}
+        </>
+      )}
     </div>
   )
 }

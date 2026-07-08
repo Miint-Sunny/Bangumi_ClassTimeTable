@@ -44,7 +44,7 @@ export interface Tracking {
 }
 
 export interface Settings {
-  theme: 'dark' | 'light'
+  theme: 'dark' | 'light' | 'contrast'
   tzMode: 'local' | 'jst'
   lateNight: boolean // 深夜表记:0-6 点归前一天,显示 24+ 小时
   weekStart: 1 | 7 // 周一或周日开头
