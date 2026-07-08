@@ -1,0 +1,56 @@
+# 番组课表 · bangumi-timetable
+
+像课表一样看番:bangumi.tv 当季新番的 **日 / 周 / 月** 三视图,带本地追番进度。
+
+## 特色(同类项目没有的)
+
+- **月视图**:日历上标出每一天更新哪些番、第几集,已播的自动变灰
+- **日视图**:「刚刚播出 / 接下来 24 小时」时间线,带倒计时和集数
+- **周视图**:真·课表(行 = 时间,列 = 星期),支持深夜表记(25:30 归前一天)
+- **时区换算**:日本时间 ⇄ 本地时间一键切换,跨日自动落对格子
+- **进度即作业**:每格显示「看到 X / 已播 Y / 全 Z 集」,落后标红,顶栏汇总"欠了 N 集没看"
+- **撞档提示**:同一时段有两部在追的番时标出 ⚡
+- **好友进度**:填 bgm 用户名即可看到好友(公开收藏)追同一部番的进度
+- **个性化 ICS 导出**:只导出自己在追的番的更新日历,可订阅进系统日历
+- **我的课表**:一键过滤到只看自己想看/在看的番
+
+## 数据来源与流量原则
+
+| 来源 | 用途 | 方式 |
+| --- | --- | --- |
+| Bangumi 官方 API `/calendar` | 每周放送骨架、评分、封面 | 前端直连,响应裁剪后缓存 6h |
+| bangumi-data 数据集 | 精确放送时刻、周期、播放平台 | jsDelivr CDN,缓存 24h |
+| Bangumi API `/v0/subjects` | 集数、简介 | 按需懒加载,缓存 7 天 |
+| Bangumi API `/v0/users/*/collections` | 好友公开进度 | 缓存 1h |
+| yuc.wiki(可选增强:标签/PV) | `public/data/enhance.json` | **不自动抓取**,由 `/refresh-data` skill 人工触发,页面由人手动保存 |
+
+所有远端响应均本地缓存,正常使用一天只产生个位数 API 请求。
+
+## 开发
+
+```bash
+npm install
+npm run dev     # http://localhost:5173
+npm run build   # 产物在 dist/,纯静态,可部署到任意静态托管
+```
+
+## 部署(GitHub Pages)
+
+推到 GitHub 后在仓库 Settings → Pages 选择 "GitHub Actions",
+`.github/workflows/deploy.yml` 会在每次 push main 时自动构建发布。
+`vite.config.ts` 已设 `base: './'`,子路径部署无需改动。
+
+## 换季
+
+前端数据(calendar / bangumi-data)自动跟随当季,无需操作。
+可选的 yuc 增强数据在 Claude Code 里运行 `/refresh-data` 按提示操作。
+
+## 协议
+
+[MIT](LICENSE)
+
+## 路线图
+
+- [ ] Bangumi OAuth:追番状态云同步(当前为 localStorage)
+- [ ] 收藏状态双向写回 bgm.tv
+- [ ] 换季对比(新季 vs 上季续作)
