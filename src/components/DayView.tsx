@@ -8,6 +8,8 @@ interface Props {
   tracking: Tracking
   settings: Settings
   now: number
+  seasonStart: number
+  archive?: boolean // 归档季不提供日视图,App 层已拦截
   friendsMap: FriendsMap
   onOpen: (id: number) => void
 }

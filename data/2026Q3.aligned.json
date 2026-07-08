@@ -1,0 +1,2598 @@
+{
+  "season": "202607",
+  "scraped_at": "2026-07-08T23:40:26.236496Z",
+  "source": "yuc.wiki",
+  "source_url": null,
+  "count": 82,
+  "shows": [
+    {
+      "day_of_week": 1,
+      "time": "23:00",
+      "start_date": null,
+      "span_type": "long_run",
+      "title": "欺诈游戏",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/4bfa8cc4febe963d9851462e7ed4642a512995925.jpg",
+      "official_url": "https://www.crunchyroll.com/watch/GE00374918JAJP",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "全24话",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "580133",
+        "url": "https://bgm.tv/subject/580133",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 1,
+      "time": "20:30",
+      "start_date": "7/6",
+      "span_type": "seasonal",
+      "title": "最强出涸皇子的暗跃帝位争夺",
+      "title_jp": "最強出涸らし皇子の暗躍帝位争い",
+      "source_type": "小说改编动画",
+      "tags": [
+        "奇幻",
+        "冒险战斗",
+        "后宫"
+      ],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/a18b8b3a456f658eb2634d88904e1ffb512995925.jpg",
+      "official_url": "https://degarashiouji.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1VQ5x6eELF/",
+      "broadcast_text": "7/6周一深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "456081",
+        "url": "https://bgm.tv/subject/456081",
+        "type": "tv",
+        "title_ja": "最強出涸らし皇子の暗躍帝位争い",
+        "title_zh_hans": [
+          "最强出涸皇子的暗跃帝位争夺"
+        ],
+        "begin": "2026-07-06T11:57:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 1,
+      "time": "20:30",
+      "start_date": "7/6",
+      "span_type": "seasonal",
+      "title": "与奔跑在透明之夜的你 谈一场看不见的恋爱",
+      "title_jp": "透明な夜に駆ける君と、目に見えない恋をした。",
+      "source_type": "小说改编动画",
+      "tags": [
+        "眼盲",
+        "青春校园",
+        "恋爱"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/b8f5f663bc1685da7a86610174b65b2e512995925.jpg",
+      "official_url": "https://sh-anime.shochiku.co.jp/kakekoi/",
+      "pv_url": "https://www.bilibili.com/video/BV17sE96hEfk/",
+      "broadcast_text": "7/6周一晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "607340",
+        "url": "https://bgm.tv/subject/607340",
+        "type": "tv",
+        "title_ja": "透明な夜に駆ける君と、目に見えない恋をした。",
+        "title_zh_hans": [
+          "与奔跑在透明之夜的你，谈一场看不见的恋爱"
+        ],
+        "begin": "2026-07-06T12:00:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 1,
+      "time": "21:30",
+      "start_date": "6/29",
+      "span_type": "carry_over",
+      "title": "世界舞动",
+      "title_jp": "ワールド イズ ダンシング",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "舞蹈",
+        "能乐",
+        "成长南北朝"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/e2cf0e4959454310e6390adaa601408e512995925.jpg",
+      "official_url": "https://sh-anime.shochiku.co.jp/worldisdancing-anime/",
+      "pv_url": "https://www.bilibili.com/video/BV15Vw9zcE6F/",
+      "broadcast_text": "6/29周一晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "622633",
+        "url": "https://bgm.tv/subject/622633",
+        "type": "tv",
+        "title_ja": "ワールド イズ ダンシング",
+        "title_zh_hans": [
+          "世界在起舞",
+          "世界在跳舞"
+        ],
+        "begin": "2026-07-02T13:00:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 1,
+      "time": "21:30",
+      "start_date": "7/6",
+      "span_type": "seasonal",
+      "title": "暴怒千金誓要复仇",
+      "title_jp": "ブチ切れ令嬢は報復を誓いました。",
+      "source_type": "小说改编动画",
+      "tags": [
+        "退婚",
+        "奇幻复仇",
+        "经营"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/8e9503bd8008ea81d32421b071433630512995925.jpg",
+      "official_url": "https://buchigire-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1qq7k6fEpt/",
+      "broadcast_text": "7/6周一晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "579246",
+        "url": "https://bgm.tv/subject/579246",
+        "type": "tv",
+        "title_ja": "ブチ切れ令嬢は報復を誓いました。 ～魔導書の力で祖国を叩き潰します～",
+        "title_zh_hans": [
+          "暴怒千金发誓复仇。～凭借魔导书之力打垮祖国～"
+        ],
+        "begin": "2026-07-06T13:30:00.000Z",
+        "matched_by": "substring_ja"
+      }
+    },
+    {
+      "day_of_week": 1,
+      "time": "22:30",
+      "start_date": "7/6",
+      "span_type": "seasonal",
+      "title": "被遗弃圣女的异世界美食之旅",
+      "title_jp": "捨てられ聖女の異世界ごはん旅 隠れスキルでキャンピングカーを召喚しました",
+      "source_type": "小说改编动画",
+      "tags": [
+        "穿越",
+        "冒险美食",
+        "旅行"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/48182894e97ace76cc821e9ddd039aa5512995925.jpg",
+      "official_url": "https://isekai-gohantabi.com/",
+      "pv_url": "https://www.bilibili.com/video/BV16f5B67Ezj/",
+      "broadcast_text": "7/6周一深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "636067",
+        "url": "https://bgm.tv/subject/636067",
+        "type": "tv",
+        "title_ja": "捨てられ聖女の異世界ごはん旅 隠れスキルでキャンピングカーを召喚しました",
+        "title_zh_hans": [
+          "无用圣女的异世界美食之旅 凭借隐藏技能召唤露营车",
+          "被遗弃的圣女的异世界饭旅隐藏技能召唤了露营车"
+        ],
+        "begin": "2026-07-06T14:00:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 1,
+      "time": "23:00",
+      "start_date": "7/6",
+      "span_type": "seasonal",
+      "title": "炎之斗球女 弹子",
+      "title_jp": "炎の闘球女 ドッジ弾子",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "竞技",
+        "热血",
+        "抽象异能运动"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/754bdefab9bc7be8114fc0429988daee512995925.jpg",
+      "official_url": "https://dodge-danko.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1QsVZ6EEP7/",
+      "broadcast_text": "7/6周一深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "569671",
+        "url": "https://bgm.tv/subject/569671",
+        "type": "tv",
+        "title_ja": "炎の闘球女 ドッジ弾子",
+        "title_zh_hans": [
+          "斗球儿弹子"
+        ],
+        "begin": "2026-07-06T14:00:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 1,
+      "time": "23:00",
+      "start_date": "7/6",
+      "span_type": "seasonal",
+      "title": "转学后班上的清纯可爱美少女竟是小时候玩在一起的哥们",
+      "title_jp": "転校先の清楚可憐な美少女が、 昔男子と思って一緒に遊んだ幼馴染だった件",
+      "source_type": "小说改编动画",
+      "tags": [
+        "校园",
+        "青春恋爱喜剧"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/f20b9868e5e84c8e4f0a52612aae4775512995925.jpg",
+      "official_url": "https://tenbin-anime.asmik-ace.co.jp/",
+      "pv_url": "https://www.bilibili.com/video/BV1VKXGBpEC5/",
+      "broadcast_text": "7/6周一深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "456080",
+        "url": "https://bgm.tv/subject/456080",
+        "type": "tv",
+        "title_ja": "転校先の清楚可憐な美少女が、昔男子と思って一緒に遊んだ幼馴染だった件",
+        "title_zh_hans": [
+          "转学后班上的清纯可爱美少女，竟是小时候玩在一起的哥儿们"
+        ],
+        "begin": "2026-07-06T14:30:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 1,
+      "time": "24:00",
+      "start_date": "7/6",
+      "span_type": "seasonal",
+      "title": "碧蓝之海 第3期",
+      "title_jp": "ぐらんぶる Season 3",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "社团",
+        "潜水",
+        "沙雕搞笑",
+        "颜艺",
+        "恋爱"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/db81bd26acafcf3803b416d61f779df1512995925.jpg",
+      "official_url": "https://grandblue-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1CjEY6LE5e",
+      "broadcast_text": "7/6周一深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "569116",
+        "url": "https://bgm.tv/subject/569116",
+        "type": "tv",
+        "title_ja": "ぐらんぶる Season 3",
+        "title_zh_hans": [
+          "碧蓝之海 第三季"
+        ],
+        "begin": "2026-07-06T15:00:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 1,
+      "time": "21:00",
+      "start_date": "7/13",
+      "span_type": "seasonal",
+      "title": "骸骨骑士大人异世界冒险中 第2期#2~",
+      "title_jp": "骸骨騎士様、只今異世界へお出掛け中 第2期",
+      "source_type": "小说改编动画",
+      "tags": [
+        "穿越",
+        "奇幻",
+        "战斗冒险",
+        "后宫"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/2310b9a8587d0f846f7f2b529a00065a512995925.jpg",
+      "official_url": "https://skeleton-knight.com/",
+      "pv_url": "https://www.bilibili.com/video/BV15goXB1EA4/",
+      "broadcast_text": "#1=7/4晚间 #2~周一晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "528828",
+        "url": "https://bgm.tv/subject/528828",
+        "type": "tv",
+        "title_ja": "骸骨騎士様、只今異世界へお出掛け中Ⅱ",
+        "title_zh_hans": [
+          "骸骨骑士大人异世界冒险中 第二季"
+        ],
+        "begin": "2026-07-04T11:30:00.000Z",
+        "matched_by": "base_ja_date"
+      }
+    },
+    {
+      "day_of_week": 2,
+      "time": "19:30",
+      "start_date": "7/7",
+      "span_type": "seasonal",
+      "title": "感谢对战 大小姐 才不玩格斗游戏",
+      "title_jp": "対ありでした。 〜お嬢さまは格闘ゲームなんてしない〜",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "竞技",
+        "贴贴格斗游戏",
+        "街霸6"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/dcc058e1d03a8f4d35cb6994bb619299512995925.jpg",
+      "official_url": "https://taiari-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1WB9iBrEjB/",
+      "broadcast_text": "7/7周二晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "325767",
+        "url": "https://bgm.tv/subject/325767",
+        "type": "tv",
+        "title_ja": "対ありでした。 〜お嬢さまは格闘ゲームなんてしない〜",
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 2,
+      "time": "20:30",
+      "start_date": "7/7",
+      "span_type": "seasonal",
+      "title": "与你相恋到 生命尽头",
+      "title_jp": "きみが死ぬまで恋をしたい",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "魔法",
+        "校园",
+        "战争百合",
+        "刀",
+        "糖"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/5e56eb53f26add20de1049642088ae14512995925.jpg",
+      "official_url": "https://kimishinu-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV18hEm6AEvd/",
+      "broadcast_text": "7/7周二晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "541285",
+        "url": "https://bgm.tv/subject/541285",
+        "type": "tv",
+        "title_ja": "きみが死ぬまで恋をしたい",
+        "title_zh_hans": [
+          "与你相恋到生命尽头",
+          "只愿深入爱河直至你逝去"
+        ],
+        "begin": "2026-07-07T12:30:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 2,
+      "time": "21:00",
+      "start_date": "6/30",
+      "span_type": "carry_over",
+      "title": "无自觉圣女今天也无意识地释放力量",
+      "title_jp": "無自覚聖女は今日も無意識に力を垂れ流す",
+      "source_type": "小说改编动画",
+      "tags": [
+        "奇幻",
+        "恋爱反差",
+        "凤傲天"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/f4893bcd78c847adf298bc5dbaa9e539512995925.jpg",
+      "official_url": "https://mujikaku-seijo.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1dELK6EEtU/",
+      "broadcast_text": "6/30周二晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "571910",
+        "url": "https://bgm.tv/subject/571910",
+        "type": "tv",
+        "title_ja": "無自覚聖女は今日も無意識に力を垂れ流す",
+        "title_zh_hans": [
+          "无自觉圣女今天也无意识地释放力量"
+        ],
+        "begin": "2026-06-30T13:00:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 2,
+      "time": "22:00",
+      "start_date": "7/7",
+      "span_type": "seasonal",
+      "title": "新 攻壳机动队",
+      "title_jp": "攻殻機動隊 THE GHOST IN THE SHELL",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "科幻",
+        "赛博朋克战斗",
+        "文艺复兴"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/9c329ec79e3f688d9e240fe296f93cd0512995925.jpg",
+      "official_url": "https://www.theghostintheshell-anime.jp/",
+      "pv_url": "https://www.bilibili.com/video/BV1Yg5x6YEvN/",
+      "broadcast_text": "7/7周二深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "496276",
+        "url": "https://bgm.tv/subject/496276",
+        "type": "tv",
+        "title_ja": "攻殻機動隊 THE GHOST IN THE SHELL",
+        "title_zh_hans": [
+          "攻壳机动队 THE GHOST IN THE SHELL"
+        ],
+        "begin": "2026-07-07T14:00:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 2,
+      "time": "22:30",
+      "start_date": "7/7",
+      "span_type": "seasonal",
+      "title": "新 魔神坛斗士 Part.2",
+      "title_jp": "鎧真伝サムライトルーパー",
+      "source_type": "原创动画",
+      "tags": [
+        "战斗",
+        "文艺复兴"
+      ],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/1fcbbe12b8d8652618de138a0026d767512995925.jpg",
+      "official_url": "https://www.samurai-trooper.net/",
+      "pv_url": "https://www.bilibili.com/video/BV1xB5F67EfH/",
+      "broadcast_text": "7/7周二深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "612697",
+        "url": "https://bgm.tv/subject/612697",
+        "type": "tv",
+        "title_ja": "鎧真伝サムライトルーパー(第2クール)",
+        "title_zh_hans": [
+          "铠真传 武士军团 第2部分"
+        ],
+        "begin": "2026-07-07T14:30:00.000Z",
+        "matched_by": "substring_ja"
+      }
+    },
+    {
+      "day_of_week": 2,
+      "time": "23:00",
+      "start_date": "7/7",
+      "span_type": "seasonal",
+      "title": "底牌很多的 维多利亚",
+      "title_jp": "手札が多めのビクトリア",
+      "source_type": "小说改编动画",
+      "tags": [
+        "特工",
+        "冒险",
+        "带娃情感",
+        "奇妙日常"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/b8dbcf0c89324fd89cae8ea4ca820e52512995925.jpg",
+      "official_url": "https://victoria-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1Q1G86TEaF/",
+      "broadcast_text": "7/7周二深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "584641",
+        "url": "https://bgm.tv/subject/584641",
+        "type": "tv",
+        "title_ja": "手札が多めのビクトリア",
+        "title_zh_hans": [
+          "奇招百出的维多利亚",
+          "底牌很多的维多利亚"
+        ],
+        "begin": "2026-07-07T15:00:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 2,
+      "time": "24:35",
+      "start_date": "7/7",
+      "span_type": "seasonal",
+      "title": "天是红河岸",
+      "title_jp": "天は赤い河のほとり",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "穿越",
+        "恋爱",
+        "历史少女漫",
+        "真古"
+      ],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/40b55bdf78f61985869b82bbd08c75f7512995925.jpg",
+      "official_url": "https://www.vap.co.jp/sorahaakaikawanohotori/",
+      "pv_url": "https://www.bilibili.com/video/BV1E3PfzREDx/",
+      "broadcast_text": "7/7周二深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "627648",
+        "url": "https://bgm.tv/subject/627648",
+        "type": "tv",
+        "title_ja": "天は赤い河のほとり",
+        "title_zh_hans": [
+          "天是红河岸"
+        ],
+        "begin": "2026-07-07T16:35:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 3,
+      "time": "20:00",
+      "start_date": "7/8",
+      "span_type": "seasonal",
+      "title": "Clevatess 第2期",
+      "title_jp": "クレバテスⅡ-魔獣の王と偽りの勇者伝承-",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "奇幻",
+        "冒险",
+        "带娃"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/19ab196439099d086e1eb62a803cd1b1512995925.jpg",
+      "official_url": "https://clevatess.com/",
+      "pv_url": "https://www.bilibili.com/video/BV16qEE6vEpH/",
+      "broadcast_text": "7/8周三晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "585820",
+        "url": "https://bgm.tv/subject/585820",
+        "type": "tv",
+        "title_ja": "クレバテスⅡ-魔獣の王と偽りの勇者伝承-",
+        "title_zh_hans": [
+          "克雷瓦提斯 第二季 -魔兽之王与虚伪的勇者传承-",
+          "克雷瓦提斯-魔兽之王与婴儿与尸之勇者- 第二季"
+        ],
+        "begin": "2026-07-08T13:30:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 3,
+      "time": "21:30",
+      "start_date": "6/24",
+      "span_type": "carry_over",
+      "title": "女主角？圣女？ 不，我是杂役女仆 （自豪）！",
+      "title_jp": "ヒロイン？聖女？いいえ、オールワークスメイドです（誇）！",
+      "source_type": "小说改编动画",
+      "tags": [
+        "转生",
+        "奇幻误解系",
+        "凤傲天"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/6d5620daf830b39aa4a8a28e0258640f512995925.jpg",
+      "official_url": "https://all-works-maid-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1XsVU64EWm/",
+      "broadcast_text": "6/24周三晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "558064",
+        "url": "https://bgm.tv/subject/558064",
+        "type": "tv",
+        "title_ja": "ヒロイン？聖女？いいえ、オールワークスメイドです(誇)！",
+        "title_zh_hans": [
+          "女主角？圣女？不，我是杂役女仆（自豪）！"
+        ],
+        "begin": "2026-07-01T13:00:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 3,
+      "time": "21:30",
+      "start_date": "7/8",
+      "span_type": "seasonal",
+      "title": "幼女战记 第2期",
+      "title_jp": "幼女戦記Ⅱ",
+      "source_type": "小说改编动画",
+      "tags": [
+        "转生",
+        "穿越",
+        "奇幻战争",
+        "颜艺"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/36ca0fd3c8b535ea4f5675d0c4462342512995925.jpg",
+      "official_url": "https://youjo-senki.jp/",
+      "pv_url": "https://www.bilibili.com/video/BV1rn2xBoEzX/",
+      "broadcast_text": "7/8周三晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "339515",
+        "url": "https://bgm.tv/subject/339515",
+        "type": "tv",
+        "title_ja": "幼女戦記Ⅱ",
+        "title_zh_hans": [
+          "幼女战记 第二季",
+          "谭雅战记 第二季"
+        ],
+        "begin": "2026-07-08T14:00:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 3,
+      "time": "22:30",
+      "start_date": "7/8",
+      "span_type": "seasonal",
+      "title": "不虐待我的 继母与继姐",
+      "title_jp": "いびってこない義母と義姉",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "温馨",
+        "家庭",
+        "日常反差",
+        "喜剧"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/2be64aa4e4554dfd6e4454f101574e48512995925.jpg",
+      "official_url": "https://ibikona-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1adorBLEAa/",
+      "broadcast_text": "7/8周三深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "572613",
+        "url": "https://bgm.tv/subject/572613",
+        "type": "tv",
+        "title_ja": "いびってこない義母と義姉",
+        "title_zh_hans": [
+          "不虐待我的继母与继姐"
+        ],
+        "begin": "2026-07-08T14:30:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 3,
+      "time": "22:45",
+      "start_date": "7/8",
+      "span_type": "seasonal",
+      "title": "乡下大叔成为剑圣 第2期",
+      "title_jp": "片田舎のおっさん、剣聖になる",
+      "source_type": "小说改编动画",
+      "tags": [
+        "奇幻",
+        "战斗",
+        "误解师徒",
+        "后宫"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/1940e5804d1d53a81238b8c27c23e9b7512995925.jpg",
+      "official_url": "https://ossan-kensei.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1kLRTBoEGR/",
+      "broadcast_text": "7/8周三深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "565701",
+        "url": "https://bgm.tv/subject/565701",
+        "type": "tv",
+        "title_ja": "片田舎のおっさん、剣聖になるⅡ",
+        "title_zh_hans": [
+          "乡下大叔成为剑圣 第二季"
+        ],
+        "begin": "2026-07-08T14:45:00.000Z",
+        "matched_by": "substring_ja"
+      }
+    },
+    {
+      "day_of_week": 3,
+      "time": "23:00",
+      "start_date": "7/1",
+      "span_type": "seasonal",
+      "title": "LV999的村民",
+      "title_jp": "LV999の村人",
+      "source_type": "小说改编动画",
+      "tags": [
+        "奇幻",
+        "冒险战斗",
+        "后宫"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/28a51ffa05536c0f7605980cfc3aafbf512995925.jpg",
+      "official_url": "https://lv999-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1NxE86kEUM/",
+      "broadcast_text": "7/1周三深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "579787",
+        "url": "https://bgm.tv/subject/579787",
+        "type": "tv",
+        "title_ja": "LV999の村人",
+        "title_zh_hans": [
+          "LV999的村民"
+        ],
+        "begin": "2026-07-01T15:00:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 3,
+      "time": "23:30",
+      "start_date": "7/8",
+      "span_type": "seasonal",
+      "title": "乙游世界对路人 很不友好 第2期",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/a33eb3e319f9c8508a6fee4aefa3891a512995925.jpg",
+      "official_url": "https://acg.gamer.com.tw/acgDetail.php?s=129407",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "412144",
+        "url": "https://bgm.tv/subject/412144",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 3,
+      "time": "23:45",
+      "start_date": "7/8",
+      "span_type": "seasonal",
+      "title": "雷霆三人行",
+      "title_jp": "サンダー3",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "穿越",
+        "奇科幻战斗",
+        "多重宇宙超展开",
+        "欺诈"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/a6d48c024d22dc6ce261ed92b0f39a67512995925.jpg",
+      "official_url": "https://thunder3-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1UuEv6ZEqK/",
+      "broadcast_text": "7/8周三深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "625215",
+        "url": "https://bgm.tv/subject/625215",
+        "type": "tv",
+        "title_ja": "サンダー3",
+        "title_zh_hans": [
+          "雷霆三人行"
+        ],
+        "begin": "2026-07-08T15:50:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 3,
+      "time": "25:00",
+      "start_date": "7/1",
+      "span_type": "seasonal",
+      "title": "花样少年少女 第2期",
+      "title_jp": "花ざかりの君たちへ 第2期",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "男校",
+        "女扮男装恋爱",
+        "少女"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/f6fd144e178bc398971b6a24294ef061512995925.jpg",
+      "official_url": "https://hanakimi-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1QUGn6VEWu/",
+      "broadcast_text": "7/1周三深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "637124",
+        "url": "https://bgm.tv/subject/637124",
+        "type": "tv",
+        "title_ja": "花ざかりの君たちへ(第2期)",
+        "title_zh_hans": [
+          "花样少年少女 第二季"
+        ],
+        "begin": "2026-07-02T16:59:00.000Z",
+        "matched_by": "base_ja_date"
+      }
+    },
+    {
+      "day_of_week": 3,
+      "time": "21:00",
+      "start_date": "8/12",
+      "span_type": "seasonal",
+      "title": "Re:从零开始的异世界生活 第4期 P2",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/e5498ee6e63f87ba626eb1a643692635512995925.jpg",
+      "official_url": "https://acg.gamer.com.tw/acgDetail.php?s=144453",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "633836",
+        "url": "https://bgm.tv/subject/633836",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 4,
+      "time": "20:30",
+      "start_date": "7/2",
+      "span_type": "seasonal",
+      "title": "令和的斑小姐",
+      "title_jp": "令和のタラさん",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "灵异",
+        "妖怪抽象",
+        "搞笑",
+        "涩涩"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/b41e34d9c820c3ddd15e91b48eaab2a7512995925.jpg",
+      "official_url": "https://darasan-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1TdPxz1EK6/",
+      "broadcast_text": "7/2周四晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "614594",
+        "url": "https://bgm.tv/subject/614594",
+        "type": "tv",
+        "title_ja": "令和のダラさん",
+        "title_zh_hans": [
+          "令和的斑小姐"
+        ],
+        "begin": "2026-07-02T12:30:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 4,
+      "time": "20:40",
+      "start_date": "7/2",
+      "span_type": "seasonal",
+      "title": "文豪野犬 汪 第2期",
+      "title_jp": "文豪ストレイドッグス わん！2",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "番外",
+        "Q版日常喜剧"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/da557193091701a3d8201ae3a2363ce9512995925.jpg",
+      "official_url": "https://wan2.bungo-stray-dogs-wan.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1kYEr6iEhG/",
+      "broadcast_text": "7/2周四晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "603352",
+        "url": "https://bgm.tv/subject/603352",
+        "type": "tv",
+        "title_ja": "文豪ストレイドッグス わん！2",
+        "title_zh_hans": [
+          "文豪野犬 汪！第二季"
+        ],
+        "begin": "2026-07-02T12:40:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 4,
+      "time": "21:00",
+      "start_date": null,
+      "span_type": "annual",
+      "title": "元祖 小邦多利",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/1f69329fcadb72424dc1afe5b3a1ff5c512995925.jpg",
+      "official_url": "https://www.bilibili.com/bangumi/play/ep2224392",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "泡面",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "540449",
+        "url": "https://bgm.tv/subject/540449",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 4,
+      "time": "22:00",
+      "start_date": "7/2",
+      "span_type": "seasonal",
+      "title": "BanG Dream! YUME∞MITA",
+      "title_jp": "バンドリ！ ゆめ∞みた",
+      "source_type": "原创动画",
+      "tags": [
+        "音乐",
+        "乐队",
+        "虚拟"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/39ee0f846560cdf5f63c9ddfee8d21ac512995925.jpg",
+      "official_url": "https://anime.bang-dream.com/yumemita/",
+      "pv_url": "https://www.bilibili.com/video/BV17Ejt6QEzi/",
+      "broadcast_text": "7/2周四深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "583729",
+        "url": "https://bgm.tv/subject/583729",
+        "type": "tv",
+        "title_ja": "バンドリ！ ゆめ∞みた",
+        "title_zh_hans": [
+          "BanG Dream! YUME∞MITA",
+          "梦限大"
+        ],
+        "begin": "2026-07-02T14:00:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 4,
+      "time": "23:00",
+      "start_date": "6/25",
+      "span_type": "carry_over",
+      "title": "落第贤者的 学院无双",
+      "title_jp": "落第賢者の学院無双 ～二度目の転生、Sランクチート魔術師冒険録～",
+      "source_type": "小说改编动画",
+      "tags": [
+        "转生",
+        "魔法",
+        "校园后宫",
+        "傲天"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/7063238a511a436b56c01bf4762978bc512995925.jpg",
+      "official_url": "https://rakudai-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1GjEn6ZEhU/",
+      "broadcast_text": "6/25周四深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "630163",
+        "url": "https://bgm.tv/subject/630163",
+        "type": "tv",
+        "title_ja": "落第賢者の学院無双～二度目の転生、Ｓランクチート魔術師冒険録～",
+        "title_zh_hans": [
+          "落第贤者的学院无双～第二回转生，S等级作弊魔术师冒险记～"
+        ],
+        "begin": "2026-07-01T15:00:00.000Z",
+        "matched_by": "substring_zh"
+      }
+    },
+    {
+      "day_of_week": 4,
+      "time": "23:56",
+      "start_date": "7/2",
+      "span_type": "seasonal",
+      "title": "被追放的转生重骑士 用游戏知识开无双",
+      "title_jp": "追放された転生重騎士はゲーム知識で無双する",
+      "source_type": "小说改编动画",
+      "tags": [
+        "转生",
+        "奇幻",
+        "冒险战斗",
+        "成长"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/170623b6f4548fe83500d807045be59b512995925.jpg",
+      "official_url": "https://sh-anime.shochiku.co.jp/jukishi-anime/",
+      "pv_url": "https://www.bilibili.com/video/BV118PCzxEw7/",
+      "broadcast_text": "7/2周四深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "511177",
+        "url": "https://bgm.tv/subject/511177",
+        "type": "tv",
+        "title_ja": "追放された転生重騎士はゲーム知識で無双する",
+        "title_zh_hans": [
+          "遭到流放的转生重骑士凭借游戏知识大开无双",
+          "被流放的转生重骑士用游戏知识开无双",
+          "被追放的转生重骑士用游戏知识开无双"
+        ],
+        "begin": "2026-07-02T15:26:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 4,
+      "time": "24:00",
+      "start_date": "7/2",
+      "span_type": "seasonal",
+      "title": "尼古喵喵",
+      "title_jp": "ヤニねこ",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "奇妙日常",
+        "兽人抽象",
+        "无厘头"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/9043ebde02deb628f2871c88c19b3275512995925.jpg",
+      "official_url": "https://yanineko-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV16dVE69EHr/",
+      "broadcast_text": "7/2周四深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "622206",
+        "url": "https://bgm.tv/subject/622206",
+        "type": "tv",
+        "title_ja": "ヤニねこ",
+        "title_zh_hans": [
+          "尼古喵喵"
+        ],
+        "begin": "2026-07-02T15:30:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 4,
+      "time": "25:28",
+      "start_date": "7/2",
+      "span_type": "seasonal",
+      "title": "少女怪兽焦糖味",
+      "title_jp": "乙女怪獣キャラメリゼ",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "怪兽",
+        "奇妙日常少女",
+        "恋爱喜剧"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/611633a85663932cb5c2a9cae13b057e512995925.jpg",
+      "official_url": "https://otomekaiju.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1PMEb6KEmg/",
+      "broadcast_text": "7/2周四深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "617123",
+        "url": "https://bgm.tv/subject/617123",
+        "type": "tv",
+        "title_ja": "乙女怪獣キャラメリゼ",
+        "title_zh_hans": [
+          "少女怪兽焦糖味"
+        ],
+        "begin": "2026-07-02T16:28:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 4,
+      "time": "22:30",
+      "start_date": "7/9",
+      "span_type": "seasonal",
+      "title": "梅比乌斯之尘",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/67a6f69c0e2fe29493629da4c6dd394c512995925.jpg",
+      "official_url": "https://www.crunchyroll.com/",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "276787",
+        "url": "https://bgm.tv/subject/276787",
+        "type": "tv",
+        "title_ja": "メビウス・ダスト",
+        "title_zh_hans": [
+          "梅比乌斯之尘",
+          "梅比乌斯·尘埃"
+        ],
+        "begin": "2026-07-09T14:30:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 4,
+      "time": "22:56",
+      "start_date": "7/9",
+      "span_type": "seasonal",
+      "title": "躲在超市后门 抽烟的两人",
+      "title_jp": "スーパーの裏でヤニ吸うふたり",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "日常",
+        "治愈职场",
+        "社畜",
+        "情感"
+      ],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/02763b6fa9298a0804a71dc67052c457512995925.jpg",
+      "official_url": "https://yanisuu.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1qzXGBfE58/",
+      "broadcast_text": "6/3先行6话 7/9周四深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "571784",
+        "url": "https://bgm.tv/subject/571784",
+        "type": "tv",
+        "title_ja": "スーパーの裏でヤニ吸うふたり",
+        "title_zh_hans": [
+          "在超市后门吸烟的二人",
+          "躲在超市后门抽烟的两人"
+        ],
+        "begin": "2026-07-09T14:56:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 5,
+      "time": "23:00",
+      "start_date": "P1=24话",
+      "span_type": "seasonal",
+      "title": "关于我转生变成 史莱姆这档事 第4期 Part.1",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/648dca44ac3971f8c65a5d263480fb3d512995925.jpg",
+      "official_url": "https://acg.gamer.com.tw/acgDetail.php?s=141656",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "515594",
+        "url": "https://bgm.tv/subject/515594",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 5,
+      "time": "23:30",
+      "start_date": null,
+      "span_type": "long_run",
+      "title": "神之水滴",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/dffacfcc81daa70300e7d7ec5afd7e1c512995925.jpg",
+      "official_url": "https://acg.gamer.com.tw/acgDetail.php?s=148300",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "全24话",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "609175",
+        "url": "https://bgm.tv/subject/609175",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 5,
+      "time": "21:30",
+      "start_date": "7/3",
+      "span_type": "seasonal",
+      "title": "从0位居民开始的 边境领主大人",
+      "title_jp": "領民0人スタートの辺境領主様",
+      "source_type": "小说改编动画",
+      "tags": [
+        "奇幻",
+        "冒险战斗",
+        "开拓"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/ce8e23f26026dbc2043aecab806f8af6512995925.jpg",
+      "official_url": "https://ryomin0-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV15KVQ6ME9F/",
+      "broadcast_text": "7/3周五晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "571895",
+        "url": "https://bgm.tv/subject/571895",
+        "type": "tv",
+        "title_ja": "領民0人スタートの辺境領主様",
+        "title_zh_hans": [
+          "从0位居民开始的边境领主大人"
+        ],
+        "begin": "2026-07-10T13:30:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 5,
+      "time": "21:30",
+      "start_date": "7/3",
+      "span_type": "seasonal",
+      "title": "说出你们先走我断后的十年后我成为了传说",
+      "title_jp": "ここは俺に任せて先に行けと言ってから10年がたったら 伝説になっていた。",
+      "source_type": "小说改编动画",
+      "tags": [
+        "奇幻",
+        "冒险战斗",
+        "后宫"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/ed7549b6186cc9dbb2706b946c9dbdfe512995925.jpg",
+      "official_url": "https://kokoore-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1Rzj36AEcT/",
+      "broadcast_text": "7/3周五晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "590786",
+        "url": "https://bgm.tv/subject/590786",
+        "type": "tv",
+        "title_ja": "ここは俺に任せて先に行けと言ってから10年がたったら伝説になっていた。",
+        "title_zh_hans": [
+          "『你们先走我断后』，于是10年后我成为了传说"
+        ],
+        "begin": "2026-07-06T13:30:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 5,
+      "time": "23:35",
+      "start_date": "7/3",
+      "span_type": "seasonal",
+      "title": "画完这个再去死",
+      "title_jp": "これ描いて死ね",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "漫画创作",
+        "校园社团",
+        "成长",
+        "日常"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/6e1b9ec6fb5177e973546f3d5665e810512995925.jpg",
+      "official_url": "https://www.vap.co.jp/korekaite-shine/",
+      "pv_url": "https://www.bilibili.com/video/BV1pLEg6mECm/",
+      "broadcast_text": "7/3周五深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "545917",
+        "url": "https://bgm.tv/subject/545917",
+        "type": "tv",
+        "title_ja": "これ描いて死ね",
+        "title_zh_hans": [
+          "描绘直至生命尽头",
+          "画完这个就去死"
+        ],
+        "begin": "2026-07-03T14:30:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 5,
+      "time": "24:30",
+      "start_date": "7/3",
+      "span_type": "seasonal",
+      "title": "我家的弟弟们真是让您费心了",
+      "title_jp": "うちの弟どもがすみません",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "家庭",
+        "义姐弟恋爱喜剧",
+        "日常"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/737c88e9bbea1adb267b6c4f19c153ba512995925.jpg",
+      "official_url": "https://uchioto-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1GTGn6VEx1/",
+      "broadcast_text": "7/3周五深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "613438",
+        "url": "https://bgm.tv/subject/613438",
+        "type": "tv",
+        "title_ja": "うちの弟どもがすみません",
+        "title_zh_hans": [
+          "我家的弟弟们真是让您费心了"
+        ],
+        "begin": "2026-07-03T15:00:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 5,
+      "time": "24:30",
+      "start_date": "7/3",
+      "span_type": "seasonal",
+      "title": "地狱模式 第2期",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/91f134e4d0dd02fab86e3ff1c508769a512995925.jpg",
+      "official_url": "https://acg.gamer.com.tw/acgDetail.php?s=150678",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "638151",
+        "url": "https://bgm.tv/subject/638151",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 5,
+      "time": "24:30",
+      "start_date": "7/3",
+      "span_type": "seasonal",
+      "title": "正后方的神威",
+      "title_jp": "うしろの正面カムイさん",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "灵异",
+        "除灵抽象",
+        "搞笑",
+        "涩涩"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/609257722f4bf239207a72d33c82408c512995925.jpg",
+      "official_url": "https://kamuisan.deregula.com/",
+      "pv_url": "https://www.bilibili.com/video/BV12a9BBHEo9/",
+      "broadcast_text": "7/3周五深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "627136",
+        "url": "https://bgm.tv/subject/627136",
+        "type": "tv",
+        "title_ja": "うしろの正面カムイさん",
+        "title_zh_hans": [
+          "正后方的神威"
+        ],
+        "begin": "2026-07-02T16:00:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 5,
+      "time": "23:00",
+      "start_date": "7/17",
+      "span_type": "seasonal",
+      "title": "擅长逃跑的殿下 第2期",
+      "title_jp": "逃げ上手の若君 第二期",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "历史",
+        "复仇",
+        "成长"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/71b9d57fb31b6a53c3565632f461861c512995925.jpg",
+      "official_url": "https://nigewaka.run/",
+      "pv_url": "https://www.bilibili.com/video/BV177qUBdE3w/",
+      "broadcast_text": "7/17周五深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "517106",
+        "url": "https://bgm.tv/subject/517106",
+        "type": "tv",
+        "title_ja": "逃げ上手の若君 第二期",
+        "title_zh_hans": [
+          "擅长逃跑的殿下 第二季",
+          "少主溜得快 第二季"
+        ],
+        "begin": "2026-07-10T14:30:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "08:25",
+      "start_date": null,
+      "span_type": "annual",
+      "title": "轻松熊",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "台湾",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/2651151e2fe96b889565e33a7d4b69d9512995925.jpg",
+      "official_url": "https://acg.gamer.com.tw/acgDetail.php?s=141989",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "泡面",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "520633",
+        "url": "https://bgm.tv/subject/520633",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "17:30",
+      "start_date": null,
+      "span_type": "long_run",
+      "title": "小书痴的下克上 第4期",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/e102567e0958ad8d2656dd3bf5c65050512995925.jpg",
+      "official_url": "https://acg.gamer.com.tw/acgDetail.php?s=142675",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "全24话",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "469104",
+        "url": "https://bgm.tv/subject/469104",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "18:55",
+      "start_date": null,
+      "span_type": "long_run",
+      "title": "入间同学入魔了 第4期",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/a391a1fc78171684a9584086d0a95af8512995925.jpg",
+      "official_url": "https://acg.gamer.com.tw/acgDetail.php?s=142432",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "全24话",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "524486",
+        "url": "https://bgm.tv/subject/524486",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "19:00",
+      "start_date": "7/4",
+      "span_type": "seasonal",
+      "title": "无职转生 第3期 #1~2",
+      "title_jp": "無職転生 ～異世界行ったら本気だす～ 第3期",
+      "source_type": "小说改编动画",
+      "tags": [
+        "转生",
+        "奇幻",
+        "冒险情感",
+        "后宫",
+        "传记"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/a15be389060cf0bf2a8f07a63cd401f6512995925.jpg",
+      "official_url": "https://mushokutensei.jp/",
+      "pv_url": "https://www.bilibili.com/video/BV1deEc6CEVq/",
+      "broadcast_text": "首周2话连播 #1~2=7/4晚间 #3~周日深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "501963",
+        "url": "https://bgm.tv/subject/501963",
+        "type": "tv",
+        "title_ja": "無職転生 ～異世界行ったら本気だす～ 第3期",
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "19:30",
+      "start_date": "7/4",
+      "span_type": "seasonal",
+      "title": "骸骨骑士大人异世界冒险中 第2期 #1",
+      "title_jp": "骸骨騎士様、只今異世界へお出掛け中 第2期",
+      "source_type": "小说改编动画",
+      "tags": [
+        "穿越",
+        "奇幻",
+        "战斗冒险",
+        "后宫"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/2310b9a8587d0f846f7f2b529a00065a512995925.jpg",
+      "official_url": "https://skeleton-knight.com/",
+      "pv_url": "https://www.bilibili.com/video/BV15goXB1EA4/",
+      "broadcast_text": "#1=7/4晚间 #2~周一晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "528828",
+        "url": "https://bgm.tv/subject/528828",
+        "type": "tv",
+        "title_ja": "骸骨騎士様、只今異世界へお出掛け中Ⅱ",
+        "title_zh_hans": [
+          "骸骨骑士大人异世界冒险中 第二季"
+        ],
+        "begin": "2026-07-04T11:30:00.000Z",
+        "matched_by": "base_ja_date"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "21:00",
+      "start_date": "6/27",
+      "span_type": "carry_over",
+      "title": "猫与龙",
+      "title_jp": "猫と竜",
+      "source_type": "小说改编动画",
+      "tags": [
+        "奇幻",
+        "温馨",
+        "治愈"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/867341f8f0cedda8c0bd1d470d506cd6512995925.jpg",
+      "official_url": "https://nekoryuu-pr.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1xufpBQE2L/",
+      "broadcast_text": "6/27周六晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "538760",
+        "url": "https://bgm.tv/subject/538760",
+        "type": "tv",
+        "title_ja": "猫と竜",
+        "title_zh_hans": [
+          "猫与龙"
+        ],
+        "begin": "2026-07-04T12:00:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "21:00",
+      "start_date": "7/4",
+      "span_type": "seasonal",
+      "title": "暗黑灯火",
+      "title_jp": "BLACK TORCH",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "异能",
+        "战斗",
+        "妖怪"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/67adc38f7025cc8c4b030a27fface3da512995925.jpg",
+      "official_url": "https://blacktorch-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1cg7C6TEU3/",
+      "broadcast_text": "7/4周六晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "542603",
+        "url": "https://bgm.tv/subject/542603",
+        "type": "tv",
+        "title_ja": "BLACK TORCH",
+        "title_zh_hans": [
+          "暗黑灯火",
+          "黑炬"
+        ],
+        "begin": "2026-07-04T13:00:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "21:30",
+      "start_date": "7/4",
+      "span_type": "seasonal",
+      "title": "岩元前辈的推荐",
+      "title_jp": "岩元先輩ノ推薦",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "奇幻",
+        "异能",
+        "灵异"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/d1e05e6cae2a4ee4443c9b7be0af573d512995925.jpg",
+      "official_url": "https://iwamoto-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1HCrUBkE3i/",
+      "broadcast_text": "7/4周六晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "621843",
+        "url": "https://bgm.tv/subject/621843",
+        "type": "tv",
+        "title_ja": "岩元先輩ノ推薦",
+        "title_zh_hans": [
+          "岩元前辈的推荐"
+        ],
+        "begin": "2026-07-04T13:30:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "22:45",
+      "start_date": null,
+      "span_type": "long_run",
+      "title": "摩绪",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/c9ff953b58e6169ce055034b1da5b160512995925.jpg",
+      "official_url": "https://acg.gamer.com.tw/acgDetail.php?s=146258",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "全24话",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "570448",
+        "url": "https://bgm.tv/subject/570448",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "23:55",
+      "start_date": "7/4",
+      "span_type": "seasonal",
+      "title": "柔光魔女股份 有限公司 第2期",
+      "title_jp": "株式会社マジルミエ 第2期",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "职场",
+        "魔法",
+        "战斗"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/b6c61ecc8140dd8b41318a46f5585c6d512995925.jpg",
+      "official_url": "https://magilumiere-pr.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1TYVA6sEig/",
+      "broadcast_text": "7/4周六深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "529723",
+        "url": "https://bgm.tv/subject/529723",
+        "type": "tv",
+        "title_ja": "株式会社マジルミエ(第2期)",
+        "title_zh_hans": [
+          "魔法光源股份有限公司 第二季"
+        ],
+        "begin": "2026-07-07T17:09:00.000Z",
+        "matched_by": "base_ja_date"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "24:00",
+      "start_date": null,
+      "span_type": "long_run",
+      "title": "黄泉的使者",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "台湾",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/5be47c5c1e39ce9ce4ebebd5a4f34d1f512995925.jpg",
+      "official_url": "https://acg.gamer.com.tw/acgDetail.php?s=146142",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "全24话",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "568572",
+        "url": "https://bgm.tv/subject/568572",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "24:00",
+      "start_date": "7/4",
+      "span_type": "seasonal",
+      "title": "穹庐下的魔女",
+      "title_jp": "天幕のジャードゥーガル",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "战争",
+        "历史",
+        "蒙古复仇",
+        "成长"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/69ee7bf21dd04dfcfcc2b88d035a5b73512995925.jpg",
+      "official_url": "https://anime-jaadugar.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1L8QCBVEaM/",
+      "broadcast_text": "7/4周六深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "552533",
+        "url": "https://bgm.tv/subject/552533",
+        "type": "tv",
+        "title_ja": "天幕のジャードゥーガル",
+        "title_zh_hans": [
+          "穹庐下的魔女"
+        ],
+        "begin": "2026-07-08T20:30:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "24:00",
+      "start_date": "7/4",
+      "span_type": "seasonal",
+      "title": "GrowUpShow 向日葵马戏团",
+      "title_jp": "グロウアップショウ ～ひまわりのサーカス団～",
+      "source_type": "原创动画",
+      "tags": [
+        "马戏",
+        "公路",
+        "竞技"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/1ddf686a54bc913313638157bf5ded46512995925.jpg",
+      "official_url": "https://growupshow.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1gaAuzPEcd/",
+      "broadcast_text": "7/4周六深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "570583",
+        "url": "https://bgm.tv/subject/570583",
+        "type": "tv",
+        "title_ja": "グロウアップショウ ～ひまわりのサーカス団～",
+        "title_zh_hans": [
+          "Grow Up Show ～向日葵马戏团～",
+          "成长秀～向日葵马戏团～"
+        ],
+        "begin": "2026-07-04T15:00:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "24:30",
+      "start_date": "7/4",
+      "span_type": "seasonal",
+      "title": "声称不爱我的下任公爵为何会溺爱我",
+      "title_jp": "「きみを愛する気はない」と言った次期公爵様がなぜか溺愛してきます",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "契约婚姻",
+        "恋爱",
+        "反差",
+        "少女"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/0e7464dfb9953d64fd2d0133d0e86aa3512995925.jpg",
+      "official_url": "https://kimiai-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1cPV26PEWq/",
+      "broadcast_text": "7/4周六深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "631018",
+        "url": "https://bgm.tv/subject/631018",
+        "type": "tv",
+        "title_ja": "「きみを愛する気はない」と言った次期公爵様がなぜか溺愛してきます",
+        "title_zh_hans": [
+          "说了不打算爱我的公爵继承人，不知为何对我宠爱有加",
+          "不爱公爵"
+        ],
+        "begin": "2026-07-04T16:30:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "25:00",
+      "start_date": "7/4",
+      "span_type": "seasonal",
+      "title": "鬼的新娘",
+      "title_jp": "鬼の花嫁",
+      "source_type": "小说改编动画",
+      "tags": [
+        "妖怪",
+        "恋爱和风奇幻"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/e8b05a97ffaed113f2f68668bcc5184e512995925.jpg",
+      "official_url": "https://onihana-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1VMJw65E2r/",
+      "broadcast_text": "7/4周六深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "563745",
+        "url": "https://bgm.tv/subject/563745",
+        "type": "tv",
+        "title_ja": "鬼の花嫁",
+        "title_zh_hans": [
+          "鬼之花嫁"
+        ],
+        "begin": "2026-07-04T15:30:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "25:00",
+      "start_date": "7/4",
+      "span_type": "seasonal",
+      "title": "魔法少女奈叶 EGBV",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/7abf6ddef094ab555b8e9e4b95bdbb7e512995925.jpg",
+      "official_url": "https://acg.gamer.com.tw/acgDetail.php?s=143162",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "530729",
+        "url": "https://bgm.tv/subject/530729",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "27:08",
+      "start_date": "7/4",
+      "span_type": "seasonal",
+      "title": "才女的侍从",
+      "title_jp": "才女のお世話 高嶺の花だらけな名門校で、学院一のお嬢様 （生活能力皆無）を陰ながらお世話することになりました",
+      "source_type": "小说改编动画",
+      "tags": [
+        "主仆",
+        "反差",
+        "后宫恋爱喜剧"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/0baba8c1870b60a0b76af45561a97b65512995925.jpg",
+      "official_url": "https://saijonoosewa-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1VoG46AEZu/",
+      "broadcast_text": "7/4周六深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "602733",
+        "url": "https://bgm.tv/subject/602733",
+        "type": "tv",
+        "title_ja": "才女のお世話 高嶺の花だらけな名門校で、学院一のお嬢様(生活能力皆無)を陰ながらお世話することになりました",
+        "title_zh_hans": [
+          "才女的侍从 在满是高岭之花的贵族学校暗中照顾（毫无生活自理能力的）学院第一大小姐"
+        ],
+        "begin": "2026-07-04T17:38:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "25:30",
+      "start_date": "7/11",
+      "span_type": "seasonal",
+      "title": "花织同学转生后 还是想干架",
+      "title_jp": "花織さんは転生しても喧嘩がしたい",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "转生",
+        "恋爱喜剧师生",
+        "魔王勇者"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/d39282e5a07f528ea4861fcfbf9e81d4512995925.jpg",
+      "official_url": "https://hanaorisan-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1cNzsBeEj5/",
+      "broadcast_text": "7/11周六深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "587109",
+        "url": "https://bgm.tv/subject/587109",
+        "type": "tv",
+        "title_ja": "花織さんは転生しても喧嘩がしたい",
+        "title_zh_hans": [
+          "花织同学转生后还是想干架"
+        ],
+        "begin": "2026-07-11T17:00:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": "22:00",
+      "start_date": "7/25",
+      "span_type": "seasonal",
+      "title": "死神 千年血战篇 Part.4 祸进谭",
+      "title_jp": "BLEACH 千年血戦篇-禍進譚-",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "战斗",
+        "神魔",
+        "热血"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/8448481231bccefba5b1181dc8652d64512995925.jpg",
+      "official_url": "https://bleach-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV12oLz6hEoj/",
+      "broadcast_text": "7/25周六深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "530725",
+        "url": "https://bgm.tv/subject/530725",
+        "type": "tv",
+        "title_ja": "BLEACH 千年血戦篇-禍進譚-",
+        "title_zh_hans": [
+          "死神 千年血战篇-祸进谭-"
+        ],
+        "begin": "2026-07-25T14:00:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "06:00",
+      "start_date": null,
+      "span_type": "long_run",
+      "title": "小鲨鱼去郊游 第2期",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/a7692ed66130421268847ff7557c2faa512995925.jpg",
+      "official_url": null,
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "长篇",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "616378",
+        "url": "https://bgm.tv/subject/616378",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "07:30",
+      "start_date": null,
+      "span_type": "annual",
+      "title": "名侦探 光之美少女",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/04f8e8caa26b49173c93d547011e2000512995925.jpg",
+      "official_url": null,
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "年番",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "611077",
+        "url": "https://bgm.tv/subject/611077",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "08:00",
+      "start_date": null,
+      "span_type": "long_run",
+      "title": "数码宝贝 BEATBREAK",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/121eaf1a4dc9fecb15201af71e8a4fb6512995925.jpg",
+      "official_url": null,
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "长篇",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "545499",
+        "url": "https://bgm.tv/subject/545499",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "08:30",
+      "start_date": null,
+      "span_type": "long_run",
+      "title": "拜托了偶像公主",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/9e394c8578b1aa02e33150658ceef7ba512995925.jpg",
+      "official_url": null,
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "长篇",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "622634",
+        "url": "https://bgm.tv/subject/622634",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "15:30",
+      "start_date": "7/5",
+      "span_type": "seasonal",
+      "title": "Let's Go 怪奇组",
+      "title_jp": "レッツゴー怪奇組",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "灵异",
+        "妖怪",
+        "搞笑"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/86ee784222c121962826aa47e3cfd267512995925.jpg",
+      "official_url": "https://kaikigumi.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1D24FzNEwS/",
+      "broadcast_text": "7/5周日下午",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "595106",
+        "url": "https://bgm.tv/subject/595106",
+        "type": "tv",
+        "title_ja": "レッツゴー怪奇組",
+        "title_zh_hans": [
+          "Let's Go 怪奇组"
+        ],
+        "begin": "2026-07-05T07:30:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "16:30",
+      "start_date": "7/5",
+      "span_type": "seasonal",
+      "title": "相反的你和我 第2期",
+      "title_jp": "正反対な君と僕 第2期",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "校园",
+        "恋爱喜剧反差",
+        "欢快"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/4081442c76b9d08fc7c34da8e2f4d501512995925.jpg",
+      "official_url": "https://sh-anime.shochiku.co.jp/seihantai_anime/",
+      "pv_url": "https://www.bilibili.com/video/BV1PTGd6FEgj/",
+      "broadcast_text": "7/5周日下午",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "638497",
+        "url": "https://bgm.tv/subject/638497",
+        "type": "tv",
+        "title_ja": "正反対な君と僕(第2期)",
+        "title_zh_hans": [
+          "相反的你和我 第二季"
+        ],
+        "begin": "2026-07-05T08:00:00.000Z",
+        "matched_by": "base_ja_date"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "16:30",
+      "start_date": "7/5",
+      "span_type": "seasonal",
+      "title": "炒翻天",
+      "title_jp": "鉄鍋のジャン！",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "美食",
+        "厨艺",
+        "中餐神经",
+        "竞技"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/0a7961716aeb38be6352355e05467c07512995925.jpg",
+      "official_url": "https://tetsujan.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1WDZxB4EXo/",
+      "broadcast_text": "7/5周日下午",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "615835",
+        "url": "https://bgm.tv/subject/615835",
+        "type": "tv",
+        "title_ja": "鉄鍋のジャン！",
+        "title_zh_hans": [
+          "炒翻天"
+        ],
+        "begin": "2026-07-05T08:30:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "21:00",
+      "start_date": "7/5",
+      "span_type": "seasonal",
+      "title": "世界最强后卫 迷宫国的新人探索者",
+      "title_jp": "世界最強の後衛 ～迷宮国の新人探索者～",
+      "source_type": "小说改编动画",
+      "tags": [
+        "转生",
+        "奇幻",
+        "冒险战斗",
+        "辅助",
+        "后宫"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/7ffbb763ee08eb87f2695d02e302134f512995925.jpg",
+      "official_url": "https://strongestrearguard-anime.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1QrPWzjE6G/",
+      "broadcast_text": "7/5周日晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "583862",
+        "url": "https://bgm.tv/subject/583862",
+        "type": "tv",
+        "title_ja": "世界最強の後衛 ～迷宮国の新人探索者～",
+        "title_zh_hans": [
+          "世界最强的后卫 ～迷宫国的新人探索者～"
+        ],
+        "begin": "2026-07-05T13:00:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "22:00",
+      "start_date": "7/5",
+      "span_type": "seasonal",
+      "title": "超超超超喜欢你的100个女孩子 第3期",
+      "title_jp": "君のことが大大大大大好きな100人の彼女 第3期",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "恋爱喜剧逆天",
+        "后宫"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/474899f247a75f593180d0759a783635512995925.jpg",
+      "official_url": "https://hyakkano.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1zJ7p66EKD/",
+      "broadcast_text": "7/5周日晚间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "598058",
+        "url": "https://bgm.tv/subject/598058",
+        "type": "tv",
+        "title_ja": "君のことが大大大大大好きな100人の彼女(第3期)",
+        "title_zh_hans": [
+          "超超超超超喜欢你的100个女朋友 第三季"
+        ],
+        "begin": "2026-07-05T14:00:00.000Z",
+        "matched_by": "base_ja_date"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "22:00",
+      "start_date": "7/5",
+      "span_type": "seasonal",
+      "title": "二十世纪 电气目录",
+      "title_jp": "二十世紀電氣目録 -ユーレカ・エヴリカ-",
+      "source_type": "小说改编动画",
+      "tags": [
+        "蒸汽朋克",
+        "发明情感",
+        "几乎原创"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/5691179311a0702b8d5fbec57ed5d05d512995925.jpg",
+      "official_url": "https://denkimokuroku.jp/",
+      "pv_url": "https://www.bilibili.com/video/BV1QaXmBnEKb/",
+      "broadcast_text": "7/5周日深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "255209",
+        "url": "https://bgm.tv/subject/255209",
+        "type": "tv",
+        "title_ja": "二十世紀電氣目録-ユーレカ・エヴリカ-",
+        "title_zh_hans": [
+          "二十世纪电气目录"
+        ],
+        "begin": "2026-07-05T14:00:00.000Z",
+        "matched_by": "exact_zh"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "23:00",
+      "start_date": null,
+      "span_type": "long_run",
+      "title": "黑猫和魔女的课堂",
+      "title_jp": null,
+      "source_type": null,
+      "tags": [],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/ebbf753e84a0c569c5b35940a0644839512995925.jpg",
+      "official_url": "https://acg.gamer.com.tw/acgDetail.php?s=146600",
+      "pv_url": null,
+      "broadcast_text": null,
+      "notes": "全24话",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "576351",
+        "url": "https://bgm.tv/subject/576351",
+        "type": "tv",
+        "title_ja": null,
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "23:30",
+      "start_date": "7/5",
+      "span_type": "seasonal",
+      "title": "再见 拉拉",
+      "title_jp": "さよならララ",
+      "source_type": "原创动画",
+      "tags": [
+        "人鱼",
+        "恋爱",
+        "复古"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/838239e4d2dabeb51b5241535f5821a7512995925.jpg",
+      "official_url": "https://goodbyelara.com/",
+      "pv_url": "https://www.bilibili.com/video/BV19ojJ6XELk/",
+      "broadcast_text": "7/5周日深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "495291",
+        "url": "https://bgm.tv/subject/495291",
+        "type": "tv",
+        "title_ja": "さよならララ",
+        "title_zh_hans": [
+          "再见，拉拉"
+        ],
+        "begin": "2026-07-05T15:30:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "24:45",
+      "start_date": "7/5",
+      "span_type": "seasonal",
+      "title": "碧蓝航线 微速前行 第2期",
+      "title_jp": "アズールレーン びそくぜんしんっ！にっ！！",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "舰船拟人日常",
+        "福利",
+        "番外"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/6122311dd677dc4941f8cb82f56a6c48512995925.jpg",
+      "official_url": "https://2nd.azurlane-bisoku.jp/",
+      "pv_url": "https://www.bilibili.com/video/BV1Vvf3BNEQR/",
+      "broadcast_text": "7/5周日深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "454083",
+        "url": "https://bgm.tv/subject/454083",
+        "type": "tv",
+        "title_ja": "アズールレーン びそくぜんしんっ！にっ!!",
+        "title_zh_hans": [
+          "碧蓝航线：微速前行！第二季"
+        ],
+        "begin": "2026-07-05T16:00:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "23:00",
+      "start_date": "7/12",
+      "span_type": "seasonal",
+      "title": "无职转生 第3期 #3~",
+      "title_jp": "無職転生 ～異世界行ったら本気だす～ 第3期",
+      "source_type": "小说改编动画",
+      "tags": [
+        "转生",
+        "奇幻",
+        "冒险情感",
+        "后宫",
+        "传记"
+      ],
+      "platform": "港台",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/a15be389060cf0bf2a8f07a63cd401f6512995925.jpg",
+      "official_url": "https://mushokutensei.jp/",
+      "pv_url": "https://www.bilibili.com/video/BV1deEc6CEVq/",
+      "broadcast_text": "首周2话连播 #1~2=7/4晚间 #3~周日深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "501963",
+        "url": "https://bgm.tv/subject/501963",
+        "type": "tv",
+        "title_ja": "無職転生 ～異世界行ったら本気だす～ 第3期",
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 7,
+      "time": "22:45",
+      "start_date": "7/12",
+      "span_type": "seasonal",
+      "title": "虽然我是 不完美恶女",
+      "title_jp": "ふつつかな悪女ではございますが～雛宮蝶鼠とりかえ伝～",
+      "source_type": "小说改编动画",
+      "tags": [
+        "灵魂互换",
+        "贴贴架空中华风"
+      ],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/df5578fc4cc578805e5c356fe0c07c6c512995925.jpg",
+      "official_url": "https://futsutsuka.net/",
+      "pv_url": "https://www.bilibili.com/video/BV1eMEE6sEDz/",
+      "broadcast_text": "7/12周日深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "545008",
+        "url": "https://bgm.tv/subject/545008",
+        "type": "tv",
+        "title_ja": "ふつつかな悪女ではございますが～雛宮蝶鼠とりかえ伝～",
+        "title_zh_hans": [
+          "恶女不才，请多关照 ～雏宫蝶鼠换身传～",
+          "虽然我是不完美恶女 ～雏宫蝶鼠替换传～"
+        ],
+        "begin": "2026-07-12T14:45:00.000Z",
+        "matched_by": "exact_ja"
+      }
+    },
+    {
+      "day_of_week": null,
+      "time": null,
+      "start_date": "6/18",
+      "span_type": "streaming",
+      "title": "刃牙道 Part.2",
+      "title_jp": "刃牙道 第2クール",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "战斗",
+        "格斗热血",
+        "搞笑"
+      ],
+      "platform": "环大陆",
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/ce93161f8aebb57e6437bbfe2c2b9f9f512995925.jpg",
+      "official_url": "https://baki-anime.jp/",
+      "pv_url": "https://www.bilibili.com/video/BV1377Z6ZEsh/",
+      "broadcast_text": "6/18网络放送",
+      "notes": "全12话",
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "638498",
+        "url": "https://bgm.tv/subject/638498",
+        "type": "tv",
+        "title_ja": "刃牙道 第2クール",
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": null,
+      "time": null,
+      "start_date": "7/19",
+      "span_type": "streaming",
+      "title": "人造人009 涅墨西斯",
+      "title_jp": "サイボーグ009 ネメシス",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "异能",
+        "战斗",
+        "群像"
+      ],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/9b28dba13543264543b03fd271eb7d5a512995925.jpg",
+      "official_url": "https://cyborg009.jp/",
+      "pv_url": "https://www.bilibili.com/video/BV1dAzXBBERE/",
+      "broadcast_text": "7/19网络放送",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "571896",
+        "url": "https://bgm.tv/subject/571896",
+        "type": "tv",
+        "title_ja": "サイボーグ009 ネメシス",
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    }
+  ],
+  "match_stats": {
+    "timetable_shows": 82,
+    "detail_cards": 65,
+    "shows_matched": 63,
+    "cards_unmatched": [
+      "魔法少女奈叶 EXCEEDS Gun Blaze Vengeance",
+      "Re:从零开始的异世界生活 第4期 Part.2 夺还篇",
+      "乙女游戏世界对路人角色 很不友好 第2期",
+      "地狱模式 喜欢速通游戏的玩家在废设定异世界无双 第2期"
+    ]
+  },
+  "aligned_at": "2026-07-08T23:40:48.008054Z",
+  "bangumi_match_stats": {
+    "method_counts": {
+      "unmatched": 23,
+      "exact_zh": 27,
+      "exact_ja": 22,
+      "substring_ja": 3,
+      "base_ja_date": 6,
+      "substring_zh": 1
+    },
+    "window_items": 67,
+    "dataset_total": 8572,
+    "unmatched_titles": [
+      "欺诈游戏",
+      "感谢对战 大小姐 才不玩格斗游戏",
+      "乙游世界对路人 很不友好 第2期",
+      "Re:从零开始的异世界生活 第4期 P2",
+      "元祖 小邦多利",
+      "关于我转生变成 史莱姆这档事 第4期 Part.1",
+      "神之水滴",
+      "地狱模式 第2期",
+      "轻松熊",
+      "小书痴的下克上 第4期",
+      "入间同学入魔了 第4期",
+      "无职转生 第3期 #1~2",
+      "摩绪",
+      "黄泉的使者",
+      "魔法少女奈叶 EGBV",
+      "小鲨鱼去郊游 第2期",
+      "名侦探 光之美少女",
+      "数码宝贝 BEATBREAK",
+      "拜托了偶像公主",
+      "黑猫和魔女的课堂",
+      "无职转生 第3期 #3~",
+      "刃牙道 Part.2",
+      "人造人009 涅墨西斯"
+    ]
+  }
+}

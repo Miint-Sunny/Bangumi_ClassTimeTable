@@ -1,5 +1,1013 @@
 {
-  "season": null,
-  "generated_at": null,
-  "entries": {}
+ "season": "202607",
+ "generated_at": "2026-07-08T23:46:50.057569Z",
+ "entries": {
+  "580133": {
+   "yuc": {
+    "time": "23:00",
+    "notes": "全24话"
+   }
+  },
+  "456081": {
+   "tags": [
+    "奇幻",
+    "冒险战斗",
+    "后宫"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1VQ5x6eELF/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/6",
+    "time": "20:30",
+    "broadcast_text": "7/6周一深夜"
+   }
+  },
+  "607340": {
+   "tags": [
+    "眼盲",
+    "青春校园",
+    "恋爱"
+   ],
+   "pv": "https://www.bilibili.com/video/BV17sE96hEfk/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/6",
+    "time": "20:30",
+    "broadcast_text": "7/6周一晚间"
+   }
+  },
+  "622633": {
+   "tags": [
+    "舞蹈",
+    "能乐",
+    "成长南北朝"
+   ],
+   "pv": "https://www.bilibili.com/video/BV15Vw9zcE6F/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "6/29",
+    "time": "21:30",
+    "broadcast_text": "6/29周一晚间"
+   }
+  },
+  "579246": {
+   "tags": [
+    "退婚",
+    "奇幻复仇",
+    "经营"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1qq7k6fEpt/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/6",
+    "time": "21:30",
+    "broadcast_text": "7/6周一晚间"
+   }
+  },
+  "636067": {
+   "tags": [
+    "穿越",
+    "冒险美食",
+    "旅行"
+   ],
+   "pv": "https://www.bilibili.com/video/BV16f5B67Ezj/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/6",
+    "time": "22:30",
+    "broadcast_text": "7/6周一深夜"
+   }
+  },
+  "569671": {
+   "tags": [
+    "竞技",
+    "热血",
+    "抽象异能运动"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1QsVZ6EEP7/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/6",
+    "time": "23:00",
+    "broadcast_text": "7/6周一深夜"
+   }
+  },
+  "456080": {
+   "tags": [
+    "校园",
+    "青春恋爱喜剧"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1VKXGBpEC5/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/6",
+    "time": "23:00",
+    "broadcast_text": "7/6周一深夜"
+   }
+  },
+  "569116": {
+   "tags": [
+    "社团",
+    "潜水",
+    "沙雕搞笑",
+    "颜艺",
+    "恋爱"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1CjEY6LE5e",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/6",
+    "time": "24:00",
+    "broadcast_text": "7/6周一深夜"
+   }
+  },
+  "528828": {
+   "tags": [
+    "穿越",
+    "奇幻",
+    "战斗冒险",
+    "后宫"
+   ],
+   "pv": "https://www.bilibili.com/video/BV15goXB1EA4/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/4",
+    "time": "19:30",
+    "broadcast_text": "#1=7/4晚间 #2~周一晚间"
+   }
+  },
+  "325767": {
+   "tags": [
+    "竞技",
+    "贴贴格斗游戏",
+    "街霸6"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1WB9iBrEjB/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/7",
+    "time": "19:30",
+    "broadcast_text": "7/7周二晚间"
+   }
+  },
+  "541285": {
+   "tags": [
+    "魔法",
+    "校园",
+    "战争百合",
+    "刀",
+    "糖"
+   ],
+   "pv": "https://www.bilibili.com/video/BV18hEm6AEvd/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/7",
+    "time": "20:30",
+    "broadcast_text": "7/7周二晚间"
+   }
+  },
+  "571910": {
+   "tags": [
+    "奇幻",
+    "恋爱反差",
+    "凤傲天"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1dELK6EEtU/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "6/30",
+    "time": "21:00",
+    "broadcast_text": "6/30周二晚间"
+   }
+  },
+  "496276": {
+   "tags": [
+    "科幻",
+    "赛博朋克战斗",
+    "文艺复兴"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1Yg5x6YEvN/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/7",
+    "time": "22:00",
+    "broadcast_text": "7/7周二深夜"
+   }
+  },
+  "612697": {
+   "tags": [
+    "战斗",
+    "文艺复兴"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1xB5F67EfH/",
+   "sourceType": "原创动画",
+   "yuc": {
+    "start_date": "7/7",
+    "time": "22:30",
+    "broadcast_text": "7/7周二深夜"
+   }
+  },
+  "584641": {
+   "tags": [
+    "特工",
+    "冒险",
+    "带娃情感",
+    "奇妙日常"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1Q1G86TEaF/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/7",
+    "time": "23:00",
+    "broadcast_text": "7/7周二深夜"
+   }
+  },
+  "627648": {
+   "tags": [
+    "穿越",
+    "恋爱",
+    "历史少女漫",
+    "真古"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1E3PfzREDx/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/7",
+    "time": "24:35",
+    "broadcast_text": "7/7周二深夜"
+   }
+  },
+  "585820": {
+   "tags": [
+    "奇幻",
+    "冒险",
+    "带娃"
+   ],
+   "pv": "https://www.bilibili.com/video/BV16qEE6vEpH/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/8",
+    "time": "20:00",
+    "broadcast_text": "7/8周三晚间"
+   }
+  },
+  "558064": {
+   "tags": [
+    "转生",
+    "奇幻误解系",
+    "凤傲天"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1XsVU64EWm/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "6/24",
+    "time": "21:30",
+    "broadcast_text": "6/24周三晚间"
+   }
+  },
+  "339515": {
+   "tags": [
+    "转生",
+    "穿越",
+    "奇幻战争",
+    "颜艺"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1rn2xBoEzX/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/8",
+    "time": "21:30",
+    "broadcast_text": "7/8周三晚间"
+   }
+  },
+  "572613": {
+   "tags": [
+    "温馨",
+    "家庭",
+    "日常反差",
+    "喜剧"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1adorBLEAa/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/8",
+    "time": "22:30",
+    "broadcast_text": "7/8周三深夜"
+   }
+  },
+  "565701": {
+   "tags": [
+    "奇幻",
+    "战斗",
+    "误解师徒",
+    "后宫"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1kLRTBoEGR/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/8",
+    "time": "22:45",
+    "broadcast_text": "7/8周三深夜"
+   }
+  },
+  "579787": {
+   "tags": [
+    "奇幻",
+    "冒险战斗",
+    "后宫"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1NxE86kEUM/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/1",
+    "time": "23:00",
+    "broadcast_text": "7/1周三深夜"
+   }
+  },
+  "412144": {
+   "yuc": {
+    "start_date": "7/8",
+    "time": "23:30"
+   }
+  },
+  "625215": {
+   "tags": [
+    "穿越",
+    "奇科幻战斗",
+    "多重宇宙超展开",
+    "欺诈"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1UuEv6ZEqK/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/8",
+    "time": "23:45",
+    "broadcast_text": "7/8周三深夜"
+   }
+  },
+  "637124": {
+   "tags": [
+    "男校",
+    "女扮男装恋爱",
+    "少女"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1QUGn6VEWu/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/1",
+    "time": "25:00",
+    "broadcast_text": "7/1周三深夜"
+   }
+  },
+  "633836": {
+   "yuc": {
+    "start_date": "8/12",
+    "time": "21:00"
+   }
+  },
+  "614594": {
+   "tags": [
+    "灵异",
+    "妖怪抽象",
+    "搞笑",
+    "涩涩"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1TdPxz1EK6/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/2",
+    "time": "20:30",
+    "broadcast_text": "7/2周四晚间"
+   }
+  },
+  "603352": {
+   "tags": [
+    "番外",
+    "Q版日常喜剧"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1kYEr6iEhG/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/2",
+    "time": "20:40",
+    "broadcast_text": "7/2周四晚间"
+   }
+  },
+  "540449": {
+   "yuc": {
+    "time": "21:00",
+    "notes": "泡面"
+   }
+  },
+  "583729": {
+   "tags": [
+    "音乐",
+    "乐队",
+    "虚拟"
+   ],
+   "pv": "https://www.bilibili.com/video/BV17Ejt6QEzi/",
+   "sourceType": "原创动画",
+   "yuc": {
+    "start_date": "7/2",
+    "time": "22:00",
+    "broadcast_text": "7/2周四深夜"
+   },
+   "air": {
+    "advanceEps": 3,
+    "advanceAt": "2026-07-02T13:00:00.000Z",
+    "anchorEp": 4,
+    "anchorAt": "2026-07-09T13:00:00.000Z",
+    "note": "首播 7/2 一举三话,第 4 话起每周四 22:00 更新(bgm episodes 确认)",
+    "source": "https://bgm.tv/subject/583729"
+   }
+  },
+  "630163": {
+   "tags": [
+    "转生",
+    "魔法",
+    "校园后宫",
+    "傲天"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1GjEn6ZEhU/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "6/25",
+    "time": "23:00",
+    "broadcast_text": "6/25周四深夜"
+   }
+  },
+  "511177": {
+   "tags": [
+    "转生",
+    "奇幻",
+    "冒险战斗",
+    "成长"
+   ],
+   "pv": "https://www.bilibili.com/video/BV118PCzxEw7/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/2",
+    "time": "23:56",
+    "broadcast_text": "7/2周四深夜"
+   }
+  },
+  "622206": {
+   "tags": [
+    "奇妙日常",
+    "兽人抽象",
+    "无厘头"
+   ],
+   "pv": "https://www.bilibili.com/video/BV16dVE69EHr/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/2",
+    "time": "24:00",
+    "broadcast_text": "7/2周四深夜"
+   }
+  },
+  "617123": {
+   "tags": [
+    "怪兽",
+    "奇妙日常少女",
+    "恋爱喜剧"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1PMEb6KEmg/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/2",
+    "time": "25:28",
+    "broadcast_text": "7/2周四深夜"
+   }
+  },
+  "276787": {
+   "yuc": {
+    "start_date": "7/9",
+    "time": "22:30"
+   }
+  },
+  "571784": {
+   "tags": [
+    "日常",
+    "治愈职场",
+    "社畜",
+    "情感"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1qzXGBfE58/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/9",
+    "time": "22:56",
+    "broadcast_text": "6/3先行6话 7/9周四深夜"
+   },
+   "air": {
+    "advanceEps": 6,
+    "advanceAt": "2026-06-03T03:00:00.000Z",
+    "note": "1~6 话 6/3 已先行配信(yuc);TV 7/9 起每周四从第 1 话播出,第 7 话 8/20 起继续周更(bgm episodes 确认)",
+    "source": "https://yuc.wiki/202607"
+   }
+  },
+  "515594": {
+   "yuc": {
+    "start_date": "P1=24话",
+    "time": "23:00"
+   }
+  },
+  "609175": {
+   "yuc": {
+    "time": "23:30",
+    "notes": "全24话"
+   }
+  },
+  "571895": {
+   "tags": [
+    "奇幻",
+    "冒险战斗",
+    "开拓"
+   ],
+   "pv": "https://www.bilibili.com/video/BV15KVQ6ME9F/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/3",
+    "time": "21:30",
+    "broadcast_text": "7/3周五晚间"
+   }
+  },
+  "590786": {
+   "tags": [
+    "奇幻",
+    "冒险战斗",
+    "后宫"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1Rzj36AEcT/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/3",
+    "time": "21:30",
+    "broadcast_text": "7/3周五晚间"
+   }
+  },
+  "545917": {
+   "tags": [
+    "漫画创作",
+    "校园社团",
+    "成长",
+    "日常"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1pLEg6mECm/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/3",
+    "time": "23:35",
+    "broadcast_text": "7/3周五深夜"
+   }
+  },
+  "613438": {
+   "tags": [
+    "家庭",
+    "义姐弟恋爱喜剧",
+    "日常"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1GTGn6VEx1/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/3",
+    "time": "24:30",
+    "broadcast_text": "7/3周五深夜"
+   }
+  },
+  "638151": {
+   "yuc": {
+    "start_date": "7/3",
+    "time": "24:30"
+   }
+  },
+  "627136": {
+   "tags": [
+    "灵异",
+    "除灵抽象",
+    "搞笑",
+    "涩涩"
+   ],
+   "pv": "https://www.bilibili.com/video/BV12a9BBHEo9/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/3",
+    "time": "24:30",
+    "broadcast_text": "7/3周五深夜"
+   }
+  },
+  "517106": {
+   "tags": [
+    "历史",
+    "复仇",
+    "成长"
+   ],
+   "pv": "https://www.bilibili.com/video/BV177qUBdE3w/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/17",
+    "time": "23:00",
+    "broadcast_text": "7/17周五深夜"
+   }
+  },
+  "520633": {
+   "yuc": {
+    "time": "08:25",
+    "notes": "泡面"
+   }
+  },
+  "469104": {
+   "yuc": {
+    "time": "17:30",
+    "notes": "全24话"
+   }
+  },
+  "524486": {
+   "yuc": {
+    "time": "18:55",
+    "notes": "全24话"
+   }
+  },
+  "501963": {
+   "tags": [
+    "转生",
+    "奇幻",
+    "冒险情感",
+    "后宫",
+    "传记"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1deEc6CEVq/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/12",
+    "time": "23:00",
+    "broadcast_text": "首周2话连播 #1~2=7/4晚间 #3~周日深夜"
+   },
+   "air": {
+    "advanceEps": 2,
+    "advanceAt": "2026-07-04T10:00:00.000Z",
+    "anchorEp": 3,
+    "anchorAt": "2026-07-12T14:00:00.000Z",
+    "note": "第 1~2 话 7/4(周六)特番连播,第 3 话起 7/12 每周日 23:00 更新(bgm episodes 确认)",
+    "source": "https://yuc.wiki/202607"
+   }
+  },
+  "538760": {
+   "tags": [
+    "奇幻",
+    "温馨",
+    "治愈"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1xufpBQE2L/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "6/27",
+    "time": "21:00",
+    "broadcast_text": "6/27周六晚间"
+   }
+  },
+  "542603": {
+   "tags": [
+    "异能",
+    "战斗",
+    "妖怪"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1cg7C6TEU3/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/4",
+    "time": "21:00",
+    "broadcast_text": "7/4周六晚间"
+   }
+  },
+  "621843": {
+   "tags": [
+    "奇幻",
+    "异能",
+    "灵异"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1HCrUBkE3i/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/4",
+    "time": "21:30",
+    "broadcast_text": "7/4周六晚间"
+   }
+  },
+  "570448": {
+   "yuc": {
+    "time": "22:45",
+    "notes": "全24话"
+   }
+  },
+  "529723": {
+   "tags": [
+    "职场",
+    "魔法",
+    "战斗"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1TYVA6sEig/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/4",
+    "time": "23:55",
+    "broadcast_text": "7/4周六深夜"
+   }
+  },
+  "568572": {
+   "yuc": {
+    "time": "24:00",
+    "notes": "全24话"
+   }
+  },
+  "552533": {
+   "tags": [
+    "战争",
+    "历史",
+    "蒙古复仇",
+    "成长"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1L8QCBVEaM/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/4",
+    "time": "24:00",
+    "broadcast_text": "7/4周六深夜"
+   }
+  },
+  "570583": {
+   "tags": [
+    "马戏",
+    "公路",
+    "竞技"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1gaAuzPEcd/",
+   "sourceType": "原创动画",
+   "yuc": {
+    "start_date": "7/4",
+    "time": "24:00",
+    "broadcast_text": "7/4周六深夜"
+   }
+  },
+  "631018": {
+   "tags": [
+    "契约婚姻",
+    "恋爱",
+    "反差",
+    "少女"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1cPV26PEWq/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/4",
+    "time": "24:30",
+    "broadcast_text": "7/4周六深夜"
+   }
+  },
+  "563745": {
+   "tags": [
+    "妖怪",
+    "恋爱和风奇幻"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1VMJw65E2r/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/4",
+    "time": "25:00",
+    "broadcast_text": "7/4周六深夜"
+   }
+  },
+  "530729": {
+   "yuc": {
+    "start_date": "7/4",
+    "time": "25:00"
+   }
+  },
+  "602733": {
+   "tags": [
+    "主仆",
+    "反差",
+    "后宫恋爱喜剧"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1VoG46AEZu/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/4",
+    "time": "27:08",
+    "broadcast_text": "7/4周六深夜"
+   }
+  },
+  "587109": {
+   "tags": [
+    "转生",
+    "恋爱喜剧师生",
+    "魔王勇者"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1cNzsBeEj5/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/11",
+    "time": "25:30",
+    "broadcast_text": "7/11周六深夜"
+   }
+  },
+  "530725": {
+   "tags": [
+    "战斗",
+    "神魔",
+    "热血"
+   ],
+   "pv": "https://www.bilibili.com/video/BV12oLz6hEoj/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/25",
+    "time": "22:00",
+    "broadcast_text": "7/25周六深夜"
+   }
+  },
+  "616378": {
+   "yuc": {
+    "time": "06:00",
+    "notes": "长篇"
+   }
+  },
+  "611077": {
+   "yuc": {
+    "time": "07:30",
+    "notes": "年番"
+   }
+  },
+  "545499": {
+   "yuc": {
+    "time": "08:00",
+    "notes": "长篇"
+   }
+  },
+  "622634": {
+   "yuc": {
+    "time": "08:30",
+    "notes": "长篇"
+   }
+  },
+  "595106": {
+   "tags": [
+    "灵异",
+    "妖怪",
+    "搞笑"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1D24FzNEwS/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/5",
+    "time": "15:30",
+    "broadcast_text": "7/5周日下午"
+   }
+  },
+  "638497": {
+   "tags": [
+    "校园",
+    "恋爱喜剧反差",
+    "欢快"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1PTGd6FEgj/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/5",
+    "time": "16:30",
+    "broadcast_text": "7/5周日下午"
+   }
+  },
+  "615835": {
+   "tags": [
+    "美食",
+    "厨艺",
+    "中餐神经",
+    "竞技"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1WDZxB4EXo/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/5",
+    "time": "16:30",
+    "broadcast_text": "7/5周日下午"
+   }
+  },
+  "583862": {
+   "tags": [
+    "转生",
+    "奇幻",
+    "冒险战斗",
+    "辅助",
+    "后宫"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1QrPWzjE6G/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/5",
+    "time": "21:00",
+    "broadcast_text": "7/5周日晚间"
+   }
+  },
+  "598058": {
+   "tags": [
+    "恋爱喜剧逆天",
+    "后宫"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1zJ7p66EKD/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/5",
+    "time": "22:00",
+    "broadcast_text": "7/5周日晚间"
+   }
+  },
+  "255209": {
+   "tags": [
+    "蒸汽朋克",
+    "发明情感",
+    "几乎原创"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1QaXmBnEKb/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/5",
+    "time": "22:00",
+    "broadcast_text": "7/5周日深夜"
+   }
+  },
+  "576351": {
+   "yuc": {
+    "time": "23:00",
+    "notes": "全24话"
+   }
+  },
+  "495291": {
+   "tags": [
+    "人鱼",
+    "恋爱",
+    "复古"
+   ],
+   "pv": "https://www.bilibili.com/video/BV19ojJ6XELk/",
+   "sourceType": "原创动画",
+   "yuc": {
+    "start_date": "7/5",
+    "time": "23:30",
+    "broadcast_text": "7/5周日深夜"
+   }
+  },
+  "454083": {
+   "tags": [
+    "舰船拟人日常",
+    "福利",
+    "番外"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1Vvf3BNEQR/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/5",
+    "time": "24:45",
+    "broadcast_text": "7/5周日深夜"
+   }
+  },
+  "545008": {
+   "tags": [
+    "灵魂互换",
+    "贴贴架空中华风"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1eMEE6sEDz/",
+   "sourceType": "小说改编动画",
+   "yuc": {
+    "start_date": "7/12",
+    "time": "22:45",
+    "broadcast_text": "7/12周日深夜"
+   }
+  },
+  "638498": {
+   "tags": [
+    "战斗",
+    "格斗热血",
+    "搞笑"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1377Z6ZEsh/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "6/18",
+    "broadcast_text": "6/18网络放送",
+    "notes": "全12话"
+   }
+  },
+  "571896": {
+   "tags": [
+    "异能",
+    "战斗",
+    "群像"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1dAzXBBERE/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "7/19",
+    "broadcast_text": "7/19网络放送"
+   }
+  }
+ }
 }

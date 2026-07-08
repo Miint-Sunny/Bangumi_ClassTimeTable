@@ -10,6 +10,7 @@ interface Props {
   tracking: Tracking
   settings: Settings
   now: number
+  seasonStart: number
   friendsMap: FriendsMap
   hasLocalOverride: boolean
   onSetStatus: (id: number, s: WatchStatus | null) => void
@@ -32,6 +33,7 @@ export default function DetailModal(props: Props) {
     tracking,
     settings,
     now,
+    seasonStart,
     friendsMap,
     hasLocalOverride,
     onSetStatus,
@@ -109,7 +111,7 @@ export default function DetailModal(props: Props) {
               ) : null}
               {show.watchers ? <>{show.watchers} 人在看 · </> : null}
               {show.sourceType ?? ''}
-              {isCarryOver(show, now) ? <> · 上季续播</> : null}
+              {isCarryOver(show, seasonStart) ? <> · 上季续播</> : null}
             </div>
             {show.tags && show.tags.length > 0 && (
               <div className="dm-tags">

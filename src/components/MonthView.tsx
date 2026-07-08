@@ -8,6 +8,9 @@ interface Props {
   tracking: Tracking
   settings: Settings
   now: number
+  seasonStart: number
+  archive?: boolean // 历史季度:不做已播灰显
+  initMonth?: { y: number; mo: number } // 初始展示月份(归档季用季度首月)
   friendsMap: FriendsMap
   onOpen: (id: number) => void
 }
@@ -21,10 +24,10 @@ interface Entry {
 }
 
 /** 月视图:整月日历,每天列出更新的番和集数 —— 同类项目没有的视图 */
-export default function MonthView({ shows, tracking, settings, now, onOpen }: Props) {
+export default function MonthView({ shows, tracking, settings, now, archive, initMonth, onOpen }: Props) {
   const tz = displayTz(settings)
   const nowP = partsInZone(now, tz)
-  const [cursor, setCursor] = useState({ y: nowP.y, mo: nowP.mo })
+  const [cursor, setCursor] = useState(initMonth ?? { y: nowP.y, mo: nowP.mo })
 
   const nav = (delta: number) => {
     setCursor((c) => {
@@ -90,7 +93,7 @@ export default function MonthView({ shows, tracking, settings, now, onOpen }: Pr
         const p = partsInZone(o.t, tz)
         const key = `${p.y}-${p.mo}-${p.d}`
         const list = buckets.get(key) ?? []
-        list.push({ show: s, ep: o.ep, epEnd: o.epEnd, minutes, aired: o.t <= now })
+        list.push({ show: s, ep: o.ep, epEnd: o.epEnd, minutes, aired: !archive && o.t <= now })
         buckets.set(key, list)
       }
     }
@@ -104,7 +107,7 @@ export default function MonthView({ shows, tracking, settings, now, onOpen }: Pr
     const weeks: Cell[][] = []
     for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
     return { weeks, headWds }
-  }, [cursor, shows, settings, tz, now, nowP.y, nowP.mo, nowP.d])
+  }, [cursor, shows, settings, tz, now, nowP.y, nowP.mo, nowP.d, archive])
 
   return (
     <div>
@@ -118,9 +121,14 @@ export default function MonthView({ shows, tracking, settings, now, onOpen }: Pr
         <button className="iconbtn" onClick={() => nav(1)}>
           下月 ›
         </button>
-        {(cursor.y !== nowP.y || cursor.mo !== nowP.mo) && (
+        {!archive && (cursor.y !== nowP.y || cursor.mo !== nowP.mo) && (
           <button className="iconbtn" onClick={() => setCursor({ y: nowP.y, mo: nowP.mo })}>
             回到本月
+          </button>
+        )}
+        {archive && initMonth && (cursor.y !== initMonth.y || cursor.mo !== initMonth.mo) && (
+          <button className="iconbtn" onClick={() => setCursor(initMonth)}>
+            回到季首月
           </button>
         )}
       </div>

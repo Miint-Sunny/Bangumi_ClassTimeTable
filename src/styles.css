@@ -111,6 +111,13 @@ button { font: inherit; cursor: pointer; }
 }
 .site-header h1 { margin: 0; color: var(--pink); font-size: 22px; font-weight: normal; }
 .site-header h1 small { color: var(--text-soft); font-size: 13px; margin-left: 8px; }
+.season-sel {
+  margin-left: 10px; padding: 2px 6px; font-size: 13px;
+  background: var(--card); color: var(--text);
+  border: 1px solid var(--border); border-radius: 4px; outline: none;
+  vertical-align: middle; cursor: pointer;
+}
+.season-sel:hover, .season-sel:focus { border-color: var(--pink); }
 .site-header .stats { color: var(--text-soft); }
 .site-header .stats b { color: var(--pink-strong); font-weight: normal; }
 .site-header .spacer { flex: 1; }

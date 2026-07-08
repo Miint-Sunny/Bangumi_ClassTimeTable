@@ -21,6 +21,10 @@
   季度默认校正由 refresh-data skill 判读 yuc 备注生成;详情页内置校正编辑器,
   自己查证后即改即生效(本机优先),并可一键复制 JSON 贡献回站点默认数据
 
+- **季度归档**:顶栏切换到任意历史季度(静态数据包,零 API 请求),
+  周视图变纯课表、月视图跳到季首月;2026 各季带 yuc 标签/PV,更早季度来自
+  bangumi-data + 官方 API 烘焙
+
 ## 数据来源与流量原则
 
 | 来源 | 用途 | 方式 |
@@ -51,6 +55,14 @@ npm run build   # 产物在 dist/,纯静态,可部署到任意静态托管
 
 前端数据(calendar / bangumi-data)自动跟随当季,无需操作。
 可选的 yuc 增强数据在 Claude Code 里运行 `/refresh-data` 按提示操作。
+
+归档一个已结束的季度(生成静态数据包 + 更新清单):
+
+```bash
+python3 scripts/bake_season.py 202607        # 可一次传多个 YYYYMM
+```
+
+官方 subject API 响应缓存在 scripts/cache/subjects/,重跑不产生新请求。
 
 ## 协议
 

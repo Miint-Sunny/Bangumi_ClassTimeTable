@@ -113,12 +113,12 @@ export function seasonStartInstant(now: number): number {
 }
 
 /**
- * 上季续播:开播早于本季起点 20 天以上(留出提前首播的容差)。
+ * 上季续播:开播早于所选季度起点 20 天以上(留出提前首播的容差)。
  * 无精确开播时间的按新番处理。
  */
-export function isCarryOver(show: Show, now: number): boolean {
+export function isCarryOver(show: Show, seasonStart: number): boolean {
   if (!show.begin) return false
-  return show.begin < seasonStartInstant(now) - 20 * DAY_MS
+  return show.begin < seasonStart - 20 * DAY_MS
 }
 
 export function dayOrder(weekStart: 1 | 7): number[] {

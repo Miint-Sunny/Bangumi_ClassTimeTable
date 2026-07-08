@@ -4,7 +4,8 @@ import { fetchCalendar, fetchSubject, fetchUserWatching, type SubjectInfo } from
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
 import { behindCount } from './lib/progress'
-import { currentSeason, isCarryOver } from './lib/time'
+import { currentSeason, isCarryOver, seasonStartInstant } from './lib/time'
+import { fetchSeasonList, fetchSeasonPack, fmtSeason, seasonMonthOf, seasonStartOf } from './lib/seasons'
 import { buildIcs, downloadIcs } from './lib/ics'
 import { loadPersisted, savePersisted } from './lib/store'
 import WeekView from './components/WeekView'
@@ -37,6 +38,9 @@ export default function App() {
 
   const [shows, setShows] = useState<Show[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
+  const [seasonSel, setSeasonSel] = useState<string>('live') // 'live' 或归档季 YYYYMM
+  const [seasonList, setSeasonList] = useState<string[]>([])
+  const [packs, setPacks] = useState<Record<string, Show[]>>({})
   const [view, setView] = useState<View>('week')
   const [filter, setFilter] = useState<Filter>('all')
   const [query, setQuery] = useState('')
@@ -69,10 +73,23 @@ export default function App() {
         if (alive) setLoadError(e instanceof Error ? e.message : String(e))
       }
     })()
+    fetchSeasonList().then((list) => alive && setSeasonList(list))
     return () => {
       alive = false
     }
   }, [])
+
+  // ── 归档季数据包(静态文件,按需加载) ────────────────────────────
+  useEffect(() => {
+    if (seasonSel === 'live' || packs[seasonSel]) return
+    let alive = true
+    fetchSeasonPack(seasonSel)
+      .then((list) => alive && setPacks((p) => ({ ...p, [seasonSel]: list })))
+      .catch((e) => alive && setLoadError(e instanceof Error ? e.message : String(e)))
+    return () => {
+      alive = false
+    }
+  }, [seasonSel, packs])
 
   // ── 背景补全:在追的番 + 流媒体番,懒拉集数/封面(有 7 天缓存) ──
   const enriched = useRef(new Set<number>())
@@ -157,10 +174,15 @@ export default function App() {
     }
   }, [settings.friends])
 
-  // ── 本机放送校正优先于 enhance.json 默认 ───────────────────────
+  // ── 当季实时 / 归档数据包二选一,再叠加本机放送校正 ─────────────
+  const archive = seasonSel !== 'live'
+  const season = currentSeason(now)
+  const seasonStart = archive ? seasonStartOf(seasonSel) : seasonStartInstant(now)
+  const baseShows = archive ? (packs[seasonSel] ?? null) : shows
+
   const effShows = useMemo(
-    () => (shows ? shows.map((s) => (overrides[s.id] ? { ...s, airFix: overrides[s.id] } : s)) : null),
-    [shows, overrides],
+    () => (baseShows ? baseShows.map((s) => (overrides[s.id] ? { ...s, airFix: overrides[s.id] } : s)) : null),
+    [baseShows, overrides],
   )
 
   const setOverride = useCallback((id: number, fix: AirFix | null) => {
@@ -181,15 +203,15 @@ export default function App() {
       if (filter === 'mine' && st !== 'watching' && st !== 'wish') return false
       if (filter === 'watching' && st !== 'watching') return false
       if (filter === 'wish' && st !== 'wish') return false
-      if (filter === 'new' && isCarryOver(s, now)) return false
-      if (filter === 'carry' && !isCarryOver(s, now)) return false
+      if (filter === 'new' && isCarryOver(s, seasonStart)) return false
+      if (filter === 'carry' && !isCarryOver(s, seasonStart)) return false
       if (q) {
         const hay = `${s.nameCn} ${s.nameJp} ${(s.tags ?? []).join(' ')}`.toLowerCase()
         if (!hay.includes(q)) return false
       }
       return true
     })
-  }, [effShows, filter, query, tracking.status, now])
+  }, [effShows, filter, query, tracking.status, seasonStart])
 
   const stats = useMemo(() => {
     if (!effShows) return null
@@ -219,19 +241,34 @@ export default function App() {
     if (effShows) downloadIcs(buildIcs(effShows, tracking, Date.now()))
   }, [effShows, tracking])
 
-  const season = currentSeason(now)
   const openShow = openId !== null && effShows ? (effShows.find((s) => s.id === openId) ?? null) : null
-  const viewProps = { tracking, settings, now, friendsMap, onOpen: setOpenId }
+  const effView: View = archive && view === 'day' ? 'week' : view
+  const viewProps = { tracking, settings, now, seasonStart, archive, friendsMap, onOpen: setOpenId }
 
   return (
     <div className="container">
       <header className="site-header">
         <h1>
-          番组课表<small>{season.label} · Anime Timetable</small>
+          番组课表
+          <select
+            className="season-sel"
+            value={seasonSel}
+            onChange={(e) => setSeasonSel(e.target.value)}
+            title="切换季度"
+          >
+            <option value="live">{season.label}(当季)</option>
+            {seasonList
+              .filter((s) => s !== season.yyyymm)
+              .map((s) => (
+                <option key={s} value={s}>
+                  {fmtSeason(s)}
+                </option>
+              ))}
+          </select>
         </h1>
         {stats && (
           <span className="stats">
-            本季在播 <b>{stats.total}</b> 部 · 在看 <b>{stats.watching}</b> 部
+            {archive ? '该季收录' : '本季在播'} <b>{stats.total}</b> 部 · 在看 <b>{stats.watching}</b> 部
             {stats.behindTotal > 0 && (
               <>
                 {' '}
@@ -255,7 +292,13 @@ export default function App() {
               ['month', '月'],
             ] as [View, string][]
           ).map(([k, label]) => (
-            <button key={k} className={view === k ? 'on' : ''} onClick={() => setView(k)}>
+            <button
+              key={k}
+              className={effView === k ? 'on' : ''}
+              disabled={archive && k === 'day'}
+              title={archive && k === 'day' ? '日视图仅当季可用' : undefined}
+              onClick={() => setView(k)}
+            >
               {label}
             </button>
           ))}
@@ -311,13 +354,20 @@ export default function App() {
             重试
           </a>
         </div>
-      ) : shows === null ? (
-        <div className="loading">正在拉取本季放送表…</div>
+      ) : effShows === null ? (
+        <div className="loading">{archive ? `正在加载 ${fmtSeason(seasonSel)} 归档…` : '正在拉取本季放送表…'}</div>
       ) : (
         <div className="view-area">
-          {view === 'week' && <WeekView shows={visibleShows} {...viewProps} />}
-          {view === 'day' && <DayView shows={visibleShows} {...viewProps} />}
-          {view === 'month' && <MonthView shows={visibleShows} {...viewProps} />}
+          {effView === 'week' && <WeekView key={seasonSel} shows={visibleShows} {...viewProps} />}
+          {effView === 'day' && <DayView key={seasonSel} shows={visibleShows} {...viewProps} />}
+          {effView === 'month' && (
+            <MonthView
+              key={seasonSel}
+              shows={visibleShows}
+              initMonth={archive ? seasonMonthOf(seasonSel) : undefined}
+              {...viewProps}
+            />
+          )}
         </div>
       )}
 
@@ -327,6 +377,7 @@ export default function App() {
           tracking={tracking}
           settings={settings}
           now={now}
+          seasonStart={seasonStart}
           friendsMap={friendsMap}
           hasLocalOverride={openShow.id in overrides}
           onSetStatus={setStatus}

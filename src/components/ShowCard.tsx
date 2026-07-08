@@ -6,6 +6,8 @@ interface Props {
   show: Show
   tracking: Tracking
   now: number
+  seasonStart: number // 所选季度起点,用于"续"徽标
+  archive?: boolean // 归档季:集数显示"全 N 集"而非"更新至"
   friendsMap: FriendsMap
   timeLabel?: string
   airedMark?: boolean // 本周该集已播
@@ -13,7 +15,7 @@ interface Props {
   onOpen: (id: number) => void
 }
 
-export default function ShowCard({ show, tracking, now, friendsMap, airedMark, offWeek, onOpen }: Props) {
+export default function ShowCard({ show, tracking, now, seasonStart, archive, friendsMap, airedMark, offWeek, onOpen }: Props) {
   const status = tracking.status[show.id] ?? 'none'
   const watched = tracking.watched[show.id] ?? 0
   const aired = airedEps(show, now)
@@ -43,12 +45,14 @@ export default function ShowCard({ show, tracking, now, friendsMap, airedMark, o
               {watched}/{aired}
               {show.epsTotal ? `/${show.epsTotal}` : ''}
             </span>
+          ) : archive ? (
+            show.epsTotal ? <span className="ep-badge">全{show.epsTotal}集</span> : null
           ) : aired !== undefined && aired > 0 ? (
             <span className="ep-badge">更新至{aired}</span>
           ) : null}
           {behind > 0 ? <span className="behind">落后{behind}</span> : null}
           {friendCount > 0 ? <span className="friends">友{friendCount}</span> : null}
-          {isCarryOver(show, now) ? (
+          {isCarryOver(show, seasonStart) ? (
             <span className="cont" title="上季开始播出,本季继续">
               续
             </span>

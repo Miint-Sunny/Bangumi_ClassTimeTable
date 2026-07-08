@@ -18,11 +18,13 @@ interface Props {
   tracking: Tracking
   settings: Settings
   now: number
+  seasonStart: number
+  archive?: boolean // 历史季度:纯课表,不标已播/本周无/时刻线
   friendsMap: FriendsMap
   onOpen: (id: number) => void
 }
 
-export default function WeekView({ shows, tracking, settings, now, friendsMap, onOpen }: Props) {
+export default function WeekView({ shows, tracking, settings, now, seasonStart, archive, friendsMap, onOpen }: Props) {
   const tz = displayTz(settings)
   const days = dayOrder(settings.weekStart)
 
@@ -41,6 +43,7 @@ export default function WeekView({ shows, tracking, settings, now, friendsMap, o
     const unknownByDay = new Map<number, Show[]>()
 
     function mkCell(show: Show) {
+      if (archive) return { show, airedMark: false, offWeek: false }
       const thisWeek = occurrencesBetween(show, weekStart, weekStart + 7 * DAY_MS - 1)[0] ?? null
       const ended = hasEnded(show, now)
       const offWeek = ended || thisWeek === null
@@ -73,7 +76,7 @@ export default function WeekView({ shows, tracking, settings, now, friendsMap, o
     })
 
     return { rows, cells, unknownByDay, dayHeads, todayWd, nowEff }
-  }, [shows, settings, now, tz, days])
+  }, [shows, settings, now, tz, days, archive])
 
   const fmtRow = (m: number) =>
     `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
@@ -101,9 +104,9 @@ export default function WeekView({ shows, tracking, settings, now, friendsMap, o
     <div className="week-grid">
       <div className="wg-corner" />
       {dayHeads.map((h) => (
-        <div key={h.wd} className={`wg-dayhead${h.wd === todayWd ? ' today' : ''}`}>
+        <div key={h.wd} className={`wg-dayhead${!archive && h.wd === todayWd ? ' today' : ''}`}>
           <div className="d1">周{WEEKDAY_CN[h.wd]}</div>
-          <div className="d2">{h.label}</div>
+          {!archive && <div className="d2">{h.label}</div>}
         </div>
       ))}
 
@@ -111,37 +114,41 @@ export default function WeekView({ shows, tracking, settings, now, friendsMap, o
         const night = m >= 1440 || m < 360
         return (
           <Fragment key={m}>
-            {i === nowIdx && nowRow}
+            {!archive && i === nowIdx && nowRow}
             <RowFrag
               minutes={m}
               night={night}
               label={fmtRow(m)}
               days={days}
-              todayWd={todayWd}
+              todayWd={archive ? 0 : todayWd}
               cells={cells}
               tracking={tracking}
               now={now}
+              seasonStart={seasonStart}
+              archive={archive}
               friendsMap={friendsMap}
               onOpen={onOpen}
             />
           </Fragment>
         )
       })}
-      {rows.length > 0 && nowIdx === rows.length && nowRow}
+      {!archive && rows.length > 0 && nowIdx === rows.length && nowRow}
 
       {hasUnknown && (
         <>
-          <div className="wg-time" title="calendar API 未提供精确时间">
+          <div className="wg-time" title="未提供精确时间">
             未定
           </div>
           {days.map((wd) => (
-            <div key={wd} className={`wg-cell${wd === todayWd ? ' today' : ''}`}>
+            <div key={wd} className={`wg-cell${!archive && wd === todayWd ? ' today' : ''}`}>
               {(unknownByDay.get(wd) ?? []).map((s) => (
                 <ShowCard
                   key={s.id}
                   show={s}
                   tracking={tracking}
                   now={now}
+                  seasonStart={seasonStart}
+                  archive={archive}
                   friendsMap={friendsMap}
                   onOpen={onOpen}
                 />
@@ -163,11 +170,26 @@ interface RowProps {
   cells: Map<string, { show: Show; airedMark: boolean; offWeek: boolean }[]>
   tracking: Tracking
   now: number
+  seasonStart: number
+  archive?: boolean
   friendsMap: FriendsMap
   onOpen: (id: number) => void
 }
 
-function RowFrag({ minutes, night, label, days, todayWd, cells, tracking, now, friendsMap, onOpen }: RowProps) {
+function RowFrag({
+  minutes,
+  night,
+  label,
+  days,
+  todayWd,
+  cells,
+  tracking,
+  now,
+  seasonStart,
+  archive,
+  friendsMap,
+  onOpen,
+}: RowProps) {
   return (
     <>
       <div className={`wg-time${night ? ' night' : ''}`}>{label}</div>
@@ -185,6 +207,8 @@ function RowFrag({ minutes, night, label, days, todayWd, cells, tracking, now, f
                 show={c.show}
                 tracking={tracking}
                 now={now}
+                seasonStart={seasonStart}
+                archive={archive}
                 friendsMap={friendsMap}
                 airedMark={c.airedMark}
                 offWeek={c.offWeek}
