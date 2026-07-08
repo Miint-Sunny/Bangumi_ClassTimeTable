@@ -5,13 +5,12 @@ import {
   WEEKDAY_CN,
   dayOrder,
   displayTz,
-  hasEnded,
-  nextOccurrence,
   pad,
   partsInZone,
   slotFor,
   startOfWeekInstant,
 } from '../lib/time'
+import { hasEnded, occurrencesBetween } from '../lib/schedule'
 import ShowCard from './ShowCard'
 
 interface Props {
@@ -42,11 +41,11 @@ export default function WeekView({ shows, tracking, settings, now, friendsMap, o
     const unknownByDay = new Map<number, Show[]>()
 
     function mkCell(show: Show) {
-      const occ = nextOccurrence(show, weekStart)
+      const thisWeek = occurrencesBetween(show, weekStart, weekStart + 7 * DAY_MS - 1)[0] ?? null
       const ended = hasEnded(show, now)
-      const airedMark = occ !== null && occ <= now
-      const offWeek = ended || (occ !== null && occ >= weekStart + 7 * DAY_MS)
-      return { show, airedMark: airedMark && !offWeek, offWeek }
+      const offWeek = ended || thisWeek === null
+      const airedMark = !offWeek && thisWeek !== null && thisWeek.t <= now
+      return { show, airedMark, offWeek }
     }
 
     for (const slot of slots) {

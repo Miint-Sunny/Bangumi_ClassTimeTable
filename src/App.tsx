@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { FriendsMap, Settings, Show, Tracking, WatchStatus } from './types'
+import type { AirFix, FriendsMap, Settings, Show, Tracking, WatchStatus } from './types'
 import { fetchCalendar, fetchSubject, fetchUserWatching, type SubjectInfo } from './lib/api'
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
@@ -33,6 +33,7 @@ export default function App() {
   const init = useRef(loadPersisted())
   const [settings, setSettings] = useState<Settings>(init.current.settings)
   const [tracking, setTracking] = useState<Tracking>(init.current.tracking)
+  const [overrides, setOverrides] = useState<Record<number, AirFix>>(init.current.overrides)
 
   const [shows, setShows] = useState<Show[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -47,9 +48,9 @@ export default function App() {
 
   // ── 持久化 & 主题 ──────────────────────────────────────────────
   useEffect(() => {
-    savePersisted({ settings, tracking })
+    savePersisted({ settings, tracking, overrides })
     document.documentElement.setAttribute('data-theme', settings.theme)
-  }, [settings, tracking])
+  }, [settings, tracking, overrides])
 
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 30_000)
@@ -156,11 +157,26 @@ export default function App() {
     }
   }, [settings.friends])
 
+  // ── 本机放送校正优先于 enhance.json 默认 ───────────────────────
+  const effShows = useMemo(
+    () => (shows ? shows.map((s) => (overrides[s.id] ? { ...s, airFix: overrides[s.id] } : s)) : null),
+    [shows, overrides],
+  )
+
+  const setOverride = useCallback((id: number, fix: AirFix | null) => {
+    setOverrides((o) => {
+      const next = { ...o }
+      if (fix === null) delete next[id]
+      else next[id] = fix
+      return next
+    })
+  }, [])
+
   // ── 过滤 ───────────────────────────────────────────────────────
   const visibleShows = useMemo(() => {
-    if (!shows) return []
+    if (!effShows) return []
     const q = query.trim().toLowerCase()
-    return shows.filter((s) => {
+    return effShows.filter((s) => {
       const st = tracking.status[s.id]
       if (filter === 'mine' && st !== 'watching' && st !== 'wish') return false
       if (filter === 'watching' && st !== 'watching') return false
@@ -173,14 +189,14 @@ export default function App() {
       }
       return true
     })
-  }, [shows, filter, query, tracking.status, now])
+  }, [effShows, filter, query, tracking.status, now])
 
   const stats = useMemo(() => {
-    if (!shows) return null
+    if (!effShows) return null
     const watching = Object.values(tracking.status).filter((s) => s === 'watching').length
-    const behindTotal = shows.reduce((acc, s) => acc + behindCount(s, tracking, now), 0)
-    return { total: shows.length, watching, behindTotal }
-  }, [shows, tracking, now])
+    const behindTotal = effShows.reduce((acc, s) => acc + behindCount(s, tracking, now), 0)
+    return { total: effShows.length, watching, behindTotal }
+  }, [effShows, tracking, now])
 
   const setStatus = useCallback((id: number, s: WatchStatus | null) => {
     setTracking((t) => {
@@ -200,11 +216,11 @@ export default function App() {
   }, [])
 
   const exportIcs = useCallback(() => {
-    if (shows) downloadIcs(buildIcs(shows, tracking, Date.now()))
-  }, [shows, tracking])
+    if (effShows) downloadIcs(buildIcs(effShows, tracking, Date.now()))
+  }, [effShows, tracking])
 
   const season = currentSeason(now)
-  const openShow = openId !== null && shows ? (shows.find((s) => s.id === openId) ?? null) : null
+  const openShow = openId !== null && effShows ? (effShows.find((s) => s.id === openId) ?? null) : null
   const viewProps = { tracking, settings, now, friendsMap, onOpen: setOpenId }
 
   return (
@@ -312,8 +328,10 @@ export default function App() {
           settings={settings}
           now={now}
           friendsMap={friendsMap}
+          hasLocalOverride={openShow.id in overrides}
           onSetStatus={setStatus}
           onSetWatched={setWatched}
+          onSetOverride={setOverride}
           onSubjectInfo={applySubjectInfo}
           onClose={() => setOpenId(null)}
         />

@@ -367,6 +367,29 @@ button { font: inherit; cursor: pointer; }
 }
 .friend-line { color: var(--text-soft); line-height: 1.9; }
 .friend-line b { color: var(--green); font-weight: normal; }
+
+/* ── 放送校正 ─────────────────────────────────── */
+
+.fix-note {
+  margin-top: 8px; padding: 5px 9px; border-left: 3px solid var(--gold);
+  background: var(--chip-bg); color: var(--text-soft); border-radius: 0 4px 4px 0;
+}
+.fix-form { display: flex; flex-direction: column; gap: 7px; }
+.fix-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; color: var(--text-soft); }
+.fix-row input {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
+  color: var(--text); padding: 3px 6px; outline: none; font: inherit;
+}
+.fix-row input:focus { border-color: var(--pink); }
+.fix-row input.num { width: 52px; }
+.fix-row input.wide { flex: 1; min-width: 140px; }
+.fix-row button:disabled { opacity: .4; cursor: not-allowed; }
+.fix-hint { color: var(--text-subtle); font-size: 11px; line-height: 1.6; }
+.fix-json {
+  display: block; background: var(--bg); border: 1px solid var(--border-soft); border-radius: 4px;
+  padding: 6px 8px; font-size: 10.5px; white-space: pre-wrap; word-break: break-all;
+  color: var(--text-soft); user-select: all;
+}
 .dm-summary { color: var(--text-soft); line-height: 1.8; white-space: pre-line; max-height: 180px; overflow-y: auto; }
 .dm-airinfo { color: var(--text-soft); line-height: 1.9; }
 .dm-airinfo b { color: var(--text); font-weight: normal; }

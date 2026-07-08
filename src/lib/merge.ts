@@ -2,11 +2,14 @@ import type { Show } from '../types'
 import type { CalItem } from './api'
 import type { BdBundle } from './bangumiData'
 
+import type { AirFix } from '../types'
+
 /** yuc 增强数据(public/data/enhance.json,由 refresh-data skill 生成) */
 export interface EnhanceEntry {
   tags?: string[]
   pv?: string
   sourceType?: string
+  air?: AirFix // 放送校正(先行放送等,由 skill 人工判读 yuc 备注生成)
 }
 
 export type EnhanceMap = Record<string, EnhanceEntry>
@@ -49,6 +52,7 @@ export function buildShows(cal: CalItem[], bd: BdBundle, enh: EnhanceMap, now: n
       tags: e?.tags,
       pvUrl: e?.pv,
       sourceType: e?.sourceType,
+      airFix: e?.air,
     })
   }
 
@@ -74,6 +78,7 @@ export function buildShows(cal: CalItem[], bd: BdBundle, enh: EnhanceMap, now: n
       tags: e?.tags,
       pvUrl: e?.pv,
       sourceType: e?.sourceType,
+      airFix: e?.air,
     })
   }
 

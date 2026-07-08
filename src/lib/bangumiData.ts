@@ -84,13 +84,17 @@ function trimDataset(raw: any, now: number): BdItem[] {
 
     let bgmId = 0
     const sites: { site: string; url: string }[] = []
+    const seenUrls = new Set<string>()
     for (const s of it.sites ?? []) {
       if (s.site === 'bangumi') bgmId = +s.id
       const label = ONAIR_SITES[s.site]
       if (!label) continue
       const meta = siteMeta[s.site]
       const url = s.url ?? (meta?.urlTemplate && s.id ? meta.urlTemplate.replace('{{id}}', s.id) : null)
-      if (url) sites.push({ site: label, url })
+      if (url && !seenUrls.has(url)) {
+        seenUrls.add(url)
+        sites.push({ site: label, url })
+      }
     }
     if (!bgmId) continue
 

@@ -53,6 +53,11 @@ export default function ShowCard({ show, tracking, now, friendsMap, airedMark, o
               续
             </span>
           ) : null}
+          {show.airFix?.advanceEps ? (
+            <span className="cont" title={show.airFix.note ?? `前 ${show.airFix.advanceEps} 集已先行放出`}>
+              先行{show.airFix.advanceEps}
+            </span>
+          ) : null}
           {!show.fromCalendar ? <span className="streamtag">流媒体</span> : null}
           {offWeek ? <span>本周无</span> : null}
         </span>

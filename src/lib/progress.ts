@@ -1,14 +1,9 @@
 import type { Show, Tracking } from '../types'
-import { DAY_MS } from './time'
+import { airedCount } from './schedule'
 
-/** 已播到第几集(0 = 还没开播);无精确时间返回 undefined */
+/** 已播到第几集(0 = 还没开播);无法推导返回 undefined。规则见 schedule.ts */
 export function airedEps(show: Show, now: number): number | undefined {
-  if (!show.begin) return undefined
-  if (now < show.begin) return 0
-  // 开播超过 400 天且不知总集数的长篇(海贼王类),周数折算不可靠,不给数字
-  if (!show.epsTotal && now - show.begin > 400 * DAY_MS) return undefined
-  const n = Math.floor((now - show.begin) / (show.periodDays * DAY_MS)) + 1
-  return show.epsTotal ? Math.min(n, show.epsTotal) : n
+  return airedCount(show, now)
 }
 
 /** 落后集数(仅"在看"状态有意义) */

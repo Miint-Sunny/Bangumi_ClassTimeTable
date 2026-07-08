@@ -53,11 +53,13 @@ export function partsInZone(t: number, tz: string): ZParts {
 
 export const pad = (n: number) => String(n).padStart(2, '0')
 
-/** 计算某番在展示时区下的课表格位置 */
+/** 计算某番在展示时区下的课表格位置(锚点校正优先于 begin) */
 export function slotFor(show: Show, settings: Settings): AirSlot {
   const tz = displayTz(settings)
-  if (show.begin && show.periodDays === 7) {
-    const p = partsInZone(show.begin, tz)
+  const anchorT = show.airFix?.anchorAt ? Date.parse(show.airFix.anchorAt) : NaN
+  const slotBase = Number.isNaN(anchorT) ? show.begin : anchorT
+  if (slotBase && show.periodDays === 7) {
+    const p = partsInZone(slotBase, tz)
     let day = p.wd
     let minutes = p.hh * 60 + p.mm
     if (settings.lateNight && p.hh < 6) {
@@ -76,31 +78,6 @@ export function slotFor(show: Show, settings: Settings): AirSlot {
   return { show, day: show.airWeekdayJst ?? 0, minutes: -1, label: '未定', known: false }
 }
 
-/** 下一集的播出时刻(>= from);无 begin 返回 null */
-export function nextOccurrence(show: Show, from: number): number | null {
-  if (!show.begin) return null
-  const period = show.periodDays * DAY_MS
-  if (from <= show.begin) return show.begin
-  const k = Math.ceil((from - show.begin) / period)
-  return show.begin + k * period
-}
-
-/** 某时刻对应第几集(1-based;时刻应是 occurrence) */
-export function epNumberAt(show: Show, occ: number): number {
-  if (!show.begin) return 1
-  return Math.round((occ - show.begin) / (show.periodDays * DAY_MS)) + 1
-}
-
-/** 已完结(有总集数且最后一集已播,或 bangumi-data 标了 end) */
-export function hasEnded(show: Show, now: number): boolean {
-  if (show.end && show.end < now) return true
-  if (show.begin && show.epsTotal) {
-    const lastEp = show.begin + (show.epsTotal - 1) * show.periodDays * DAY_MS
-    return lastEp < now
-  }
-  return false
-}
-
 /** 展示时区下本周起点(周起始日 0 点)的时刻 */
 export function startOfWeekInstant(now: number, tz: string, weekStart: 1 | 7): number {
   const p = partsInZone(now, tz)
@@ -108,23 +85,6 @@ export function startOfWeekInstant(now: number, tz: string, weekStart: 1 | 7): n
   const d = new Date(now)
   const midToday = now - (p.hh * 60 + p.mm) * 60_000 - d.getSeconds() * 1000 - d.getMilliseconds()
   return midToday - diff * DAY_MS
-}
-
-/** 该番在指定日期(展示时区下的年月日)是否有更新;有则返回集数,否则 null */
-export function occurrenceOn(show: Show, y: number, mo: number, d: number, tz: string): number | null {
-  if (!show.begin) return null
-  const period = show.periodDays * DAY_MS
-  const guessMid = Date.UTC(y, mo - 1, d, 12)
-  const k0 = Math.floor((guessMid - show.begin) / period)
-  for (const k of [k0 - 1, k0, k0 + 1]) {
-    if (k < 0) continue
-    if (show.epsTotal && k + 1 > show.epsTotal) continue
-    const occ = show.begin + k * period
-    if (show.end && occ > show.end) continue
-    const p = partsInZone(occ, tz)
-    if (p.y === y && p.mo === mo && p.d === d) return k + 1
-  }
-  return null
 }
 
 /** "3 小时后" / "昨天" 之类的相对时间 */

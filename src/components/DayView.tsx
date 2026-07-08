@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
-import { displayTz, epNumberAt, hasEnded, nextOccurrence, pad, partsInZone, relTime } from '../lib/time'
+import { displayTz, pad, partsInZone, relTime } from '../lib/time'
+import { epTime, hasEnded, occurrencesBetween, totalEps } from '../lib/schedule'
 
 interface Props {
   shows: Show[]
@@ -15,6 +16,7 @@ interface Occ {
   show: Show
   t: number
   ep: number
+  epEnd: number
 }
 
 /** 日视图:过去 6 小时 + 未来 24 小时的更新时间线 */
@@ -29,16 +31,14 @@ export default function DayView({ shows, tracking, settings, now, friendsMap, on
     const todayWdJst = partsInZone(now, 'Asia/Tokyo').wd
 
     for (const show of shows) {
-      if (!show.begin) {
+      if (epTime(show, 1) === null) {
+        // 无法推导日程:退回 calendar 的周几归类
         if (show.airWeekdayJst === todayWdJst) unknownToday.push(show)
         continue
       }
-      let t = nextOccurrence(show, lo)
-      while (t !== null && t <= hi) {
-        const ep = epNumberAt(show, t)
-        const overEnd = (show.end && t > show.end) || (show.epsTotal && ep > show.epsTotal)
-        if (!overEnd && !(hasEnded(show, now) && t > now)) occs.push({ show, t, ep })
-        t += show.periodDays * 86400_000
+      for (const o of occurrencesBetween(show, lo, hi)) {
+        if (hasEnded(show, now) && o.t > now) continue
+        occs.push({ show, t: o.t, ep: o.ep, epEnd: o.epEnd })
       }
     }
     occs.sort((a, b) => a.t - b.t || a.show.id - b.show.id)
@@ -83,7 +83,8 @@ export default function DayView({ shows, tracking, settings, now, friendsMap, on
           </div>
         </div>
         <div className="epnum">
-          第 {o.ep} 集{o.show.epsTotal ? ` / 全 ${o.show.epsTotal} 集` : ''}
+          {o.epEnd > o.ep ? `第 ${o.ep}-${o.epEnd} 集` : `第 ${o.ep} 集`}
+          {totalEps(o.show) ? ` / 全 ${totalEps(o.show)} 集` : ''}
         </div>
       </div>
     )

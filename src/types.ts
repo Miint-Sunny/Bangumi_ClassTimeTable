@@ -5,6 +5,23 @@ export interface SiteLink {
   url: string
 }
 
+/**
+ * 放送校正:覆盖"begin + 每周一集"线性推导的例外规则。
+ * 两条规则可组合表达常见变体:
+ *   整批先行 6 集,第 7 集起周更  → { advanceEps:6, anchorEp:7, anchorAt:'...' }
+ *   1~3 先行,第 4 集起周更       → { advanceEps:3, advanceAt:'...', anchorEp:4, anchorAt:'...' }
+ * 已播集数 = 各规则推得的最大值。
+ */
+export interface AirFix {
+  advanceEps?: number // 前 N 集已整批放出
+  advanceAt?: string // 放出时刻 ISO(缺省 = 开播时刻)
+  anchorEp?: number // 常规周更锚点:第 anchorEp 集…
+  anchorAt?: string // …于 anchorAt 播出,此后每 periodDays 一集
+  eps?: number // 总集数覆盖
+  note?: string // 人话说明,显示在详情页
+  source?: string // 查证依据链接(yuc/官网/公告)
+}
+
 /** 合并后的番剧条目(calendar API + bangumi-data + yuc 增强) */
 export interface Show {
   id: number // bangumi subject id
@@ -27,6 +44,7 @@ export interface Show {
   tags?: string[]
   pvUrl?: string
   sourceType?: string
+  airFix?: AirFix // 放送校正(enhance.json 默认,本机 overrides 优先)
 }
 
 /** 课表格子:某番在展示时区下的放送位置 */

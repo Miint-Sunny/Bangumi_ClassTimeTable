@@ -1,5 +1,6 @@
 import type { Show, Tracking } from '../types'
-import { epNumberAt, nextOccurrence, pad } from './time'
+import { nextEpisode, totalEps } from './schedule'
+import { pad } from './time'
 
 /** 只导出自己在追(想看+在看)的番的更新日历 —— 同类 ICS 项目都是全量导出 */
 export function buildIcs(shows: Show[], tracking: Tracking, now: number): string {
@@ -14,15 +15,13 @@ export function buildIcs(shows: Show[], tracking: Tracking, now: number): string
   for (const show of shows) {
     const st = tracking.status[show.id]
     if (st !== 'wish' && st !== 'watching') continue
-    const next = nextOccurrence(show, now)
-    if (next === null) continue
-    if (show.end && next > show.end) continue
+    const nx = nextEpisode(show, now)
+    if (nx === null) continue
 
-    const nextEp = epNumberAt(show, next)
-    if (show.epsTotal && nextEp > show.epsTotal) continue
-    const remaining = show.epsTotal ? show.epsTotal - nextEp + 1 : 13
+    const total = totalEps(show)
+    const remaining = total ? total - nx.ep + 1 : 13
 
-    const d = new Date(next)
+    const d = new Date(nx.t)
     const dtstart =
       `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}` +
       `T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`
