@@ -15,7 +15,7 @@ const defaultTheme = (): Settings['theme'] =>
 export const DEFAULT_SETTINGS: Settings = {
   theme: defaultTheme(),
   tzMode: 'local',
-  lateNight: false,
+  lateNightCutoff: 2, // 默认凌晨 2:00 前归前日(表记到 25:59)
   weekStart: 1,
   friends: [],
   panelOpen: true,
@@ -31,6 +31,11 @@ export function loadPersisted(): Persisted {
       const settings = { ...DEFAULT_SETTINGS, ...(p.settings ?? {}) }
       // 旧默认值一次性升级(560 是曾经的出厂日视图宽度,手动拖到正好 560 的概率可忽略)
       if (settings.panelWidthDay === 560) settings.panelWidthDay = 640
+      // 旧布尔版深夜表记迁移:开着的迁到新默认 2 点边界,关着的保持按实际日期
+      if ('lateNight' in settings && !('lateNightCutoff' in (p.settings ?? {}))) {
+        settings.lateNightCutoff = (settings as Record<string, unknown>).lateNight ? 2 : 0
+      }
+      delete (settings as Record<string, unknown>).lateNight
       return {
         settings,
         tracking: { status: p.tracking?.status ?? {}, watched: p.tracking?.watched ?? {} },

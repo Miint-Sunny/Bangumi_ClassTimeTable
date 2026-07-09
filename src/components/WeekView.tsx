@@ -49,9 +49,9 @@ export default function WeekView({
     const weekStart = startOfWeekInstant(now, tz, settings.weekStart) + weekOffset * 7 * DAY_MS
     const nowP = partsInZone(now, tz)
     const todayWd = nowP.wd
-    // 当前时刻在时间轴上的位置(深夜表记下 0-6 点折算为 24+)
+    // 当前时刻在时间轴上的位置(深夜表记下凌晨折算为 24+)
     let nowEff = nowP.hh * 60 + nowP.mm
-    if (settings.lateNight && nowP.hh < 6) nowEff += 1440
+    if (nowP.hh < settings.lateNightCutoff) nowEff += 1440
 
     const slots = shows.map((s) => slotFor(s, settings))
     const rowSet = new Set<number>()

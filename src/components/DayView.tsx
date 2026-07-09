@@ -45,8 +45,8 @@ export default function DayView({
 
   const { rows, cells, unknown, dateLabel, md, wd, nowEff, nowInDay } = useMemo(() => {
     const dayBase = startOfDayInstant(now, tz) + dayOffset * DAY_MS
-    // 深夜表记下,一"天"是 06:00 ~ 次日 05:59(0-6 点归前一天)
-    const lo = dayBase + (settings.lateNight ? 6 * 3600_000 : 0)
+    // 深夜表记下,一"天"是 cutoff 点 ~ 次日 cutoff 前(凌晨归前一天)
+    const lo = dayBase + settings.lateNightCutoff * 3600_000
     const hi = lo + DAY_MS - 1
 
     const cells = new Map<number, Cell[]>()
@@ -63,7 +63,7 @@ export default function DayView({
         if (hasEnded(show, now) && o.t > now) continue
         const p = partsInZone(o.t, tz)
         let m = p.hh * 60 + p.mm
-        if (settings.lateNight && p.hh < 6) m += 1440
+        if (p.hh < settings.lateNightCutoff) m += 1440
         const list = cells.get(m) ?? []
         list.push({ show, ep: o.ep, epEnd: o.epEnd, t: o.t, aired: o.t <= now })
         cells.set(m, list)
@@ -74,7 +74,7 @@ export default function DayView({
     const p = partsInZone(dayMid, tz)
     const np = partsInZone(now, tz)
     let nowEff = np.hh * 60 + np.mm
-    if (settings.lateNight && np.hh < 6) nowEff += 1440
+    if (np.hh < settings.lateNightCutoff) nowEff += 1440
 
     return {
       rows,

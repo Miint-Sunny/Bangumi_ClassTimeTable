@@ -2,6 +2,10 @@
    Bangumi 视觉语言:粉 #F09199 / 蓝链 #0084B4 / 小字号密集排版
    ────────────────────────────────────────────────────────────── */
 
+:root {
+  --nav-h: 40px; /* 翻页导航条吸附高度,网格表头以此让位 */
+}
+
 :root[data-theme='light'] {
   --bg: #fdfdfd;
   --card: #ffffff;
@@ -410,7 +414,15 @@ button { font: inherit; cursor: pointer; }
 
 /* ── 月视图 ───────────────────────────────────── */
 
-.month-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+/* 翻页导航条:钉在滚动区顶端(纵向 top、横向 left 双向吸附),网格表头在它下方让位 */
+.month-nav {
+  display: flex; align-items: center; gap: 10px;
+  position: sticky; top: 0; left: 0; z-index: 15;
+  background: var(--bg); padding: 2px 0 10px;
+}
+.month-nav ~ .week-grid .wg-corner,
+.month-nav ~ .week-grid .wg-dayhead { top: var(--nav-h); }
+.month-nav ~ .month-grid .mg-head { top: var(--nav-h); }
 .month-nav .iconbtn { flex-shrink: 0; }
 /* 翻页键统一宽度,跨日/周/月视图对齐("前一天"比"上周"宽) */
 .month-nav > .iconbtn { min-width: 68px; }
@@ -556,6 +568,10 @@ button { font: inherit; cursor: pointer; }
 .friend-item .rm:hover { color: var(--red); }
 .friend-item .err { color: var(--red); font-size: 11px; }
 .set-note { color: var(--text-subtle); font-size: 11px; line-height: 1.7; margin-top: 12px; border-top: 1px solid var(--border-soft); padding-top: 10px; }
+.cut-sel {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 5px;
+  color: var(--text); padding: 4px 6px; outline: none;
+}
 .set-sub { color: var(--text-subtle); font-size: 11px; line-height: 1.7; margin: 2px 0 8px 82px; }
 .set-sub.err { color: var(--red); }
 .bgm-acc { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }

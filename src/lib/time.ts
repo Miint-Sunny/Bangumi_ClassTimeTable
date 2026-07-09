@@ -62,7 +62,7 @@ export function slotFor(show: Show, settings: Settings): AirSlot {
     const p = partsInZone(slotBase, tz)
     let day = p.wd
     let minutes = p.hh * 60 + p.mm
-    if (settings.lateNight && p.hh < 6) {
+    if (p.hh < settings.lateNightCutoff) {
       minutes += 1440
       day = day === 1 ? 7 : day - 1
     }

@@ -65,7 +65,7 @@ export interface Tracking {
 export interface Settings {
   theme: 'bgm-dark' | 'dark' | 'contrast' | 'light'
   tzMode: 'local' | 'jst'
-  lateNight: boolean // 深夜表记:0-6 点归前一天,显示 24+ 小时
+  lateNightCutoff: number // 深夜表记:凌晨 N 点前归前一天(显示 24+ 小时);0 = 按实际日期
   weekStart: 1 | 7 // 周一或周日开头
   friends: string[] // bgm 用户名
   panelOpen: boolean // 宽屏右侧面板展开/收起

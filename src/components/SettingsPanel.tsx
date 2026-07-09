@@ -191,13 +191,33 @@ export default function SettingsPanel({
         <div className="set-row">
           <span className="lbl">深夜表记</span>
           <span className="seg small">
-            <button className={settings.lateNight ? 'on' : ''} onClick={() => onChange({ lateNight: true })}>
-              25:30 归前日
+            <button
+              className={settings.lateNightCutoff > 0 ? 'on' : ''}
+              onClick={() => settings.lateNightCutoff === 0 && onChange({ lateNightCutoff: 2 })}
+            >
+              凌晨归前日
             </button>
-            <button className={!settings.lateNight ? 'on' : ''} onClick={() => onChange({ lateNight: false })}>
+            <button
+              className={settings.lateNightCutoff === 0 ? 'on' : ''}
+              onClick={() => onChange({ lateNightCutoff: 0 })}
+            >
               按实际日期
             </button>
           </span>
+          {settings.lateNightCutoff > 0 && (
+            <select
+              className="cut-sel"
+              title="几点之前算前一天的深夜档"
+              value={settings.lateNightCutoff}
+              onChange={(e) => onChange({ lateNightCutoff: +e.target.value })}
+            >
+              {[1, 2, 3, 4, 5, 6].map((h) => (
+                <option key={h} value={h}>
+                  {h}:00 前(表记到 {23 + h}:59)
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div className="set-row">
@@ -274,8 +294,8 @@ export default function SettingsPanel({
           (经其开发者 API 每日同步,致谢其编辑者社区)·
           可选的 yuc.wiki 增强数据由 AI 辅助的 refresh-data skill 人工触发生成,不做自动抓取。
           <br />
-          追番状态与进度保存在本机浏览器(localStorage);连接 Bangumi 账号(上方个人令牌)后与
-          bgm.tv 收藏双向同步。OAuth 一键登录在路线图上。
+          追番状态与进度保存在本机浏览器(localStorage);连接 Bangumi 账号(上方一键登录或个人令牌)后与
+          bgm.tv 收藏双向同步。
           <br />
           好友进度读取的是对方在 bgm.tv 上公开的收藏,仅"在看"状态,缓存 1 小时。
         </div>
