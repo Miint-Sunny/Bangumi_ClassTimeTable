@@ -61,11 +61,42 @@ export const pad = (n: number) => String(n).padStart(2, '0')
  */
 export const lateNightRef = (now: number, settings: Settings) => now - settings.lateNightCutoff * 3600_000
 
-/** 计算某番在展示时区下的课表格位置(锚点校正优先于 begin) */
+/**
+ * 近期实播时刻作为格位依据:取 epDates 末三集里"一周内相位"的众数代表。
+ * bangumi-data 的 begin 时刻可能是占位值(如光美 01:00 JST,真实 08:30),
+ * 有逐集实播记录时应以实播为准;取众数防一次性特番时刻带偏,平手取最新。
+ */
+function recentEpSlotBase(show: Show): number | undefined {
+  const m = show.airFix?.epDates
+  if (!m) return undefined
+  const ts = Object.keys(m)
+    .map(Number)
+    .filter((n) => Number.isFinite(n) && n > 0)
+    .sort((a, b) => a - b)
+    .slice(-3)
+    .map((ep) => Date.parse(m[String(ep)]))
+    .filter((t) => !Number.isNaN(t))
+  if (!ts.length) return undefined
+  const week = 7 * DAY_MS
+  const phase = (t: number) => ((t % week) + week) % week
+  let best: number | undefined
+  let bestVotes = 0
+  for (const t of ts) {
+    const votes = ts.filter((u) => phase(u) === phase(t)).length
+    if (votes > bestVotes || (votes === bestVotes && (best === undefined || t > best))) {
+      best = t
+      bestVotes = votes
+    }
+  }
+  return best
+}
+
+/** 计算某番在展示时区下的课表格位置(近期实播 > 锚点校正 > broadcast 锚点 > begin) */
 export function slotFor(show: Show, settings: Settings): AirSlot {
   const tz = displayTz(settings)
   const anchorT = show.airFix?.anchorAt ? Date.parse(show.airFix.anchorAt) : NaN
-  const slotBase = Number.isNaN(anchorT) ? show.begin : anchorT
+  const slotBase =
+    recentEpSlotBase(show) ?? (Number.isNaN(anchorT) ? (show.broadcastAt ?? show.begin) : anchorT)
   if (slotBase && show.periodDays === 7) {
     const p = partsInZone(slotBase, tz)
     let day = p.wd

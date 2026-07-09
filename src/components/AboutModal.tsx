@@ -13,6 +13,15 @@ const CHANGELOG: LogEntry[] = [
   {
     d: '2026-07-10',
     x: {
+      'zh-Hans': '修复:海外延迟放送混进每集时刻造成一天两集(光美/神之水滴);柯南、哆啦A梦等长寿番的档期不再落错星期',
+      'zh-Hant': '修復:海外延遲放送混進每集時刻造成一天兩集(光美/神之水滴);柯南、哆啦A夢等長壽番的檔期不再落錯星期',
+      ja: '修正:海外の遅れ放送が混入し1日2話表示になる問題(プリキュア/神の雫)。コナン・ドラえもん等の長寿番組の曜日ズレも解消',
+      en: 'Fix: overseas delayed broadcasts no longer duplicate episodes (PreCure/Kami no Shizuku); Conan, Doraemon & co. now sit on the right weekday',
+    },
+  },
+  {
+    d: '2026-07-10',
+    x: {
       'zh-Hans': '关于窗口与更新历史;界面四语言(简中/繁中/日本語/EN),番剧标题也随语言切换',
       'zh-Hant': '關於視窗與更新歷史;介面四語言(簡中/繁中/日本語/EN),番劇標題也隨語言切換',
       ja: 'このウィンドウと更新履歴を追加。UIが4言語対応、作品タイトルも言語に追従',

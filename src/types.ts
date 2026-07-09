@@ -39,6 +39,7 @@ export interface Show {
   begin?: number // 第一集播出时刻(epoch ms),来自 bangumi-data
   end?: number // 完结时刻(epoch ms),0 = 未完结
   periodDays: number // 放送周期(天),周番 7
+  broadcastAt?: number // bangumi-data broadcast 锚点:长篇换档后相位比 begin 准(柯南 begin 是 1996 年周一档)
   epsTotal?: number // 总集数(来自 /v0/subjects,懒加载)
   summary?: string
   officialSite?: string

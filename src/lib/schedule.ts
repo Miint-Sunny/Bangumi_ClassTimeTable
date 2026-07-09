@@ -15,6 +15,19 @@ export interface Occurrence {
 
 const periodMs = (s: Show) => s.periodDays * DAY_MS
 
+/**
+ * 线性推导的相位对齐:begin 定集数,broadcast 锚点定"周几几点"。
+ * 长篇换档后 bangumi-data 会更新 broadcast(柯南 begin=1996 年周一档,
+ * 锚点=2009 年周六 18:00),把 begin 相位的推导时刻平移到锚点相位的最近时刻。
+ */
+function alignPhase(t: number, s: Show): number {
+  const a = s.broadcastAt
+  if (a === undefined) return t
+  const pm = periodMs(s)
+  const d = (((a - t) % pm) + pm) % pm // 0..pm
+  return d <= pm / 2 ? t + d : t + d - pm
+}
+
 const parseAt = (iso: string | undefined): number | null => {
   if (!iso) return null
   const t = Date.parse(iso)
@@ -42,7 +55,7 @@ export function epTime(s: Show, ep: number): number | null {
     const at = parseAt(f.anchorAt)
     if (at !== null) return at + (ep - f.anchorEp) * periodMs(s)
   }
-  if (s.begin) return s.begin + (ep - 1) * periodMs(s)
+  if (s.begin) return alignPhase(s.begin + (ep - 1) * periodMs(s), s)
   return null
 }
 
@@ -134,12 +147,14 @@ export function occurrencesBetween(s: Show, lo: number, hi: number): Occurrence[
   if (s.begin) {
     const linLo = (f?.advanceEps ?? 0) + 1
     const linHi = f?.anchorEp != null && parseAt(f.anchorAt) !== null ? f.anchorEp - 1 : Infinity
-    const e0 = Math.max(linLo, Math.ceil((lo - s.begin) / pm + 1))
-    const e1 = Math.min(linHi, Math.floor((hi - s.begin) / pm) + 1, total ?? Infinity)
+    // 前后各放宽一集:相位对齐(±半周期)可能把边缘集移入窗口,靠下面的窗口过滤收口
+    const e0 = Math.max(linLo, Math.ceil((lo - s.begin) / pm + 1) - 1)
+    const e1 = Math.min(linHi, Math.floor((hi - s.begin) / pm) + 2, total ?? Infinity)
     for (let ep = e0; ep <= e1; ep++) {
       if (covered.has(ep)) continue
-      const t = s.begin + (ep - 1) * pm
+      const t = alignPhase(s.begin + (ep - 1) * pm, s)
       if (s.end && t > s.end && !f) continue
+      if (t < lo || t > hi) continue // 相位平移可能移出窗口
       raw.push({ ep, t })
     }
   }

@@ -11,7 +11,7 @@ const CDN_URLS = [
   'https://unpkg.com/bangumi-data/dist/data.json',
 ]
 
-const CACHE_KEY = 'btt:cache:bd3' // v3:含繁中/英文译名(旧键随清缓存一并清除)
+const CACHE_KEY = 'btt:cache:bd4' // v4:含 broadcast 锚点(旧键随清缓存一并清除)
 const TTL = 24 * 3600_000
 
 export interface BdItem {
@@ -23,6 +23,8 @@ export interface BdItem {
   begin: number // epoch ms
   end: number // 0 = 未完结
   periodDays: number
+  broadcastAt?: number // broadcast 锚点(R/<ISO>/PnD 的起点):长篇换档后比 begin 新
+
   officialSite?: string
   sites: { site: string; url: string }[]
 }
@@ -62,10 +64,12 @@ const ONAIR_SITES: Record<string, string> = {
   tropics: 'Tropics',
 }
 
-function parseBroadcast(broadcast: string | undefined): number {
+function parseBroadcast(broadcast: string | undefined): { periodDays: number; at?: number } {
   // 形如 R/2026-06-30T13:00:00.000Z/P7D 或 .../P1D
-  const m = /P(\d+)D/.exec(broadcast ?? '')
-  return m ? +m[1] : 7
+  const m = /^R\/(.+)\/P(\d+)D$/.exec(broadcast ?? '')
+  if (!m) return { periodDays: 7 }
+  const at = Date.parse(m[1])
+  return { periodDays: +m[2], at: Number.isNaN(at) ? undefined : at }
 }
 
 function trimDataset(raw: any, now: number): BdItem[] {
@@ -100,6 +104,7 @@ function trimDataset(raw: any, now: number): BdItem[] {
     }
     if (!bgmId) continue
 
+    const bc = parseBroadcast(it.broadcast)
     out.push({
       bgmId,
       title: it.title,
@@ -108,7 +113,9 @@ function trimDataset(raw: any, now: number): BdItem[] {
       titleEn: it.titleTranslate?.['en']?.[0],
       begin,
       end: Number.isNaN(end) ? 0 : end,
-      periodDays: parseBroadcast(it.broadcast),
+      periodDays: bc.periodDays,
+      // 锚点与 begin 相同(常态)不存,省缓存;不同才有信息量(长篇换档)
+      broadcastAt: bc.at !== undefined && bc.at !== begin ? bc.at : undefined,
       officialSite: it.officialSite || undefined,
       sites,
     })

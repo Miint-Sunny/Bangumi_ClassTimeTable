@@ -91,6 +91,54 @@ def earliest_per_episode(events: list[dict]) -> dict[int, dict[int, int]]:
     return out
 
 
+def clean_ep_map(eps: dict[int, int], period_ms: int, model: tuple[int, int] | None = None) -> dict[int, int]:
+    """剔除海外延迟放送/重播事件,只留首播链。
+
+    背景:事件是全平台混录的(日本 TV、全球配信、台配电视台、重播频道…)。
+    抓取窗口只有几周宽,老集数的日本首播出窗后,窗内残留的台配/重播事件会被
+    误当"最早可看时刻"(实例:名探偵プリキュア 台湾 YOYOTV 落后日本 8 周,
+    第 11 话台配与第 19 话日本首播同一个周日,课表上一部番出两集)。
+
+    不依赖地区字段(国产动画无 JP 事件),用两条放送常识:
+      B 单调:首播链上集号越高播得越晚;比更高集数还晚出现的低集数是掉队者
+      C 节奏:集距 ≥2 而时间间隔远小于每集节奏(<0.4×周期),低集数是掉队者
+    集距 =1 不设节奏下限,兼容一挙多话与先行配信。
+    加一条模型仲裁(传入 model 时):
+      D 更高集数有 ≥2 集与线性模型吻合 ⇒ 该番从未顺延,更低集数却迟到 >2 天的
+        只能是海外档(实例:神の雫 东南亚配信落后 4 周,离锚点远时 B/C 判不死)。
+        已知取舍:休止后"翌週2本立て"里补播的那一集也会被 D 清掉、回落模型时刻,
+        误差一周且极罕见;比幽灵重复上表划算。
+    """
+    if len(eps) <= 1:
+        return dict(eps)
+    items = sorted(eps.items())
+    # B:自最高集向下扫,时间必须不晚于所有更高集(允许同刻 = 一挙)
+    kept: list[tuple[int, int]] = []
+    min_ts: int | None = None
+    for ep, ts in reversed(items):
+        if min_ts is None or ts <= min_ts:
+            kept.append((ep, ts))
+            min_ts = ts
+    kept.reverse()
+    # 经验周期:相邻集时间差的中位数(日更番的真实节奏),样本不足退回模型周期
+    d1 = sorted(b[1] - a[1] for a, b in zip(kept, kept[1:]) if b[0] - a[0] == 1)
+    period = d1[len(d1) // 2] if len(d1) >= 3 else period_ms
+    # C:栈式回溯,掉队的低集数出栈
+    out: list[tuple[int, int]] = []
+    for ep, ts in kept:
+        while out and ep - out[-1][0] >= 2 and ts - out[-1][1] < 0.4 * period * (ep - out[-1][0]):
+            out.pop()
+        out.append((ep, ts))
+    # D:模型仲裁
+    if model:
+        dev = {ep: ts - (model[0] + (ep - 1) * model[1]) for ep, ts in out}
+        anchors = [ep for ep, d in dev.items() if abs(d) <= DEVIATION_MS]
+        if len(anchors) >= 2:
+            top = max(anchors)
+            out = [(ep, ts) for ep, ts in out if ep >= top or dev[ep] <= 2 * 86400_000]
+    return dict(out)
+
+
 def load_linear_model() -> dict[int, tuple[int, int]]:
     """bangumi-data:bgmId → (begin_ms, period_ms)。"""
     if not BD_CACHE.is_file():
@@ -114,6 +162,10 @@ def load_linear_model() -> dict[int, tuple[int, int]]:
 
 def iso(ms: int) -> str:
     return datetime.fromtimestamp(ms / 1000, tz=timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def iso_ms(s: str) -> int:
+    return int(datetime.fromisoformat(s.replace("Z", "+00:00")).timestamp() * 1000)
 
 
 def main() -> None:
@@ -145,36 +197,47 @@ def main() -> None:
     enh = json.loads(ENHANCE.read_text(encoding="utf-8")) if ENHANCE.is_file() else {"entries": {}}
     entries = enh.setdefault("entries", {})
 
-    stats = {"shows": 0, "eps": 0, "no_model": 0, "max_dev_h": 0.0}
+    stats = {"shows": 0, "eps": 0, "no_model": 0, "purged": 0, "max_dev_h": 0.0}
     touched: set[str] = set()
 
-    for bid, eps in sorted(actual.items()):
+    for bid, raw_eps in sorted(actual.items()):
         key = str(bid)
         model = linear.get(bid)
-        fixes: dict[str, str] = {}
-        for ep, ts in sorted(eps.items()):
-            if model:
-                derived = model[0] + (ep - 1) * model[1]
-                dev = abs(ts - derived)
-                if dev <= DEVIATION_MS:
-                    continue
-                stats["max_dev_h"] = max(stats["max_dev_h"], dev / 3600_000)
-            else:
-                stats["no_model"] += 1
-            fixes[str(ep)] = iso(ts)
+        period_ms = model[1] if model else 7 * 86400_000
+        eps = clean_ep_map(raw_eps, period_ms, model)  # 窗内先剔除海外延迟/重播链
 
         entry = entries.setdefault(key, {})
         air = entry.setdefault("air", {})
         old = air.get("epDates") or {}
-        merged = {**old, **fixes}  # 增量窗口只更新窗内集,窗外历史保留
+        # 每集取历史与本窗的最早时刻(窗外先行记录不因窗内重播被顶掉),整链再洗一遍
+        # —— 已写盘的旧脏数据也会在这里被清掉
+        cand = {int(k): iso_ms(v) for k, v in old.items()}
+        for ep, ts in eps.items():
+            cand[ep] = min(ts, cand.get(ep, ts))
+        cand = clean_ep_map(cand, period_ms, model)
+
+        merged: dict[str, str] = {}
+        for ep in sorted(cand):
+            ts = cand[ep]
+            if model:
+                dev = abs(ts - (model[0] + (ep - 1) * model[1]))
+                if dev <= DEVIATION_MS:
+                    continue  # 与线性模型一致,无须落盘
+                stats["max_dev_h"] = max(stats["max_dev_h"], dev / 3600_000)
+            elif ep in eps:
+                stats["no_model"] += 1
+            merged[str(ep)] = iso(ts)
+        stats["purged"] += sum(1 for k in old if k not in merged)
         if merged:
             air["epDates"] = merged
             air.setdefault("source", "https://bgm.wiki")
             stats["shows"] += 1
-            stats["eps"] += len(fixes)
+            stats["eps"] += sum(1 for e in merged if int(e) in eps)
             touched.add(key)
-        elif not any(k for k in air if k != "epDates"):
-            entry.pop("air", None)
+        else:
+            air.pop("epDates", None)  # 全部清空(如整链皆海外档)也要抹掉旧值
+            if set(air) <= {"source"}:  # 人工维护的 advanceEps/anchor/note 保留
+                entry.pop("air", None)
         if not entry:
             entries.pop(key, None)
 
@@ -182,7 +245,8 @@ def main() -> None:
     ENHANCE.write_text(json.dumps(enh, ensure_ascii=False, indent=1), encoding="utf-8")
     print(
         f"[sync] epDates 覆盖 {stats['shows']} 部 / {stats['eps']} 集偏差修正 "
-        f"(无线性模型 {stats['no_model']} 集直录, 最大偏差 {stats['max_dev_h']:.1f}h)"
+        f"(无线性模型 {stats['no_model']} 集直录, 清出延迟放送/旧脏数据 {stats['purged']} 集, "
+        f"最大偏差 {stats['max_dev_h']:.1f}h)"
     )
     print(f"[sync] wrote {ENHANCE}")
 
