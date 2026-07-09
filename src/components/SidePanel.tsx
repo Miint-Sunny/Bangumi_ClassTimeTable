@@ -3,7 +3,7 @@ import type { AirFix, FriendsMap, Settings, Show, Tracking, WatchStatus } from '
 import type { SubjectInfo } from '../lib/api'
 import { airedEps, behindCount } from '../lib/progress'
 import { epLabel, nextEpisode, occurrencesBetween } from '../lib/schedule'
-import { DAY_MS, WEEKDAY_CN, dayOrder, pad, partsInZone, relTime, slotFor, startOfDayInstant } from '../lib/time'
+import { DAY_MS, WEEKDAY_CN, dayOrder, lateNightRef, pad, partsInZone, relTime, slotFor, startOfDayInstant } from '../lib/time'
 import { DetailBody } from './DetailModal'
 
 const MIN_WIDTH = 240 // 拖到这以下松手 = 收起
@@ -325,8 +325,10 @@ function TopRated(props: Props & { openLink: (id: number) => (e: MouseEvent) => 
 
 /** 迷你月历:追番的更新日打点,点日期跳到日视图 */
 function MiniCal({ shows, tracking, settings, now, tz, view, dayCursor, onJumpDay }: Props) {
-  const todayStart = startOfDayInstant(now, tz)
-  const p = partsInZone(now, tz)
+  // "今天"与跳转偏移都按深夜表记的参照时刻,和日视图保持同一套日界
+  const ref = lateNightRef(now, settings)
+  const todayStart = startOfDayInstant(ref, tz)
+  const p = partsInZone(ref, tz)
   const daysInMonth = new Date(Date.UTC(p.y, p.mo, 0)).getUTCDate()
   const firstOffset = -(p.d - 1) // 本月 1 号相对今天的偏移
   const headWds = dayOrder(settings.weekStart)

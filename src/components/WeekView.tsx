@@ -5,6 +5,7 @@ import {
   WEEKDAY_CN,
   dayOrder,
   displayTz,
+  lateNightRef,
   pad,
   partsInZone,
   slotFor,
@@ -46,9 +47,11 @@ export default function WeekView({
   const relWeek = REL_WEEK[weekOffset] // 上周/本周/下周,超出为 undefined
 
   const { rows, cells, unknownByDay, dayHeads, todayWd, nowEff } = useMemo(() => {
-    const weekStart = startOfWeekInstant(now, tz, settings.weekStart) + weekOffset * 7 * DAY_MS
+    // "今天/本周"按深夜表记的参照时刻归属:凌晨 cutoff 前仍算前一天/上一周
+    const ref = lateNightRef(now, settings)
+    const weekStart = startOfWeekInstant(ref, tz, settings.weekStart) + weekOffset * 7 * DAY_MS
     const nowP = partsInZone(now, tz)
-    const todayWd = nowP.wd
+    const todayWd = partsInZone(ref, tz).wd
     // 当前时刻在时间轴上的位置(深夜表记下凌晨折算为 24+)
     let nowEff = nowP.hh * 60 + nowP.mm
     if (nowP.hh < settings.lateNightCutoff) nowEff += 1440

@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
-import { DAY_MS, WEEKDAY_CN, displayTz, pad, partsInZone, relTime, startOfDayInstant } from '../lib/time'
+import { DAY_MS, WEEKDAY_CN, displayTz, lateNightRef, pad, partsInZone, relTime, startOfDayInstant } from '../lib/time'
 import { epTime, hasEnded, occurrencesBetween } from '../lib/schedule'
 import ShowCard from './ShowCard'
 
@@ -44,7 +44,8 @@ export default function DayView({
   const relLabel = REL_DAY[dayOffset]
 
   const { rows, cells, unknown, dateLabel, md, wd, nowEff, nowInDay } = useMemo(() => {
-    const dayBase = startOfDayInstant(now, tz) + dayOffset * DAY_MS
+    // "今天"按深夜表记的参照时刻归属:凌晨 cutoff 前仍算前一天
+    const dayBase = startOfDayInstant(lateNightRef(now, settings), tz) + dayOffset * DAY_MS
     // 深夜表记下,一"天"是 cutoff 点 ~ 次日 cutoff 前(凌晨归前一天)
     const lo = dayBase + settings.lateNightCutoff * 3600_000
     const hi = lo + DAY_MS - 1

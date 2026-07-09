@@ -53,6 +53,13 @@ export function partsInZone(t: number, tz: string): ZParts {
 
 export const pad = (n: number) => String(n).padStart(2, '0')
 
+/**
+ * 深夜表记的"参照现在":日期要到凌晨 cutoff 点才翻页。
+ * 所有"今天是哪天 / 本周是哪周"的归属判断都应使用它,
+ * 否则 0:00~cutoff 之间当前时刻(24+ 表记)会落在"昨天"列里。
+ */
+export const lateNightRef = (now: number, settings: Settings) => now - settings.lateNightCutoff * 3600_000
+
 /** 计算某番在展示时区下的课表格位置(锚点校正优先于 begin) */
 export function slotFor(show: Show, settings: Settings): AirSlot {
   const tz = displayTz(settings)
