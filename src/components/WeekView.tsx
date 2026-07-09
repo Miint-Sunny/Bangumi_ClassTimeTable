@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useMemo } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
 import {
   DAY_MS,
@@ -23,13 +23,25 @@ interface Props {
   seasonStart: number
   archive?: boolean // 历史季度:纯课表,不标已播/本周无/时刻线
   friendsMap: FriendsMap
+  weekOffset: number // 由 App 持有,键盘快捷键可翻页
+  onWeekOffset: (o: number) => void
   onOpen: (id: number) => void
 }
 
-export default function WeekView({ shows, tracking, settings, now, seasonStart, archive, friendsMap, onOpen }: Props) {
+export default function WeekView({
+  shows,
+  tracking,
+  settings,
+  now,
+  seasonStart,
+  archive,
+  friendsMap,
+  weekOffset,
+  onWeekOffset,
+  onOpen,
+}: Props) {
   const tz = displayTz(settings)
   const days = dayOrder(settings.weekStart)
-  const [weekOffset, setWeekOffset] = useState(0) // 0 = 本周
   const isCurrentWeek = weekOffset === 0
   const relWeek = REL_WEEK[weekOffset] // 上周/本周/下周,超出为 undefined
 
@@ -111,19 +123,19 @@ export default function WeekView({ shows, tracking, settings, now, seasonStart, 
     <>
       {!archive && (
         <div className="month-nav">
-          <button className="iconbtn" onClick={() => setWeekOffset((o) => o - 1)}>
+          <button className="iconbtn" onClick={() => onWeekOffset(weekOffset - 1)}>
             ‹ 上周
           </button>
           <span className="m-title">
             {relWeek ? `${relWeek} ` : ''}
             {dayHeads[0]?.label} – {dayHeads[6]?.label}
           </span>
-          <button className="iconbtn" onClick={() => setWeekOffset((o) => o + 1)}>
+          <button className="iconbtn" onClick={() => onWeekOffset(weekOffset + 1)}>
             下周 ›
           </button>
           <span className="reset-slot">
             {!isCurrentWeek && (
-              <button className="iconbtn" onClick={() => setWeekOffset(0)}>
+              <button className="iconbtn" onClick={() => onWeekOffset(0)}>
                 回到本周
               </button>
             )}

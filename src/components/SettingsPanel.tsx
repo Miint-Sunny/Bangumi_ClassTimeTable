@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { Settings } from '../types'
 import { clearApiCache } from '../lib/api'
+import { loadPersisted } from '../lib/store'
 
 interface Props {
   settings: Settings
@@ -12,12 +13,39 @@ interface Props {
 
 export default function SettingsPanel({ settings, friendErrors, onChange, onExportIcs, onClose }: Props) {
   const [name, setName] = useState('')
+  const fileRef = useRef<HTMLInputElement>(null)
 
   const addFriend = () => {
     const n = name.trim()
     if (!n || settings.friends.includes(n)) return
     onChange({ friends: [...settings.friends, n] })
     setName('')
+  }
+
+  // 追番数据备份:localStorage 是唯一存储,换浏览器/清缓存前先导出
+  const exportBackup = () => {
+    const payload = { app: 'bangumi-timetable', version: 1, exportedAt: new Date().toISOString(), data: loadPersisted() }
+    const blob = new Blob([JSON.stringify(payload, null, 1)], { type: 'application/json' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    const d = new Date()
+    a.download = `bangumi-timetable-backup-${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}.json`
+    a.click()
+    URL.revokeObjectURL(a.href)
+  }
+
+  const importBackup = async (file: File) => {
+    try {
+      const raw = JSON.parse(await file.text())
+      const data = raw?.data ?? raw // 兼容裸 Persisted 格式
+      if (!data?.tracking || !data?.settings) throw new Error('不是有效的备份文件')
+      const n = Object.keys(data.tracking.status ?? {}).length
+      if (!window.confirm(`导入将覆盖本机的追番记录与设置(备份含 ${n} 部追番状态),确定?`)) return
+      localStorage.setItem('btt:v1', JSON.stringify(data))
+      location.reload()
+    } catch (e) {
+      window.alert(`导入失败:${e instanceof Error ? e.message : e}`)
+    }
   }
 
   return (
@@ -98,6 +126,27 @@ export default function SettingsPanel({ settings, friendErrors, onChange, onExpo
           <button className="iconbtn" onClick={onExportIcs}>
             📅 导出我的追番日历(.ics)
           </button>
+        </div>
+
+        <div className="set-row">
+          <span className="lbl">备份</span>
+          <button className="iconbtn" onClick={exportBackup}>
+            ⤓ 导出追番数据
+          </button>
+          <button className="iconbtn" onClick={() => fileRef.current?.click()}>
+            ⤒ 导入
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".json,application/json"
+            style={{ display: 'none' }}
+            onChange={(e) => {
+              const f = e.target.files?.[0]
+              if (f) importBackup(f)
+              e.target.value = ''
+            }}
+          />
         </div>
 
         <div className="set-row">

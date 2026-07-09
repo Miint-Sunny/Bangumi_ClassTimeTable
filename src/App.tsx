@@ -4,13 +4,13 @@ import { fetchCalendar, fetchSubject, fetchUserWatching, type SubjectInfo } from
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
 import { behindCount } from './lib/progress'
-import { currentSeason, displayTz, isCarryOver, seasonStartInstant } from './lib/time'
+import { currentSeason, displayTz, isCarryOver, partsInZone, seasonStartInstant } from './lib/time'
 import { fetchSeasonList, fetchSeasonPack, fmtSeason, seasonMonthOf, seasonStartOf } from './lib/seasons'
 import { buildIcs, downloadIcs } from './lib/ics'
 import { loadPersisted, savePersisted } from './lib/store'
 import WeekView from './components/WeekView'
 import DayView from './components/DayView'
-import MonthView from './components/MonthView'
+import MonthView, { type MonthCursor } from './components/MonthView'
 import DetailModal from './components/DetailModal'
 import SidePanel from './components/SidePanel'
 import SettingsPanel from './components/SettingsPanel'
@@ -63,7 +63,9 @@ export default function App() {
   const [filter, setFilter] = useState<Filter>('all')
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState<number | null>(null)
-  const [dayCursor, setDayCursor] = useState(0) // 日视图偏移,提升到 App 供迷你月历跳转
+  const [dayCursor, setDayCursor] = useState(0) // 日/周/月游标提升到 App:迷你月历跳转 + 键盘翻页
+  const [weekCursor, setWeekCursor] = useState(0)
+  const [monthCursor, setMonthCursor] = useState<MonthCursor | null>(null) // null = 默认月
   const [showSettings, setShowSettings] = useState(false)
   const [friendsMap, setFriendsMap] = useState<FriendsMap>(new Map())
   const [friendErrors, setFriendErrors] = useState<Record<string, string>>({})
@@ -277,6 +279,74 @@ export default function App() {
     setView('day')
   }, [])
 
+  // 点详情页的题材标签 → 搜索该标签(搜索本就匹配标签)
+  const searchTag = useCallback(
+    (t: string) => {
+      setQuery(t)
+      if (!wide) setOpenId(null)
+    },
+    [wide],
+  )
+
+  // 换季时游标复位
+  useEffect(() => {
+    setDayCursor(0)
+    setWeekCursor(0)
+    setMonthCursor(null)
+  }, [seasonSel])
+
+  const defaultMonth: MonthCursor = useMemo(() => {
+    if (archive) return seasonMonthOf(seasonSel)
+    const p = partsInZone(now, displayTz(settings))
+    return { y: p.y, mo: p.mo }
+  }, [archive, seasonSel, now, settings])
+  const effMonthCursor = monthCursor ?? defaultMonth
+
+  // 键盘快捷键:←/→ 翻页,Home 回到今天/本周/本月,D/W/M 切视图
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable))
+        return
+      if (e.metaKey || e.ctrlKey || e.altKey) return
+      const pageMonth = (d: number) => {
+        const idx = effMonthCursor.y * 12 + (effMonthCursor.mo - 1) + d
+        setMonthCursor({ y: Math.floor(idx / 12), mo: (idx % 12) + 1 })
+      }
+      switch (e.key) {
+        case 'ArrowLeft':
+        case 'ArrowRight': {
+          const d = e.key === 'ArrowLeft' ? -1 : 1
+          if (effView === 'day') setDayCursor((c) => c + d)
+          else if (effView === 'week') setWeekCursor((c) => c + d)
+          else pageMonth(d)
+          e.preventDefault()
+          break
+        }
+        case 'Home':
+          if (effView === 'day') setDayCursor(0)
+          else if (effView === 'week') setWeekCursor(0)
+          else setMonthCursor(null)
+          e.preventDefault()
+          break
+        case 'd':
+        case 'D':
+          if (!archive) setView('day')
+          break
+        case 'w':
+        case 'W':
+          setView('week')
+          break
+        case 'm':
+        case 'M':
+          setView('month')
+          break
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [effView, archive, effMonthCursor])
+
   const panelW = effView === 'day' ? settings.panelWidthDay : settings.panelWidth
   const viewProps = { tracking, settings, now, seasonStart, archive, friendsMap, onOpen: openDetail }
 
@@ -360,6 +430,7 @@ export default function App() {
         ))}
 
         <input
+          type="search"
           className="search"
           placeholder="搜索标题 / 标签…"
           value={query}
@@ -407,7 +478,15 @@ export default function App() {
       ) : (
         <div className="content-row">
           <div className="view-area">
-            {effView === 'week' && <WeekView key={seasonSel} shows={visibleShows} {...viewProps} />}
+            {effView === 'week' && (
+              <WeekView
+                key={seasonSel}
+                shows={visibleShows}
+                weekOffset={weekCursor}
+                onWeekOffset={setWeekCursor}
+                {...viewProps}
+              />
+            )}
             {effView === 'day' && (
               <DayView
                 key={seasonSel}
@@ -421,7 +500,9 @@ export default function App() {
               <MonthView
                 key={seasonSel}
                 shows={visibleShows}
-                initMonth={archive ? seasonMonthOf(seasonSel) : undefined}
+                cursor={effMonthCursor}
+                resetTo={defaultMonth}
+                onCursor={setMonthCursor}
                 {...viewProps}
               />
             )}
@@ -447,6 +528,7 @@ export default function App() {
                   : patchSettings(effView === 'day' ? { panelWidthDay: w } : { panelWidth: w })
               }
               onJumpDay={jumpToDay}
+              onTag={searchTag}
               onOpen={openDetail}
               onSetStatus={setStatus}
               onSetWatched={setWatched}
@@ -471,6 +553,7 @@ export default function App() {
           onSetWatched={setWatched}
           onSetOverride={setOverride}
           onSubjectInfo={applySubjectInfo}
+          onTag={searchTag}
           onClose={() => setOpenId(null)}
         />
       )}

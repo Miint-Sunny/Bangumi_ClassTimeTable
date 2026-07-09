@@ -3,7 +3,7 @@ import type { AirFix, FriendsMap, Settings, Show, Tracking, WatchStatus } from '
 import type { SubjectInfo } from '../lib/api'
 import { airedEps, behindCount } from '../lib/progress'
 import { epLabel, nextEpisode, occurrencesBetween } from '../lib/schedule'
-import { DAY_MS, WEEKDAY_CN, dayOrder, pad, partsInZone, relTime, startOfDayInstant } from '../lib/time'
+import { DAY_MS, WEEKDAY_CN, dayOrder, pad, partsInZone, relTime, slotFor, startOfDayInstant } from '../lib/time'
 import { DetailBody } from './DetailModal'
 
 const MIN_WIDTH = 240 // 拖到这以下松手 = 收起
@@ -25,6 +25,7 @@ interface Props {
   dayCursor: number
   onResizeEnd: (w: number | null) => void // null = 收起
   onJumpDay: (offset: number) => void
+  onTag: (tag: string) => void
   onOpen: (id: number) => void
   onSetStatus: (id: number, s: WatchStatus | null) => void
   onSetWatched: (id: number, n: number) => void
@@ -77,6 +78,7 @@ export default function SidePanel(props: Props) {
           onSetWatched={props.onSetWatched}
           onSetOverride={props.onSetOverride}
           onSubjectInfo={props.onSubjectInfo}
+          onTag={props.onTag}
           onClose={props.onClose}
         />
       ) : (
@@ -89,11 +91,46 @@ export default function SidePanel(props: Props) {
 // ── 追番速览(无选中时的默认内容) ────────────────────────────────
 
 function DashBody(props: Props) {
-  const { shows, tracking, now, archive, tz, onOpen, onSetWatched, friendsMap } = props
+  const { shows, tracking, now, archive, tz, settings, onOpen, onSetWatched, friendsMap } = props
   const tracked = shows.filter((s) => {
     const st = tracking.status[s.id]
     return st === 'watching' || st === 'wish'
   })
+
+  // 撞档:追番中同一时段(周几+时刻)有两部以上
+  const conflicts = (() => {
+    const map = new Map<string, Show[]>()
+    for (const s of tracked) {
+      const slot = slotFor(s, settings)
+      if (!slot.known) continue
+      const k = `${slot.day}:${slot.minutes}`
+      const list = map.get(k) ?? []
+      list.push(s)
+      map.set(k, list)
+    }
+    return [...map.entries()]
+      .filter(([, v]) => v.length >= 2)
+      .map(([k, v]) => {
+        const [day, minutes] = k.split(':').map(Number)
+        return { day, minutes, shows: v }
+      })
+      .sort((a, b) => a.day - b.day || a.minutes - b.minutes)
+  })()
+
+  // 共同追番:我在追 × 好友公开在看
+  const mutual = (() => {
+    const byFriend = new Map<string, Show[]>()
+    for (const s of tracked) {
+      const m = friendsMap.get(s.id)
+      if (!m) continue
+      for (const user of m.keys()) {
+        const list = byFriend.get(user) ?? []
+        list.push(s)
+        byFriend.set(user, list)
+      }
+    }
+    return [...byFriend.entries()].sort((a, b) => b[1].length - a[1].length)
+  })()
 
   const behindList = shows
     .map((s) => ({ s, behind: behindCount(s, tracking, now) }))
@@ -193,6 +230,55 @@ function DashBody(props: Props) {
             </div>
           )}
         </>
+      )}
+
+      {!archive && conflicts.length > 0 && (
+        <div className="dm-sec">
+          <div className="sec-t">⚡ 撞档提醒</div>
+          {conflicts.map((c) => (
+            <div key={`${c.day}:${c.minutes}`} className="conflict-group">
+              <div className="cg-when">
+                周{WEEKDAY_CN[c.day]} {pad(Math.floor(c.minutes / 60))}:{pad(c.minutes % 60)}
+              </div>
+              {c.shows.map((s) => {
+                const behind = behindCount(s, tracking, now)
+                const fr = friendsMap.get(s.id)?.size ?? 0
+                return (
+                  <div key={s.id} className="dash-row">
+                    <a href="#" className="nm" onClick={openLink(s.id)} title={s.nameCn}>
+                      {s.nameCn}
+                    </a>
+                    {s.score ? <span className="score">★{s.score.toFixed(1)}</span> : null}
+                    {fr > 0 ? <span className="user">友{fr}</span> : null}
+                    {behind > 0 ? <span className="behind">-{behind}</span> : null}
+                  </div>
+                )
+              })}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {mutual.length > 0 && (
+        <div className="dm-sec">
+          <div className="sec-t">共同在追</div>
+          {mutual.map(([user, list]) => (
+            <div key={user} className="mutual-row">
+              <span className="user">{user}</span>
+              <span className="mutual-shows">
+                {list.slice(0, 4).map((s, i) => (
+                  <span key={s.id}>
+                    {i > 0 ? '、' : ''}
+                    <a href="#" onClick={openLink(s.id)}>
+                      {s.nameCn}
+                    </a>
+                  </span>
+                ))}
+                {list.length > 4 ? ` 等 ${list.length} 部` : ''}
+              </span>
+            </div>
+          ))}
+        </div>
       )}
 
       {friendFeed.length > 0 && (

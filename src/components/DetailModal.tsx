@@ -17,6 +17,7 @@ interface Props {
   onSetWatched: (id: number, n: number) => void
   onSetOverride: (id: number, fix: AirFix | null) => void
   onSubjectInfo: (info: SubjectInfo) => void
+  onTag?: (tag: string) => void // 点题材标签 → 按标签筛选
   onClose: () => void
 }
 
@@ -41,6 +42,7 @@ export function DetailBody(props: Props) {
     onSetWatched,
     onSetOverride,
     onSubjectInfo,
+    onTag,
     onClose,
   } = props
   const [info, setInfo] = useState<SubjectInfo | null>(null)
@@ -118,11 +120,17 @@ export function DetailBody(props: Props) {
             </div>
             {show.tags && show.tags.length > 0 && (
               <div className="dm-tags">
-                {show.tags.map((t) => (
-                  <span key={t} className="tag">
-                    {t}
-                  </span>
-                ))}
+                {show.tags.map((t) =>
+                  onTag ? (
+                    <button key={t} className="tag clickable" title={`筛选「${t}」`} onClick={() => onTag(t)}>
+                      {t}
+                    </button>
+                  ) : (
+                    <span key={t} className="tag">
+                      {t}
+                    </span>
+                  ),
+                )}
               </div>
             )}
           </div>

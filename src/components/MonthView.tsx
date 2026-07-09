@@ -1,7 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
 import { WEEKDAY_CN, dayOrder, displayTz, partsInZone, slotFor } from '../lib/time'
 import { epLabel, occurrencesBetween } from '../lib/schedule'
+
+export interface MonthCursor {
+  y: number
+  mo: number
+}
 
 interface Props {
   shows: Show[]
@@ -10,7 +15,9 @@ interface Props {
   now: number
   seasonStart: number
   archive?: boolean // 历史季度:不做已播灰显
-  initMonth?: { y: number; mo: number } // 初始展示月份(归档季用季度首月)
+  cursor: MonthCursor // 由 App 持有,键盘快捷键可翻页
+  resetTo: MonthCursor // "回到本月/季首月"的目标
+  onCursor: (c: MonthCursor) => void
   friendsMap: FriendsMap
   onOpen: (id: number) => void
 }
@@ -24,16 +31,13 @@ interface Entry {
 }
 
 /** 月视图:整月日历,每天列出更新的番和集数 —— 同类项目没有的视图 */
-export default function MonthView({ shows, tracking, settings, now, archive, initMonth, onOpen }: Props) {
+export default function MonthView({ shows, tracking, settings, now, archive, cursor, resetTo, onCursor, onOpen }: Props) {
   const tz = displayTz(settings)
   const nowP = partsInZone(now, tz)
-  const [cursor, setCursor] = useState(initMonth ?? { y: nowP.y, mo: nowP.mo })
 
   const nav = (delta: number) => {
-    setCursor((c) => {
-      const idx = c.y * 12 + (c.mo - 1) + delta
-      return { y: Math.floor(idx / 12), mo: (idx % 12) + 1 }
-    })
+    const idx = cursor.y * 12 + (cursor.mo - 1) + delta
+    onCursor({ y: Math.floor(idx / 12), mo: (idx % 12) + 1 })
   }
 
   const { weeks, headWds } = useMemo(() => {
@@ -122,14 +126,9 @@ export default function MonthView({ shows, tracking, settings, now, archive, ini
           下月 ›
         </button>
         <span className="reset-slot">
-          {!archive && (cursor.y !== nowP.y || cursor.mo !== nowP.mo) && (
-            <button className="iconbtn" onClick={() => setCursor({ y: nowP.y, mo: nowP.mo })}>
-              回到本月
-            </button>
-          )}
-          {archive && initMonth && (cursor.y !== initMonth.y || cursor.mo !== initMonth.mo) && (
-            <button className="iconbtn" onClick={() => setCursor(initMonth)}>
-              回到季首月
+          {(cursor.y !== resetTo.y || cursor.mo !== resetTo.mo) && (
+            <button className="iconbtn" onClick={() => onCursor(resetTo)}>
+              {archive ? '回到季首月' : '回到本月'}
             </button>
           )}
         </span>

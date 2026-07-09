@@ -158,6 +158,14 @@ button { font: inherit; cursor: pointer; }
 .dash-row .user { color: var(--green); flex-shrink: 0; max-width: 88px; overflow: hidden; text-overflow: ellipsis; }
 .dash-row .ago { color: var(--text-subtle); flex-shrink: 0; font-size: 11px; }
 
+/* 撞档助手 & 共同追番 */
+.conflict-group { margin-bottom: 8px; padding-left: 8px; border-left: 2px solid var(--red); }
+.conflict-group .cg-when { color: var(--red); font-family: ui-monospace, monospace; font-size: 11px; }
+.mutual-row { display: flex; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--border-soft); }
+.mutual-row:last-child { border-bottom: none; }
+.mutual-row .user { color: var(--green); flex-shrink: 0; max-width: 88px; overflow: hidden; text-overflow: ellipsis; }
+.mutual-row .mutual-shows { color: var(--text-soft); min-width: 0; }
+
 /* 迷你月历 */
 .minical { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
 .minical .mc-head { text-align: center; color: var(--text-subtle); font-size: 10px; padding: 2px 0; }
@@ -423,6 +431,8 @@ button { font: inherit; cursor: pointer; }
 .dm-head .facts .score { color: var(--gold); font-size: 14px; }
 .dm-tags { margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap; }
 .dm-tags .tag { background: var(--chip-bg); border: 1px solid var(--border); border-radius: 3px; padding: 0 6px; color: var(--text-soft); font-size: 11px; }
+.dm-tags .tag.clickable { cursor: pointer; }
+.dm-tags .tag.clickable:hover { border-color: var(--pink); color: var(--pink-strong); }
 
 .dm-sec { margin-top: 14px; }
 .dm-sec .sec-t { color: var(--text-subtle); font-size: 11px; margin-bottom: 6px; }
