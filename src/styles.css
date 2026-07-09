@@ -648,27 +648,19 @@ button { font: inherit; cursor: pointer; }
 }
 
 /* ── 毛玻璃(跟进 bgm.tv 新视觉) ───────────────
-   只用在"内容会从底下滚过/压在内容上"的悬浮层:翻页条、吸附表头、弹窗。
-   大面积用 backdrop-filter 代价高,课表主体不上玻璃。
-   不支持的浏览器自然回落到前面定义的实底背景。 */
+   只用在渲染一次就静止的悬浮层(弹窗遮罩 + 弹窗本体)。
+   翻页条/吸附表头曾上过玻璃,但 Safari 对滚动容器内 sticky 元素的
+   backdrop-filter 重绘滞后,快速滚动时玻璃迟一拍才糊上 —— 已回归实底。
+   遮罩用"浅暗度 + 全屏磨砂"代替深黑:靠模糊分层,不靠黑压。
+   不支持的浏览器自然回落到实底/原深色遮罩。 */
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .month-nav {
-    background: color-mix(in srgb, var(--bg) 72%, transparent);
-    -webkit-backdrop-filter: blur(10px) saturate(1.6);
-    backdrop-filter: blur(10px) saturate(1.6);
-  }
-  .wg-corner,
-  .wg-dayhead,
-  .mg-head {
-    background: color-mix(in srgb, var(--axis-bg) 68%, transparent);
-    -webkit-backdrop-filter: blur(8px) saturate(1.5);
-    backdrop-filter: blur(8px) saturate(1.5);
-  }
-  .wg-dayhead.today {
-    background: color-mix(in srgb, var(--today-bg) 76%, transparent);
+  .overlay {
+    background: color-mix(in srgb, var(--overlay) 40%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    backdrop-filter: blur(16px) saturate(1.3);
   }
   .overlay .modal {
-    background: color-mix(in srgb, var(--card) 82%, transparent);
+    background: color-mix(in srgb, var(--card) 86%, transparent);
     -webkit-backdrop-filter: blur(20px) saturate(1.6);
     backdrop-filter: blur(20px) saturate(1.6);
   }
