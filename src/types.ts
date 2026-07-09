@@ -28,6 +28,8 @@ export interface Show {
   id: number // bangumi subject id
   nameCn: string
   nameJp: string
+  nameHant?: string // 繁中译名(bangumi-data titleTranslate)
+  nameEn?: string // 英文译名(同上);界面语言决定展示哪个,见 i18n.displayName
   image?: string
   score?: number
   rank?: number

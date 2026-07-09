@@ -421,7 +421,7 @@ export default function App() {
       if (srcSel && s.sourceType !== srcSel) return false
       if (tagSel && !(s.tags ?? []).includes(tagSel)) return false
       if (q) {
-        const hay = `${s.nameCn} ${s.nameJp} ${(s.tags ?? []).join(' ')}`.toLowerCase()
+        const hay = `${s.nameCn} ${s.nameJp} ${s.nameHant ?? ''} ${s.nameEn ?? ''} ${(s.tags ?? []).join(' ')}`.toLowerCase()
         if (!hay.includes(q)) return false
       }
       return true

@@ -11,13 +11,15 @@ const CDN_URLS = [
   'https://unpkg.com/bangumi-data/dist/data.json',
 ]
 
-const CACHE_KEY = 'btt:cache:bd2' // v2:含仍在播的长篇(旧键随清缓存一并清除)
+const CACHE_KEY = 'btt:cache:bd3' // v3:含繁中/英文译名(旧键随清缓存一并清除)
 const TTL = 24 * 3600_000
 
 export interface BdItem {
   bgmId: number
   title: string // 日文原名
   titleCn?: string
+  titleHant?: string // 繁中译名(titleTranslate['zh-Hant'])
+  titleEn?: string // 英文译名(titleTranslate['en'])
   begin: number // epoch ms
   end: number // 0 = 未完结
   periodDays: number
@@ -102,6 +104,8 @@ function trimDataset(raw: any, now: number): BdItem[] {
       bgmId,
       title: it.title,
       titleCn: it.titleTranslate?.['zh-Hans']?.[0],
+      titleHant: it.titleTranslate?.['zh-Hant']?.[0],
+      titleEn: it.titleTranslate?.['en']?.[0],
       begin,
       end: Number.isNaN(end) ? 0 : end,
       periodDays: parseBroadcast(it.broadcast),

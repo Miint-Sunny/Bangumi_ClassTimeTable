@@ -1,6 +1,6 @@
 import type { FriendsMap, Show, Tracking } from '../types'
 import { airedEps, behindCount, continuity } from '../lib/progress'
-import { t } from '../lib/i18n'
+import { displayName, subName, t } from '../lib/i18n'
 import { MIN_VOTES } from '../lib/score'
 
 interface Props {
@@ -54,8 +54,8 @@ export default function ShowCard({
         <span className="cover ph">番</span>
       )}
       <span className="body">
-        <span className="title">{show.nameCn}</span>
-        {wide && show.nameJp !== show.nameCn ? <span className="jp">{show.nameJp}</span> : null}
+        <span className="title">{displayName(show)}</span>
+        {wide && subName(show) ? <span className="jp">{subName(show)}</span> : null}
         <span className="meta">
           {occText ? <span className="occ">{occText}</span> : null}
           {show.score ? (

@@ -13,10 +13,10 @@ const CHANGELOG: LogEntry[] = [
   {
     d: '2026-07-10',
     x: {
-      'zh-Hans': '关于窗口与更新历史;界面支持简中/繁中/日本語/EN 四语言',
-      'zh-Hant': '關於視窗與更新歷史;介面支援簡中/繁中/日本語/EN 四語言',
-      ja: 'このウィンドウと更新履歴を追加。UIが簡中/繁中/日本語/ENの4言語に対応',
-      en: 'About window & changelog; UI now in 简中/繁中/日本語/EN',
+      'zh-Hans': '关于窗口与更新历史;界面四语言(简中/繁中/日本語/EN),番剧标题也随语言切换',
+      'zh-Hant': '關於視窗與更新歷史;介面四語言(簡中/繁中/日本語/EN),番劇標題也隨語言切換',
+      ja: 'このウィンドウと更新履歴を追加。UIが4言語対応、作品タイトルも言語に追従',
+      en: 'About window & changelog; UI in 4 languages, show titles follow your language too',
     },
   },
   {

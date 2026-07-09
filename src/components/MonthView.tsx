@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
 import { dayOrder, displayTz, partsInZone, slotFor } from '../lib/time'
 import { epLabel, occurrencesBetween } from '../lib/schedule'
-import { monthTitle, t, wdFull } from '../lib/i18n'
+import { displayName, monthTitle, t, wdFull } from '../lib/i18n'
 
 export interface MonthCursor {
   y: number
@@ -154,13 +154,13 @@ export default function MonthView({ shows, tracking, settings, now, archive, cur
                     <button
                       key={`${e.show.id}-${e.ep}`}
                       className={`mg-entry st-${st}${e.aired ? ' aired' : ''}`}
-                      title={`${e.show.nameCn} ${
+                      title={`${displayName(e.show)} ${
                         e.epEnd > e.ep ? t('第 {a}-{b} 集', { a: e.ep, b: e.epEnd }) : t('第 {n} 集', { n: e.ep })
                       }`}
                       onClick={() => onOpen(e.show.id)}
                     >
                       <span className="ep">{epText}</span>
-                      <span className="nm">{e.show.nameCn}</span>
+                      <span className="nm">{displayName(e.show)}</span>
                     </button>
                   )
                 })}

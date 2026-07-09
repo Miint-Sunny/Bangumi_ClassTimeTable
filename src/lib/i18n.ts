@@ -436,3 +436,33 @@ export function seasonLabel(y: number, mo: number): string {
   if (cur === 'en') return `${MONTH_EN[mo]} ${y}`
   return `${y}年${mo}月`
 }
+
+// ── 番剧标题多语言(数据来自 bangumi-data titleTranslate,不是界面字典) ──
+
+interface Named {
+  nameCn: string
+  nameJp: string
+  nameHant?: string
+  nameEn?: string
+}
+
+/** 主标题按界面语言:日语→原名;EN→英译,缺则回落原名;繁中→繁译,缺则回落简中 */
+export function displayName(s: Named): string {
+  switch (cur) {
+    case 'ja':
+      return s.nameJp
+    case 'en':
+      return s.nameEn ?? s.nameJp
+    case 'zh-Hant':
+      return s.nameHant ?? s.nameCn
+    default:
+      return s.nameCn
+  }
+}
+
+/** 副标题(详情页/宽卡片的第二行):与主标题不同的那个名字 */
+export function subName(s: Named): string | null {
+  const main = displayName(s)
+  const alt = main === s.nameJp ? s.nameCn : s.nameJp
+  return alt && alt !== main ? alt : null
+}

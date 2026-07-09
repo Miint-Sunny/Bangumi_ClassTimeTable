@@ -1,3 +1,4 @@
+import { displayName } from './i18n'
 import type { Show, Tracking } from '../types'
 import { nextEpisode, totalEps } from './schedule'
 import { pad } from './time'
@@ -25,7 +26,7 @@ export function buildIcs(shows: Show[], tracking: Tracking, now: number): string
     const dtstart =
       `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}` +
       `T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`
-    const summary = show.nameCn.replace(/([,;\\])/g, '\\$1')
+    const summary = displayName(show).replace(/([,;\\])/g, '\\$1')
 
     lines.push(
       'BEGIN:VEVENT',

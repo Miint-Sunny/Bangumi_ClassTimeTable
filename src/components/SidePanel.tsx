@@ -5,7 +5,7 @@ import { airedEps, behindCount } from '../lib/progress'
 import { epLabel, nextEpisode, occurrencesBetween } from '../lib/schedule'
 import { MIN_VOTES, fmtVotes, weightedScore } from '../lib/score'
 import { DAY_MS, dayOrder, lateNightRef, pad, partsInZone, relTime, slotFor, startOfDayInstant } from '../lib/time'
-import { monthTitle, t, wdFull, wdShort } from '../lib/i18n'
+import { displayName, monthTitle, t, wdFull, wdShort } from '../lib/i18n'
 import { DetailBody } from './DetailModal'
 
 const MIN_WIDTH = 240 // 拖到这以下松手 = 收起
@@ -200,8 +200,8 @@ function DashBody(props: Props) {
                 const aired = airedEps(s, now)
                 return (
                   <div key={s.id} className="dash-row">
-                    <a href="#" className="nm" onClick={openLink(s.id)} title={s.nameCn}>
-                      {s.nameCn}
+                    <a href="#" className="nm" onClick={openLink(s.id)} title={displayName(s)}>
+                      {displayName(s)}
                     </a>
                     <span className="prog">
                       {watched}/{aired}
@@ -227,8 +227,8 @@ function DashBody(props: Props) {
                   <span className="when" title={fmtT(nx.t)}>
                     {relTime(nx.t, now)}
                   </span>
-                  <a href="#" className="nm" onClick={openLink(s.id)} title={s.nameCn}>
-                    {s.nameCn}
+                  <a href="#" className="nm" onClick={openLink(s.id)} title={displayName(s)}>
+                    {displayName(s)}
                   </a>
                   <span className="ep">{epLabel(nx)}</span>
                 </div>
@@ -251,8 +251,8 @@ function DashBody(props: Props) {
                 const fr = friendsMap.get(s.id)?.size ?? 0
                 return (
                   <div key={s.id} className="dash-row">
-                    <a href="#" className="nm" onClick={openLink(s.id)} title={s.nameCn}>
-                      {s.nameCn}
+                    <a href="#" className="nm" onClick={openLink(s.id)} title={displayName(s)}>
+                      {displayName(s)}
                     </a>
                     {s.score ? <span className="score">★{s.score.toFixed(1)}</span> : null}
                     {fr > 0 ? <span className="user">友{fr}</span> : null}
@@ -276,7 +276,7 @@ function DashBody(props: Props) {
                   <span key={s.id}>
                     {i > 0 ? '、' : ''}
                     <a href="#" onClick={openLink(s.id)}>
-                      {s.nameCn}
+                      {displayName(s)}
                     </a>
                   </span>
                 ))}
@@ -293,8 +293,8 @@ function DashBody(props: Props) {
           {friendFeed.map((f) => (
             <div key={`${f.user}-${f.show.id}`} className="dash-row">
               <span className="user">{f.user}</span>
-              <a href="#" className="nm" onClick={openLink(f.show.id)} title={f.show.nameCn}>
-                {f.show.nameCn}
+              <a href="#" className="nm" onClick={openLink(f.show.id)} title={displayName(f.show)}>
+                {displayName(f.show)}
               </a>
               <span className="ep">{t('看到{n}', { n: f.ep })}</span>
               <span className="ago">{relTime(f.at, now)}</span>
@@ -327,7 +327,7 @@ function TopRated(props: Props & { openLink: (id: number) => (e: MouseEvent) => 
             ★{s.score!.toFixed(1)}
           </span>
           <a href="#" className="nm" onClick={props.openLink(s.id)}>
-            {s.nameCn}
+            {displayName(s)}
           </a>
           {s.ratingTotal ? <span className="votes">{t('{n}人', { n: fmtVotes(s.ratingTotal) })}</span> : null}
         </div>

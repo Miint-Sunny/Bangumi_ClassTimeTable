@@ -6,7 +6,7 @@ import { MIN_VOTES, fmtVotes } from '../lib/score'
 import { nextEpisode, totalEps } from '../lib/schedule'
 import { displayTz, pad, partsInZone, relTime, slotFor } from '../lib/time'
 import { continuity } from '../lib/progress'
-import { everyWd, fmtMDW, t } from '../lib/i18n'
+import { displayName, everyWd, fmtMDW, subName, t } from '../lib/i18n'
 
 interface Props {
   show: Show
@@ -118,10 +118,10 @@ export function DetailBody(props: Props) {
           <div>
             <h2>
               <a href={`https://bgm.tv/subject/${show.id}`} target="_blank" rel="noreferrer">
-                {show.nameCn}
+                {displayName(show)}
               </a>
             </h2>
-            {show.nameJp !== show.nameCn && <div className="jp">{show.nameJp}</div>}
+            {subName(show) && <div className="jp">{subName(show)}</div>}
             <div className="facts">
               {score ? (
                 <>
