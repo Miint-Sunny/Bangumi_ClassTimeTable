@@ -3,6 +3,7 @@ import type { AirFix, FriendsMap, Settings, Show, Tracking, WatchStatus } from '
 import type { SubjectInfo } from '../lib/api'
 import { airedEps, behindCount } from '../lib/progress'
 import { epLabel, nextEpisode, occurrencesBetween } from '../lib/schedule'
+import { MIN_VOTES, fmtVotes, weightedScore } from '../lib/score'
 import { DAY_MS, WEEKDAY_CN, dayOrder, lateNightRef, pad, partsInZone, relTime, slotFor, startOfDayInstant } from '../lib/time'
 import { DetailBody } from './DetailModal'
 
@@ -305,20 +306,27 @@ function DashBody(props: Props) {
 }
 
 function TopRated(props: Props & { openLink: (id: number) => (e: MouseEvent) => void }) {
+  // 按评分人数加权排序(小样本向均值收缩),不足 10 人评分的暂不入榜
   const top = [...props.shows]
-    .filter((s) => s.score)
-    .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+    .filter((s) => s.score && (s.ratingTotal === undefined || s.ratingTotal >= MIN_VOTES))
+    .map((s) => ({ s, w: weightedScore(s.score, s.ratingTotal)! }))
+    .sort((a, b) => b.w - a.w)
     .slice(0, 6)
   if (top.length === 0) return null
   return (
     <div className="dm-sec">
-      <div className="sec-t">{props.archive ? '该季' : '本季'}高分</div>
-      {top.map((s) => (
+      <div className="sec-t" title="按评分人数加权排序,少量人打出的高分不虚高">
+        {props.archive ? '该季' : '本季'}高分
+      </div>
+      {top.map(({ s, w }) => (
         <div key={s.id} className="dash-row">
-          <span className="score">★{s.score!.toFixed(1)}</span>
+          <span className="score" title={`加权 ${w.toFixed(2)}`}>
+            ★{s.score!.toFixed(1)}
+          </span>
           <a href="#" className="nm" onClick={props.openLink(s.id)}>
             {s.nameCn}
           </a>
+          {s.ratingTotal ? <span className="votes">{fmtVotes(s.ratingTotal)}人</span> : null}
         </div>
       ))}
     </div>

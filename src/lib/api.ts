@@ -66,6 +66,7 @@ export interface CalItem {
   weekday: number // ISO 1..7
   score?: number
   rank?: number
+  total?: number // 评分人数
   doing?: number
   image?: string
 }
@@ -80,6 +81,7 @@ export function fetchCalendar(): Promise<CalItem[]> {
         weekday: day.weekday.id,
         score: it.rating?.score || undefined,
         rank: it.rank || undefined,
+        total: it.rating?.total || undefined,
         doing: it.collection?.doing,
         image: it.images?.common || it.images?.medium,
       })),
@@ -96,6 +98,7 @@ export interface SubjectInfo {
   image?: string
   score?: number
   rank?: number
+  ratingTotal?: number
 }
 
 export function fetchSubject(id: number): Promise<SubjectInfo> {
@@ -106,6 +109,7 @@ export function fetchSubject(id: number): Promise<SubjectInfo> {
     image: raw.images?.common || raw.images?.medium,
     score: raw.rating?.score || undefined,
     rank: raw.rating?.rank || undefined,
+    ratingTotal: raw.rating?.total || undefined,
   }))
 }
 

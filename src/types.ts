@@ -31,6 +31,7 @@ export interface Show {
   image?: string
   score?: number
   rank?: number
+  ratingTotal?: number // 评分人数 —— 小样本的高分要靠它收缩,防虚高
   watchers?: number // 多少人在看(collection.doing)
   airWeekdayJst?: number // ISO 1=周一..7=周日,来自 calendar API 的分组
   begin?: number // 第一集播出时刻(epoch ms),来自 bangumi-data

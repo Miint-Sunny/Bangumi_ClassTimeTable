@@ -1,5 +1,6 @@
 import type { FriendsMap, Show, Tracking } from '../types'
 import { airedEps, behindCount } from '../lib/progress'
+import { MIN_VOTES } from '../lib/score'
 import { isCarryOver } from '../lib/time'
 
 interface Props {
@@ -55,7 +56,15 @@ export default function ShowCard({
         {wide && show.nameJp !== show.nameCn ? <span className="jp">{show.nameJp}</span> : null}
         <span className="meta">
           {occText ? <span className="occ">{occText}</span> : null}
-          {show.score ? <span className="score">★{show.score.toFixed(1)}</span> : null}
+          {show.score ? (
+            show.ratingTotal !== undefined && show.ratingTotal < MIN_VOTES ? (
+              <span className="score few" title={`仅 ${show.ratingTotal} 人评分,分数仅供参考`}>
+                ★{show.score.toFixed(1)}?
+              </span>
+            ) : (
+              <span className="score">★{show.score.toFixed(1)}</span>
+            )
+          ) : null}
           {status === 'watching' && aired !== undefined ? (
             <span className="ep-badge">
               {watched}/{aired}

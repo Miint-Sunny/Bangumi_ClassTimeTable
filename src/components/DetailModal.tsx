@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { AirFix, FriendsMap, Settings, Show, Tracking, WatchStatus } from '../types'
 import { fetchSubject, type SubjectInfo } from '../lib/api'
 import { airedEps, behindCount } from '../lib/progress'
+import { MIN_VOTES, fmtVotes } from '../lib/score'
 import { nextEpisode, totalEps } from '../lib/schedule'
 import { WEEKDAY_CN, displayTz, isCarryOver, pad, partsInZone, relTime, slotFor } from '../lib/time'
 
@@ -88,6 +89,7 @@ export function DetailBody(props: Props) {
   const epsTotal = totalEps(show) ?? info?.eps
   const image = show.image ?? info?.image
   const score = show.score ?? info?.score
+  const votes = show.ratingTotal ?? info?.ratingTotal
 
   const slot = slotFor(show, settings)
   const tz = displayTz(settings)
@@ -119,6 +121,8 @@ export function DetailBody(props: Props) {
               {score ? (
                 <>
                   <span className="score">★ {score.toFixed(1)}</span>
+                  {votes ? <span> · {fmtVotes(votes)} 人评分</span> : null}
+                  {votes !== undefined && votes < MIN_VOTES ? <span className="few-note">(人数少,仅供参考)</span> : null}
                   {show.rank ? <span> · 排名 #{show.rank}</span> : null}
                   <br />
                 </>

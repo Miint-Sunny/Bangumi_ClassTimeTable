@@ -41,6 +41,7 @@ export function buildShows(cal: CalItem[], bd: BdBundle, enh: EnhanceMap, now: n
       image: c.image,
       score: c.score,
       rank: c.rank,
+      ratingTotal: c.total,
       watchers: c.doing,
       airWeekdayJst: c.weekday,
       begin: b?.begin,

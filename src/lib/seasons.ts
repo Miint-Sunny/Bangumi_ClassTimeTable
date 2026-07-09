@@ -41,6 +41,7 @@ export async function fetchSeasonPack(yyyymm: string): Promise<Show[]> {
       image: s.image ?? undefined,
       score: s.score ?? undefined,
       rank: s.rank ?? undefined,
+      ratingTotal: s.ratingTotal ?? undefined,
       airWeekdayJst: s.airWeekdayJst ?? undefined,
       begin: s.begin ? Date.parse(s.begin) : undefined,
       end: s.end ? Date.parse(s.end) : undefined,

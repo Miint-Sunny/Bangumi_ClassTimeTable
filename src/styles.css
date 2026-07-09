@@ -148,10 +148,30 @@ button { font: inherit; cursor: pointer; }
 .content-row { flex: 1 1 auto; min-height: 0; display: flex; gap: 14px; }
 .view-area { flex: 1 1 auto; min-width: 0; min-height: 0; overflow: auto; padding-bottom: 40px; }
 /* 视图/翻页/换季切换:View Transitions API 交叉淡化(见 lib/anim.ts)——
-   旧画面淡出与新画面淡入同帧进行,没有"先替换再补淡入"的暗坑,不会闪。
-   只调时长,曲线用浏览器默认的对称交叉曲线。 */
+   旧画面淡出与新画面淡入同帧进行,没有"先替换再补淡入"的暗坑,不会闪。 */
 ::view-transition-old(root),
 ::view-transition-new(root) {
+  animation-duration: 0.24s;
+}
+/* 视图区与侧栏各自独立快照:整页共用 root 快照时,布局大变(跳日视图、
+   侧栏换宽)会出现新旧两版叠加的"残影",且默认 plus-lighter 混合在内容
+   不同处会瞬间加亮。命名分组后各自在自己的框里交叉,盒子尺寸平滑过渡。 */
+.view-area { view-transition-name: view-area; }
+.side-panel { view-transition-name: side-panel; }
+::view-transition-image-pair(view-area),
+::view-transition-image-pair(side-panel) { isolation: auto; }
+::view-transition-old(view-area),
+::view-transition-new(view-area),
+::view-transition-old(side-panel),
+::view-transition-new(side-panel) {
+  animation-duration: 0.24s;
+  mix-blend-mode: normal;
+  height: 100%;
+  object-fit: cover;
+  object-position: top left;
+}
+::view-transition-group(view-area),
+::view-transition-group(side-panel) {
   animation-duration: 0.24s;
 }
 
@@ -215,6 +235,7 @@ button { font: inherit; cursor: pointer; }
 }
 .dash-row .nm:hover { color: var(--pink-strong); text-decoration: none; }
 .dash-row .score { color: var(--gold); flex-shrink: 0; }
+.dash-row .votes { color: var(--text-subtle); font-size: 10px; flex-shrink: 0; }
 .dash-row .prog { color: var(--text-soft); font-family: ui-monospace, monospace; flex-shrink: 0; }
 .dash-row .behind { color: var(--red); background: var(--red-bg); border-radius: 50px; padding: 0 7px; flex-shrink: 0; }
 .dash-row .when { color: var(--pink-strong); flex-shrink: 0; width: 64px; }
@@ -405,6 +426,8 @@ button { font: inherit; cursor: pointer; }
 }
 .show-card .meta { color: var(--text-soft); font-size: 10px; margin-top: 2px; display: flex; gap: 5px; flex-wrap: wrap; }
 .show-card .meta .score { color: var(--gold); }
+.show-card .meta .score.few { color: var(--text-subtle); } /* 评分人数不足:分数降调显示 */
+.few-note { color: var(--text-subtle); }
 .show-card .meta .ep-badge { color: var(--blue); }
 .show-card .meta .behind { color: var(--red); background: var(--red-bg); border-radius: 50px; padding: 0 6px; }
 .show-card .meta .friends { color: var(--green); }

@@ -104,6 +104,7 @@ def fetch_subject(sid: int) -> dict:
             "eps": raw.get("total_episodes") or raw.get("eps") or None,
             "score": (raw.get("rating") or {}).get("score") or None,
             "rank": (raw.get("rating") or {}).get("rank") or None,
+            "ratingTotal": (raw.get("rating") or {}).get("total") or None,
             "image": (raw.get("images") or {}).get("common") or None,
             "date": raw.get("date"),
         }
@@ -219,6 +220,7 @@ def bake(yyyymm: str, bd_items: list[dict], enhance_air: dict[str, dict]) -> Non
         entry["image"] = info.get("image")
         entry["score"] = info.get("score")
         entry["rank"] = info.get("rank")
+        entry["ratingTotal"] = info.get("ratingTotal")
         entry["epsTotal"] = info.get("eps")
         if info.get("name_cn"):
             entry["nameCn"] = info["name_cn"]

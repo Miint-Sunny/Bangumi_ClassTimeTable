@@ -314,6 +314,7 @@ export default function App() {
                   image: s.image ?? info.image,
                   score: s.score ?? info.score,
                   rank: s.rank ?? info.rank,
+                  ratingTotal: s.ratingTotal ?? info.ratingTotal,
                 }
               : s,
           )
