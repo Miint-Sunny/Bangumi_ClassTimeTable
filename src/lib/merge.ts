@@ -31,8 +31,16 @@ export async function fetchEnhance(): Promise<EnhanceData> {
   }
 }
 
-/** ja/ja?(暂定日本)/未标注 → undefined;其余为非日本区码 */
-const nonJa = (v: string | undefined) => (v && !v.startsWith('ja') ? v : undefined)
+/**
+ * 产地归一:undefined = 实锤日本(bd/yuc 收录或官方标注);
+ * 'cn' 中国;'unknown' 无可靠信号(诚实标未知,不硬归日本);其余('us'/'kr'/'xx')海外。
+ */
+const regionOf = (bdOrigin: string | undefined, marked: string | undefined): string | undefined => {
+  if (bdOrigin) return bdOrigin.startsWith('zh') ? 'cn' : 'xx' // bangumi-data lang 权威
+  if (!marked || marked === 'ja') return undefined
+  if (marked === 'ja?') return 'unknown'
+  return marked
+}
 
 /** 三源合并:calendar(本周在播骨架) × bangumi-data(精确时间/平台) × yuc 增强 */
 export function buildShows(cal: CalItem[], bd: BdBundle, enhData: EnhanceData, now: number): Show[] {
@@ -67,7 +75,7 @@ export function buildShows(cal: CalItem[], bd: BdBundle, enhData: EnhanceData, n
       pvUrl: e?.pv,
       sourceType: e?.sourceType,
       airFix: e?.air,
-      region: b?.origin ?? nonJa(enhData.regions[String(c.id)]),
+      region: regionOf(b?.origin, enhData.regions[String(c.id)]),
     })
   }
 
@@ -101,7 +109,7 @@ export function buildShows(cal: CalItem[], bd: BdBundle, enhData: EnhanceData, n
       pvUrl: e?.pv,
       sourceType: e?.sourceType,
       airFix: e?.air,
-      region: b.origin ?? nonJa(enhData.regions[String(b.bgmId)]),
+      region: regionOf(b.origin, enhData.regions[String(b.bgmId)]),
     })
   }
 

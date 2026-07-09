@@ -13,10 +13,10 @@ const CHANGELOG: LogEntry[] = [
   {
     d: '2026-07-10',
     x: {
-      'zh-Hans': '筛选新增「产地」:一键滤掉放送表里混入的国创/欧美条目(bgm 官方产地标注,拿不准的按日本保留不误删)',
-      'zh-Hant': '篩選新增「產地」:一鍵濾掉放送表裡混入的國創/歐美條目(bgm 官方產地標註,拿不準的按日本保留不誤刪)',
-      ja: '絞り込みに「制作国」を追加:編成表に混ざる中国/欧米作品を除外可能(bgm公式タグ準拠、不明な作品は日本扱いで残す)',
-      en: 'New "Region" filter: hide Chinese/Western entries mixed into the bgm calendar (official region tags; uncertain ones are kept)',
+      'zh-Hans': '筛选新增「产地」:日本/中国/其他地区/未知 四类(bgm 官方产地标注;拿不准的诚实标未知、每日复查,不误删)',
+      'zh-Hant': '篩選新增「產地」:日本/中國/其他地區/未知 四類(bgm 官方產地標註;拿不準的誠實標未知、每日複查,不誤刪)',
+      ja: '絞り込みに「制作国」を追加:日本/中国/その他/不明の4分類(bgm公式タグ準拠、不明な作品は無理に分類せず毎日再確認)',
+      en: 'New "Region" filter: Japan / China / Other / Unknown (official bgm tags; uncertain shows stay honestly Unknown, rechecked daily)',
     },
   },
   {

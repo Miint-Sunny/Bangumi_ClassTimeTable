@@ -67,11 +67,17 @@ const CONT_OPTS: { k: Continuity; label: string; title: string }[] = [
   { k: 'long', label: '长期放送', title: '年番/多年番(季初已播 >20 集)' },
 ]
 
-type RegionClass = 'jp' | 'other'
+type RegionClass = 'jp' | 'cn' | 'other' | 'unknown'
+
+/** Show.region → 筛选类:实锤日本 / 中国 / 其他海外 / 拿不准 */
+const regionClass = (r: string | undefined): RegionClass =>
+  r === undefined ? 'jp' : r === 'cn' ? 'cn' : r === 'unknown' ? 'unknown' : 'other'
 
 const REG_OPTS: { k: RegionClass; label: string; title: string }[] = [
-  { k: 'jp', label: '日本', title: '日本动画(默认口径,占绝大多数)' },
-  { k: 'other', label: '其他地区', title: '国创/欧美等(bgm 官方产地标注 + 信源比对,拿不准的按日本保留)' },
+  { k: 'jp', label: '日本', title: '有实锤的日本动画(bangumi-data/yuc 收录,或 bgm 官方产地标注)' },
+  { k: 'cn', label: '中国', title: '国创(bgm 官方产地标注)' },
+  { k: 'other', label: '其他地区', title: '欧美/韩国等海外作品' },
+  { k: 'unknown', label: '未知', title: '暂无可靠产地信号,不硬归类;每日自动复查,有实锤后自动归位' },
 ]
 
 const REP_OPTS: { v: number; label: string }[] = [
@@ -106,7 +112,7 @@ export default function App() {
   // 筛选面板(搜索框左侧):范围多选 / 口碑加权分下限 / 来源 / 题材
   const [advOpen, setAdvOpen] = useState(false)
   const [contSel, setContSel] = useState<Continuity[]>(['new', 'carry', 'long'])
-  const [regSel, setRegSel] = useState<RegionClass[]>(['jp', 'other'])
+  const [regSel, setRegSel] = useState<RegionClass[]>(['jp', 'cn', 'other', 'unknown'])
   const [repMin, setRepMin] = useState(0)
   const [srcSel, setSrcSel] = useState<string | null>(null)
   const [tagSel, setTagSel] = useState<string | null>(null)
@@ -422,7 +428,7 @@ export default function App() {
       if (filter === 'watching' && st !== 'watching') return false
       if (filter === 'wish' && st !== 'wish') return false
       if (!contSel.includes(continuity(s, seasonStart))) return false
-      if (!regSel.includes(s.region ? 'other' : 'jp')) return false
+      if (!regSel.includes(regionClass(s.region))) return false
       if (repMin > 0) {
         const w = weightedScore(s.score, s.ratingTotal)
         if (w === undefined || w < repMin) return false
@@ -440,12 +446,12 @@ export default function App() {
   // 筛选面板的 facet 统计(基于未过滤全集,数量不随选择跳动)
   const facets = useMemo(() => {
     const cont: Record<Continuity, number> = { new: 0, carry: 0, long: 0 }
-    const reg: Record<RegionClass, number> = { jp: 0, other: 0 }
+    const reg: Record<RegionClass, number> = { jp: 0, cn: 0, other: 0, unknown: 0 }
     const src = new Map<string, number>()
     const tags = new Map<string, number>()
     for (const s of effShows ?? []) {
       cont[continuity(s, seasonStart)]++
-      reg[s.region ? 'other' : 'jp']++
+      reg[regionClass(s.region)]++
       if (s.sourceType) src.set(s.sourceType, (src.get(s.sourceType) ?? 0) + 1)
       for (const t of s.tags ?? []) tags.set(t, (tags.get(t) ?? 0) + 1)
     }
@@ -455,7 +461,7 @@ export default function App() {
 
   const advCount =
     (contSel.length < 3 ? 1 : 0) +
-    (regSel.length < 2 ? 1 : 0) +
+    (regSel.length < 4 ? 1 : 0) +
     (repMin > 0 ? 1 : 0) +
     (srcSel ? 1 : 0) +
     (tagSel ? 1 : 0)
@@ -482,7 +488,7 @@ export default function App() {
 
   const clearAdv = useCallback(() => {
     setContSel(['new', 'carry', 'long'])
-    setRegSel(['jp', 'other'])
+    setRegSel(['jp', 'cn', 'other', 'unknown'])
     setRepMin(0)
     setSrcSel(null)
     setTagSel(null)
@@ -816,11 +822,11 @@ export default function App() {
                   ))}
                 </span>
               </div>
-              {facets.reg.other > 0 && (
+              {facets.reg.cn + facets.reg.other + facets.reg.unknown > 0 && (
                 <div className="fp-row">
                   <span className="fp-t">{t('产地')}</span>
                   <span className="fp-chips">
-                    {REG_OPTS.map((o) => (
+                    {REG_OPTS.filter((o) => facets.reg[o.k] > 0).map((o) => (
                       <button
                         key={o.k}
                         className={`chip${regSel.includes(o.k) ? ' on' : ''}`}

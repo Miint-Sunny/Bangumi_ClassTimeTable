@@ -83,16 +83,28 @@ const DICT: Record<string, [string, string, string]> = {
   ],
   产地: ['產地', '制作国', 'Region'],
   日本: ['日本', '日本', 'Japan'],
+  中国: ['中國', '中国', 'China'],
   其他地区: ['其他地區', 'その他の地域', 'Other regions'],
-  '日本动画(默认口径,占绝大多数)': [
-    '日本動畫(預設口徑,佔絕大多數)',
-    '日本のアニメ(既定の対象、大多数)',
-    'Japanese anime (the default scope, vast majority)',
+  未知: ['未知', '不明', 'Unknown'],
+  '有实锤的日本动画(bangumi-data/yuc 收录,或 bgm 官方产地标注)': [
+    '有實錘的日本動畫(bangumi-data/yuc 收錄,或 bgm 官方產地標註)',
+    '確証のある日本アニメ(bangumi-data/yuc 収録、または bgm 公式の制作国タグ)',
+    'Confirmed Japanese anime (listed in bangumi-data/yuc, or officially tagged on bgm)',
   ],
-  '国创/欧美等(bgm 官方产地标注 + 信源比对,拿不准的按日本保留)': [
-    '國創/歐美等(bgm 官方產地標註 + 信源比對,拿不準的按日本保留)',
-    '中国/欧米など(bgm公式の制作国タグ+ソース照合。不明な作品は日本扱いで残す)',
-    'Chinese/Western etc. (official bgm region tags + source cross-check; uncertain ones stay as Japanese)',
+  '国创(bgm 官方产地标注)': [
+    '國創(bgm 官方產地標註)',
+    '中国アニメ(bgm 公式の制作国タグ)',
+    'Chinese animation (official bgm region tag)',
+  ],
+  '欧美/韩国等海外作品': [
+    '歐美/韓國等海外作品',
+    '欧米/韓国などの海外作品',
+    'Western / Korean and other overseas works',
+  ],
+  '暂无可靠产地信号,不硬归类;每日自动复查,有实锤后自动归位': [
+    '暫無可靠產地信號,不硬歸類;每日自動複查,有實錘後自動歸位',
+    '確かな制作国情報がまだない作品。無理に分類せず毎日再確認、確証が出たら自動で振り分け',
+    'No reliable region signal yet — not force-classified; rechecked daily and re-filed once confirmed',
   ],
   不限: ['不限', '指定なし', 'Any'],
   '按评分人数加权,小样本高分不虚高': [
