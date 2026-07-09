@@ -654,15 +654,20 @@ button { font: inherit; cursor: pointer; }
    遮罩用"浅暗度 + 全屏磨砂"代替深黑:靠模糊分层,不靠黑压。
    不支持的浏览器自然回落到实底/原深色遮罩。 */
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  /* Liquid Glass 式的轻磨砂:背景保持可辨,只柔化 + 轻微提饱和,不糊成雾 */
   .overlay {
-    background: color-mix(in srgb, var(--overlay) 40%, transparent);
-    -webkit-backdrop-filter: blur(16px) saturate(1.3);
-    backdrop-filter: blur(16px) saturate(1.3);
+    background: color-mix(in srgb, var(--overlay) 38%, transparent);
+    -webkit-backdrop-filter: blur(5px) saturate(1.15);
+    backdrop-filter: blur(5px) saturate(1.15);
   }
   .overlay .modal {
-    background: color-mix(in srgb, var(--card) 86%, transparent);
-    -webkit-backdrop-filter: blur(20px) saturate(1.6);
-    backdrop-filter: blur(20px) saturate(1.6);
+    background: color-mix(in srgb, var(--card) 85%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    backdrop-filter: blur(12px) saturate(1.4);
+    /* 玻璃上缘一道细高光,Liquid Glass 的"边缘折光"味 */
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 8px 40px rgba(0, 0, 0, 0.35);
   }
 }
 
