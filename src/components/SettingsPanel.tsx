@@ -2,12 +2,15 @@ import { useRef, useState } from 'react'
 import type { BgmAccount, Settings } from '../types'
 import { clearApiCache } from '../lib/api'
 import { loadPersisted } from '../lib/store'
+import type { OauthConf } from '../lib/oauth'
 
 interface Props {
   settings: Settings
   friendErrors: Record<string, string>
   account: BgmAccount | null
   sync: { msg: string; busy: boolean }
+  oauth: OauthConf | null
+  onOauthLogin: () => void
   onLogin: (token: string) => Promise<void>
   onLogout: () => void
   onSyncNow: () => void
@@ -21,6 +24,8 @@ export default function SettingsPanel({
   friendErrors,
   account,
   sync,
+  oauth,
+  onOauthLogin,
   onLogin,
   onLogout,
   onSyncNow,
@@ -108,6 +113,14 @@ export default function SettingsPanel({
             </span>
           ) : (
             <span className="friend-add">
+              {oauth && (
+                <>
+                  <button className="iconbtn accent" onClick={onOauthLogin}>
+                    用 Bangumi 登录
+                  </button>
+                  <span className="or">或</span>
+                </>
+              )}
               <input
                 type="password"
                 value={token}
@@ -121,16 +134,24 @@ export default function SettingsPanel({
             </span>
           )}
         </div>
-        {account?.invalid && <div className="set-sub err">令牌已失效或被吊销,请生成新令牌后重新粘贴。</div>}
+        {account?.invalid && (
+          <div className="set-sub err">
+            {account.kind === 'oauth' ? '登录已过期,请重新登录。' : '令牌已失效或被吊销,请生成新令牌后重新粘贴。'}
+          </div>
+        )}
         {loginErr && <div className="set-sub err">{loginErr}</div>}
-        {account && !account.invalid && sync.msg && <div className="set-sub">{sync.msg}</div>}
+        {account && !account.invalid && sync.msg && (
+          <div className={`set-sub${sync.msg.includes('失败') ? ' err' : ''}`}>{sync.msg}</div>
+        )}
+        {!account && sync.msg.includes('登录失败') && <div className="set-sub err">{sync.msg}</div>}
         {!account && (
           <div className="set-sub">
-            在{' '}
+            {oauth && <>「用 Bangumi 登录」跳转 bgm.tv 授权(需在 bgm.tv 域名下登录过),令牌 7 天有效、自动续期。 </>}
+            也可在{' '}
             <a href="https://next.bgm.tv/demo/access-token" target="_blank" rel="noreferrer">
               next.bgm.tv/demo/access-token
             </a>{' '}
-            生成个人令牌(建议选一年有效期)。令牌只保存在本机浏览器,不进备份文件,可随时在同页吊销。
+            生成个人令牌(建议选一年有效期)粘贴连接。令牌只保存在本机浏览器,不进备份文件,可随时吊销。
             连接后:应用内的追番改动即时写回 bgm.tv;bgm.tv 侧的改动每半小时拉取合并(以 bgm 为准)。
             首次连接会双向合并(状态本机优先、进度取较大值)。bgm 的「搁置」在课表按未追显示;
             本地取消追番不会删除 bgm 收藏。

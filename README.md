@@ -35,6 +35,9 @@
   bgm.tv——应用内改状态/进度即时写回收藏,bgm 侧改动定期拉取合并;
   首次连接双向合并(状态本机优先、进度取较大值),离线改动进队列断网不丢。
   令牌只存本机浏览器、不进备份文件,可随时吊销
+- **OAuth 一键登录(站长可选)**:部署 [worker/](worker/) 下的无状态令牌代理并放置
+  `public/oauth.json` 后,设置页出现「用 Bangumi 登录」——访客免手动生成令牌,
+  授权后自动续期;不配置则按钮隐藏,个人令牌登录始终可用
 
 ## 数据来源与流量原则
 
@@ -83,7 +86,7 @@ python3 scripts/bake_season.py 202607        # 可一次传多个 YYYYMM
 
 ## 路线图
 
-- [x] Bangumi 账号云同步 + 收藏双向写回(个人令牌,已完成)
-- [ ] Bangumi OAuth 一键登录:免手动生成令牌(需注册应用 + 一个无状态 Worker 保管
-      client_secret;令牌获取之外的同步逻辑与现状完全复用)
+- [x] Bangumi 账号云同步 + 收藏双向写回(个人令牌)
+- [x] Bangumi OAuth 一键登录(前端 + Worker 代理已就绪,站长按 [worker/README.md](worker/README.md)
+      注册应用、部署代理、放置 `public/oauth.json` 即启用)
 - [ ] 换季对比(上季 vs 本季追番回顾)

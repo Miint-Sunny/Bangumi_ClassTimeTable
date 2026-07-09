@@ -15,6 +15,7 @@ import {
   saveAccount,
   verifyToken,
 } from './lib/bgm'
+import { beginOauthLogin, completeOauthLogin, fetchOauthConf, refreshIfNeeded, type OauthConf } from './lib/oauth'
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
 import { behindCount } from './lib/progress'
@@ -89,6 +90,8 @@ export default function App() {
   const [now, setNow] = useState(() => Date.now())
   const [account, setAccount] = useState<BgmAccount | null>(() => loadAccount())
   const [syncState, setSyncState] = useState<{ msg: string; busy: boolean }>({ msg: '', busy: false })
+  const [oauthConf, setOauthConf] = useState<OauthConf | null>(null)
+  const oauthRef = useRef<OauthConf | null>(null)
 
   // ── 持久化 & 主题 ──────────────────────────────────────────────
   useEffect(() => {
@@ -107,24 +110,47 @@ export default function App() {
     trackingRef.current = tracking
   }, [tracking])
 
+  /** OAuth 令牌到期前静默续期;续不回来 → 标记失效。个人令牌原样通过。 */
+  const ensureFresh = useCallback(async (): Promise<BgmAccount | null> => {
+    const acc = accountRef.current
+    if (!acc || acc.invalid) return null
+    const fresh = await refreshIfNeeded(oauthRef.current, acc)
+    if (!fresh) {
+      setAccount({ ...acc, invalid: true })
+      setSyncState({ msg: '登录已过期,请重新登录', busy: false })
+      return null
+    }
+    if (fresh !== acc) {
+      accountRef.current = fresh // setAccount 的 effect 是异步的,先手动同步 ref
+      setAccount(fresh)
+    }
+    return fresh
+  }, [])
+
   const drainTimer = useRef<number | null>(null)
   const drainNow = useCallback(async () => {
-    const acc = accountRef.current
-    if (!acc || acc.invalid) return
+    const acc = await ensureFresh()
+    if (!acc) return
     try {
       await drainQueue(acc)
     } catch (e) {
       if (e instanceof BgmAuthError) setAccount((a) => (a ? { ...a, invalid: true } : a))
     }
-  }, [])
+  }, [ensureFresh])
   const scheduleDrain = useCallback(() => {
     if (drainTimer.current) window.clearTimeout(drainTimer.current)
     drainTimer.current = window.setTimeout(drainNow, 1500)
   }, [drainNow])
 
+  const syncingRef = useRef(false)
   const doSync = useCallback(async (force = false) => {
-    const acc = accountRef.current
-    if (!acc || acc.invalid) return
+    if (syncingRef.current) return
+    syncingRef.current = true
+    const acc = await ensureFresh()
+    if (!acc) {
+      syncingRef.current = false
+      return
+    }
     setSyncState((s) => ({ ...s, busy: true }))
     try {
       if (acc.mergedOnce) await drainQueue(acc) // 先推后拉,拉到的就包含本机改动
@@ -144,8 +170,10 @@ export default function App() {
       } else {
         setSyncState({ msg: `同步失败:${e instanceof Error ? e.message : e}`, busy: false })
       }
+    } finally {
+      syncingRef.current = false
     }
-  }, [])
+  }, [ensureFresh])
 
   useEffect(() => {
     if (!account?.token || account.invalid) return
@@ -165,6 +193,33 @@ export default function App() {
     clearQueue()
     setAccount(null) // 本机追番记录保留
     setSyncState({ msg: '', busy: false })
+  }, [])
+
+  // OAuth(可选):读站点根目录 oauth.json;URL 带 ?code= 时完成一键登录
+  useEffect(() => {
+    let alive = true
+    ;(async () => {
+      const conf = await fetchOauthConf()
+      if (!alive) return
+      oauthRef.current = conf
+      setOauthConf(conf)
+      if (!conf) return
+      try {
+        const acc = await completeOauthLogin(conf)
+        if (acc && alive) setAccount(acc) // 触发首次双向合并
+      } catch (e) {
+        if (!alive) return
+        setSyncState({ msg: `Bangumi 登录失败:${e instanceof Error ? e.message : e}`, busy: false })
+        setShowSettings(true) // 让错误立刻可见
+      }
+    })()
+    return () => {
+      alive = false
+    }
+  }, [])
+
+  const oauthLogin = useCallback(() => {
+    if (oauthRef.current) beginOauthLogin(oauthRef.current)
   }, [])
 
   useEffect(() => {
@@ -678,6 +733,8 @@ export default function App() {
           friendErrors={friendErrors}
           account={account}
           sync={syncState}
+          oauth={oauthConf}
+          onOauthLogin={oauthLogin}
           onLogin={bgmLogin}
           onLogout={bgmLogout}
           onSyncNow={() => doSync(true)}
