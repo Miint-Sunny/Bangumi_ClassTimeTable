@@ -21,7 +21,17 @@ let confPromise: Promise<OauthConf | null> | null = null
 export function fetchOauthConf(): Promise<OauthConf | null> {
   confPromise ??= fetch('oauth.json', { cache: 'no-cache' })
     .then((r) => (r.ok ? r.json() : null))
-    .then((c) => (c && c.clientId && c.tokenProxy && c.redirectUri ? (c as OauthConf) : null))
+    .then((c) => {
+      if (!(c && c.clientId && c.tokenProxy && c.redirectUri)) return null
+      // OAuth 只在注册的回调域名上启用:github.io 镜像/本地开发自动隐藏按钮,
+      // 避免授权后被 bgm.tv 弹回另一个域名造成困惑(镜像上个人令牌登录仍可用)
+      try {
+        if (new URL(c.redirectUri).origin !== location.origin) return null
+      } catch {
+        return null
+      }
+      return c as OauthConf
+    })
     .catch(() => null)
   return confPromise
 }
@@ -44,7 +54,7 @@ export function beginOauthLogin(conf: OauthConf) {
 
 async function proxy(
   conf: OauthConf,
-  path: '/token' | '/refresh',
+  path: '/oauth/token' | '/oauth/refresh',
   body: Record<string, string>,
 ): Promise<{ access_token: string; refresh_token?: string; expires_in?: number }> {
   const resp = await fetch(conf.tokenProxy.replace(/\/+$/, '') + path, {
@@ -70,7 +80,7 @@ export async function completeOauthLogin(conf: OauthConf): Promise<BgmAccount | 
   } catch {}
   history.replaceState(null, '', location.pathname) // 先清 URL,防止刷新重放授权码
   if (!expect || params.get('state') !== expect) throw new Error('state 校验失败,请重新登录')
-  const tok = await proxy(conf, '/token', { code, redirect_uri: conf.redirectUri })
+  const tok = await proxy(conf, '/oauth/token', { code, redirect_uri: conf.redirectUri })
   const me = await verifyToken(tok.access_token)
   return {
     token: tok.access_token,
@@ -91,7 +101,7 @@ export async function refreshIfNeeded(conf: OauthConf | null, acc: BgmAccount): 
   if (acc.expiresAt - Date.now() > 24 * 3600_000) return acc
   if (!conf) return acc.expiresAt < Date.now() ? null : acc
   try {
-    const tok = await proxy(conf, '/refresh', { refresh_token: acc.refreshToken, redirect_uri: conf.redirectUri })
+    const tok = await proxy(conf, '/oauth/refresh', { refresh_token: acc.refreshToken, redirect_uri: conf.redirectUri })
     return {
       ...acc,
       token: tok.access_token,

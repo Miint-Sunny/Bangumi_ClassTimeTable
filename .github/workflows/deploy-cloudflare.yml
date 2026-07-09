@@ -1,0 +1,35 @@
+name: deploy-cloudflare
+
+# 推 main 时把「静态站 + OAuth 代理」整体部署到 Cloudflare Workers。
+# 需要仓库 secret CLOUDFLARE_API_TOKEN(权限模板"编辑 Cloudflare Workers");
+# 未设置时打印警告并跳过,不算失败。首次部署建议在本地跑 npm run deploy。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-cloudflare
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - name: 构建并部署到 Cloudflare Workers
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::warning::缺 CLOUDFLARE_API_TOKEN secret,跳过 Cloudflare 部署(GitHub Pages 照常)"
+            exit 0
+          fi
+          npm ci
+          npm run build
+          npx wrangler deploy

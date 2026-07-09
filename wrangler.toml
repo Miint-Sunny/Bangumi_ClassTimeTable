@@ -1,0 +1,17 @@
+# Cloudflare Workers 一体化部署:静态站点(dist/)+ bgm.tv OAuth 令牌代理(worker/worker.js)
+# 同一个域名下,静态资源直出,/oauth/* 落到 Worker —— 同源,无需 CORS。
+# 部署步骤见 worker/README.md;本地:npm run deploy
+name = "bangumi-timetable"
+main = "worker/worker.js"
+compatibility_date = "2026-01-01"
+
+[assets]
+directory = "./dist"
+
+[vars]
+# 额外允许调用 /oauth/* 的前端来源(同源请求始终放行,通常留空即可)
+ALLOWED_ORIGINS = ""
+
+# 机密不写在这里,用 wrangler secret 注入:
+#   npx wrangler secret put BGM_CLIENT_ID
+#   npx wrangler secret put BGM_CLIENT_SECRET
