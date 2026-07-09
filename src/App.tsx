@@ -26,7 +26,7 @@ import { weightedScore } from './lib/score'
 import { currentSeason, displayTz, partsInZone, seasonStartInstant } from './lib/time'
 import { fetchSeasonList, fetchSeasonPack, fmtSeason, seasonMonthOf, seasonStartOf } from './lib/seasons'
 import { buildIcs, downloadIcs } from './lib/ics'
-import { loadPersisted, savePersisted } from './lib/store'
+import { loadPersisted, savePersisted, type RegionClass } from './lib/store'
 import WeekView from './components/WeekView'
 import DayView from './components/DayView'
 import MonthView, { type MonthCursor } from './components/MonthView'
@@ -66,8 +66,6 @@ const CONT_OPTS: { k: Continuity; label: string; title: string }[] = [
   { k: 'carry', label: '上季续播', title: '上季开播、本季继续(季初已播 ≤20 集)' },
   { k: 'long', label: '长期放送', title: '年番/多年番(季初已播 >20 集)' },
 ]
-
-type RegionClass = 'jp' | 'cn' | 'other' | 'unknown'
 
 /** Show.region → 筛选类:实锤日本 / 中国 / 其他海外 / 拿不准 */
 const regionClass = (r: string | undefined): RegionClass =>
@@ -109,13 +107,13 @@ export default function App() {
   const [view, setView] = useState<View>('week')
   const [filter, setFilter] = useState<Filter>('all')
   const [query, setQuery] = useState('')
-  // 筛选面板(搜索框左侧):范围多选 / 口碑加权分下限 / 来源 / 题材
+  // 筛选面板(搜索框左侧):范围多选 / 产地 / 口碑加权分下限 / 来源 / 题材,选择持久化
   const [advOpen, setAdvOpen] = useState(false)
-  const [contSel, setContSel] = useState<Continuity[]>(['new', 'carry', 'long'])
-  const [regSel, setRegSel] = useState<RegionClass[]>(['jp', 'cn', 'other', 'unknown'])
-  const [repMin, setRepMin] = useState(0)
-  const [srcSel, setSrcSel] = useState<string | null>(null)
-  const [tagSel, setTagSel] = useState<string | null>(null)
+  const [contSel, setContSel] = useState<Continuity[]>(init.current.filters.cont)
+  const [regSel, setRegSel] = useState<RegionClass[]>(init.current.filters.reg)
+  const [repMin, setRepMin] = useState(init.current.filters.repMin)
+  const [srcSel, setSrcSel] = useState<string | null>(init.current.filters.src)
+  const [tagSel, setTagSel] = useState<string | null>(init.current.filters.tag)
   const [openId, setOpenId] = useState<number | null>(null)
   const [dayCursor, setDayCursor] = useState(0) // 日/周/月游标提升到 App:迷你月历跳转 + 键盘翻页
   const [weekCursor, setWeekCursor] = useState(0)
@@ -132,10 +130,15 @@ export default function App() {
 
   // ── 持久化 & 主题 ──────────────────────────────────────────────
   useEffect(() => {
-    savePersisted({ settings, tracking, overrides })
+    savePersisted({
+      settings,
+      tracking,
+      overrides,
+      filters: { cont: contSel, reg: regSel, repMin, src: srcSel, tag: tagSel },
+    })
     document.documentElement.setAttribute('data-theme', settings.theme)
     document.documentElement.lang = settings.lang
-  }, [settings, tracking, overrides])
+  }, [settings, tracking, overrides, contSel, regSel, repMin, srcSel, tagSel])
 
   // 主题切换时给全站颜色一个短暂的渐变窗口(首次挂载不做,避免开屏闪变)
   const themeAnimReady = useRef(false)

@@ -1,12 +1,46 @@
 import type { AirFix, Settings, Tracking } from '../types'
+import type { Continuity } from './progress'
 import { detectLang } from './i18n'
 
 const KEY = 'btt:v1'
+
+export type RegionClass = 'jp' | 'cn' | 'other' | 'unknown'
+
+/** 筛选面板的选择,跨会话记住(筛选按钮的角标 + 清除筛选保证可发现/可撤销) */
+export interface FilterPrefs {
+  cont: Continuity[]
+  reg: RegionClass[]
+  repMin: number
+  src: string | null
+  tag: string | null
+}
+
+const CONT_ALL: Continuity[] = ['new', 'carry', 'long']
+const REG_ALL: RegionClass[] = ['jp', 'cn', 'other', 'unknown']
+
+export const DEFAULT_FILTERS: FilterPrefs = { cont: CONT_ALL, reg: REG_ALL, repMin: 0, src: null, tag: null }
+
+/** 载入校验:枚举值过滤 + 空选集回落全选,坏数据只会回到默认而不是白屏 */
+function sanitizeFilters(f: unknown): FilterPrefs {
+  const o = (f ?? {}) as Record<string, unknown>
+  const pick = <T extends string>(v: unknown, all: T[]): T[] => {
+    const a = Array.isArray(v) ? (v.filter((x) => (all as string[]).includes(x)) as T[]) : []
+    return a.length ? a : [...all]
+  }
+  return {
+    cont: pick(o.cont, CONT_ALL),
+    reg: pick(o.reg, REG_ALL),
+    repMin: typeof o.repMin === 'number' && o.repMin > 0 ? o.repMin : 0,
+    src: typeof o.src === 'string' ? o.src : null,
+    tag: typeof o.tag === 'string' ? o.tag : null,
+  }
+}
 
 export interface Persisted {
   settings: Settings
   tracking: Tracking
   overrides: Record<number, AirFix> // 本机放送校正,优先于 enhance.json
+  filters: FilterPrefs
 }
 
 /** 首访默认主题:系统明确偏好浅色 → 白色,否则 Bangumi 深色;用户选过就存 localStorage 恒久生效 */
@@ -47,6 +81,7 @@ export function loadPersisted(): Persisted {
           memos: p.tracking?.memos ?? {},
         },
         overrides: p.overrides ?? {},
+        filters: sanitizeFilters(p.filters),
       }
     }
   } catch {}
@@ -54,6 +89,7 @@ export function loadPersisted(): Persisted {
     settings: { ...DEFAULT_SETTINGS },
     tracking: { status: {}, watched: {}, rates: {}, memos: {} },
     overrides: {},
+    filters: { ...DEFAULT_FILTERS },
   }
 }
 

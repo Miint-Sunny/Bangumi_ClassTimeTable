@@ -13,10 +13,10 @@ const CHANGELOG: LogEntry[] = [
   {
     d: '2026-07-10',
     x: {
-      'zh-Hans': '筛选新增「产地」:日本/中国/其他地区/未知 四类(bgm 官方产地标注;拿不准的诚实标未知、每日复查,不误删)',
-      'zh-Hant': '篩選新增「產地」:日本/中國/其他地區/未知 四類(bgm 官方產地標註;拿不準的誠實標未知、每日複查,不誤刪)',
-      ja: '絞り込みに「制作国」を追加:日本/中国/その他/不明の4分類(bgm公式タグ準拠、不明な作品は無理に分類せず毎日再確認)',
-      en: 'New "Region" filter: Japan / China / Other / Unknown (official bgm tags; uncertain shows stay honestly Unknown, rechecked daily)',
+      'zh-Hans': '筛选新增「产地」:日本/中国/其他地区/未知 四类(拿不准的诚实标未知、每日复查,不误删);筛选选择跨会话记住',
+      'zh-Hant': '篩選新增「產地」:日本/中國/其他地區/未知 四類(拿不準的誠實標未知、每日複查,不誤刪);篩選選擇跨會話記住',
+      ja: '絞り込みに「制作国」を追加:日本/中国/その他/不明の4分類(不明作品は無理に分類せず毎日再確認)。絞り込みの選択は保存されます',
+      en: 'New "Region" filter: Japan / China / Other / Unknown (uncertain shows stay Unknown, rechecked daily); filter choices now persist',
     },
   },
   {
