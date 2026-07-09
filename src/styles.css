@@ -558,15 +558,31 @@ button { font: inherit; cursor: pointer; }
 .status-row button.on-done { background: var(--green); border-color: var(--green); color: var(--accent-ink); }
 .status-row button.on-dropped { background: var(--text-subtle); border-color: var(--text-subtle); color: var(--accent-ink); }
 
-.ep-stepper { display: flex; align-items: center; gap: 10px; }
-.ep-stepper button {
+.ep-stepper { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+/* 26px 方块只给 −/+ 步进钮;别再命中"补到已播"(曾把它挤成竖排) */
+.ep-stepper .step {
   width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--border);
-  background: var(--chip-bg); color: var(--text);
+  background: var(--chip-bg); color: var(--text); flex-shrink: 0;
 }
 .ep-stepper .val { font-size: 14px; font-family: ui-monospace, monospace; }
 .ep-stepper .val small { color: var(--text-soft); }
-.ep-stepper .catchup { border: 1px solid var(--pink); color: var(--pink-strong); background: none; border-radius: 50px; padding: 3px 12px; }
-.ep-stepper .behind { color: var(--red); background: var(--red-bg); border-radius: 8px; padding: 1px 8px; }
+.ep-stepper .catchup {
+  border: 1px solid var(--pink); color: var(--pink-strong); background: none;
+  border-radius: 50px; padding: 3px 12px; white-space: nowrap; flex-shrink: 0;
+}
+.ep-stepper .behind { color: var(--red); background: var(--red-bg); border-radius: 8px; padding: 1px 8px; white-space: nowrap; }
+
+/* bgm 式评分:十星 + 悬停文案(不忍直视…超神作) */
+.rate-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.rate-row .stars { display: inline-flex; }
+.rate-row .star {
+  background: none; border: none; padding: 0 1px; font-size: 17px; line-height: 1;
+  color: var(--border-soft); transition: color 0.08s ease, transform 0.08s var(--ease-out);
+}
+.rate-row .star.lit { color: var(--gold); }
+.rate-row .star:hover { transform: scale(1.25); }
+.rate-row .rate-cap { color: var(--text-soft); font-size: 11px; min-width: 76px; }
+.rate-row .rate-cap.preview { color: var(--gold); }
 
 .links-row { display: flex; gap: 6px; flex-wrap: wrap; }
 .links-row a {
@@ -637,6 +653,33 @@ button { font: inherit; cursor: pointer; }
   .set-sub { margin-left: 0; }
   .mg-cell { min-height: 64px; }
   .mg-entry .nm { max-width: 100%; }
+}
+
+/* ── 毛玻璃(跟进 bgm.tv 新视觉) ───────────────
+   只用在"内容会从底下滚过/压在内容上"的悬浮层:翻页条、吸附表头、弹窗。
+   大面积用 backdrop-filter 代价高,课表主体不上玻璃。
+   不支持的浏览器自然回落到前面定义的实底背景。 */
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .month-nav {
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    -webkit-backdrop-filter: blur(10px) saturate(1.6);
+    backdrop-filter: blur(10px) saturate(1.6);
+  }
+  .wg-corner,
+  .wg-dayhead,
+  .mg-head {
+    background: color-mix(in srgb, var(--axis-bg) 68%, transparent);
+    -webkit-backdrop-filter: blur(8px) saturate(1.5);
+    backdrop-filter: blur(8px) saturate(1.5);
+  }
+  .wg-dayhead.today {
+    background: color-mix(in srgb, var(--today-bg) 76%, transparent);
+  }
+  .overlay .modal {
+    background: color-mix(in srgb, var(--card) 82%, transparent);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+  }
 }
 
 /* ── 动效兜底 ─────────────────────────────────── */

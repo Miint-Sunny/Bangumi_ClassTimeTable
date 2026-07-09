@@ -15,6 +15,7 @@ interface Props {
   hasLocalOverride: boolean
   onSetStatus: (id: number, s: WatchStatus | null) => void
   onSetWatched: (id: number, n: number) => void
+  onSetRate: (id: number, rate: number) => void
   onSetOverride: (id: number, fix: AirFix | null) => void
   onSubjectInfo: (info: SubjectInfo) => void
   onTag?: (tag: string) => void // 点题材标签 → 按标签筛选
@@ -28,6 +29,10 @@ const STATUS_BTNS: { k: WatchStatus; label: string }[] = [
   { k: 'dropped', label: '抛弃' },
 ]
 
+/** bgm.tv 官方评分文案(1~10),取自其收藏窗口 */
+const RATE_CAPTIONS = ['', '不忍直视', '很差', '差', '较差', '不过不失', '还行', '推荐', '力荐', '神作', '超神作'] as const
+const rateTitle = (v: number) => `${RATE_CAPTIONS[v]} ${v}${v === 1 || v === 10 ? '(请谨慎评价)' : ''}`
+
 /** 详情内容体:宽屏时装进右侧 SidePanel,窄屏时装进弹窗外壳 */
 export function DetailBody(props: Props) {
   const {
@@ -40,6 +45,7 @@ export function DetailBody(props: Props) {
     hasLocalOverride,
     onSetStatus,
     onSetWatched,
+    onSetRate,
     onSetOverride,
     onSubjectInfo,
     onTag,
@@ -48,6 +54,7 @@ export function DetailBody(props: Props) {
   const [info, setInfo] = useState<SubjectInfo | null>(null)
   const [editingFix, setEditingFix] = useState(false)
   const [pvOpen, setPvOpen] = useState(false)
+  const [hoverRate, setHoverRate] = useState(0)
   // B 站 PV 可选内嵌预览;主入口仍是新标签页跳转
   const pvBv = show.pvUrl ? (/BV[0-9A-Za-z]{10}/.exec(show.pvUrl)?.[0] ?? null) : null
 
@@ -72,8 +79,10 @@ export function DetailBody(props: Props) {
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  const status = tracking.status[show.id] ?? 'none'
+  const status: WatchStatus | 'none' = tracking.status[show.id] ?? 'none'
+  const collected = show.id in tracking.status // 有收藏才能评分(与 bgm 一致)
   const watched = tracking.watched[show.id] ?? 0
+  const myRate = tracking.rates[show.id] ?? 0
   const aired = airedEps(show, now)
   const behind = behindCount(show, tracking, now)
   const epsTotal = totalEps(show) ?? info?.eps
@@ -203,7 +212,7 @@ export function DetailBody(props: Props) {
         </div>
 
         <div className="dm-sec">
-          <div className="sec-t">追番状态(本地保存)</div>
+          <div className="sec-t">追番状态与评价</div>
           <div className="status-row">
             {STATUS_BTNS.map((b) => (
               <button
@@ -215,18 +224,47 @@ export function DetailBody(props: Props) {
               </button>
             ))}
           </div>
+          {collected && (
+            <div className="rate-row" onMouseLeave={() => setHoverRate(0)}>
+              <span className="stars">
+                {Array.from({ length: 10 }, (_, i) => i + 1).map((v) => (
+                  <button
+                    key={v}
+                    className={`star${(hoverRate || myRate) >= v ? ' lit' : ''}`}
+                    title={rateTitle(v)}
+                    onMouseEnter={() => setHoverRate(v)}
+                    onClick={() => onSetRate(show.id, myRate === v ? 0 : v)}
+                  >
+                    ★
+                  </button>
+                ))}
+              </span>
+              <span className={`rate-cap${hoverRate ? ' preview' : ''}`}>
+                {hoverRate
+                  ? `${RATE_CAPTIONS[hoverRate]} ${hoverRate}`
+                  : myRate
+                    ? `${RATE_CAPTIONS[myRate]} ${myRate}`
+                    : '我的评价'}
+              </span>
+            </div>
+          )}
         </div>
 
         {(status === 'watching' || watched > 0) && (
           <div className="dm-sec">
             <div className="sec-t">进度</div>
             <div className="ep-stepper">
-              <button onClick={() => onSetWatched(show.id, Math.max(0, watched - 1))}>−</button>
+              <button className="step" onClick={() => onSetWatched(show.id, Math.max(0, watched - 1))}>
+                −
+              </button>
               <span className="val">
                 {watched}
                 <small>{epsTotal ? ` / ${epsTotal}` : ''} 集</small>
               </span>
-              <button onClick={() => onSetWatched(show.id, epsTotal ? Math.min(epsTotal, watched + 1) : watched + 1)}>
+              <button
+                className="step"
+                onClick={() => onSetWatched(show.id, epsTotal ? Math.min(epsTotal, watched + 1) : watched + 1)}
+              >
                 +
               </button>
               {behind > 0 && (

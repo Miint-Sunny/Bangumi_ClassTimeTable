@@ -60,6 +60,7 @@ export interface AirSlot {
 export interface Tracking {
   status: Record<number, WatchStatus>
   watched: Record<number, number> // subject id → 看到第几集
+  rates: Record<number, number> // subject id → 我的评分 1~10(bgm 同一套语义)
 }
 
 export interface Settings {

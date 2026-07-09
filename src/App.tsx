@@ -434,6 +434,25 @@ export default function App() {
     [scheduleDrain],
   )
 
+  const setRate = useCallback(
+    (id: number, rate: number) => {
+      setTracking((t) => {
+        const rates = { ...t.rates }
+        if (rate === 0) delete rates[id]
+        else rates[id] = rate
+        return { ...t, rates }
+      })
+      const acc = accountRef.current
+      const st = trackingRef.current.status[id]
+      // bgm 的评分挂在收藏上:未收藏只存本机,不回写
+      if (acc && !acc.invalid && st) {
+        enqueuePush(id, { type: STATUS_TO_TYPE[st], rate })
+        scheduleDrain()
+      }
+    },
+    [scheduleDrain],
+  )
+
   const patchSettings = useCallback((patch: Partial<Settings>) => {
     setSettings((s) => ({ ...s, ...patch }))
   }, [])
@@ -717,6 +736,7 @@ export default function App() {
               onOpen={openDetail}
               onSetStatus={setStatus}
               onSetWatched={setWatched}
+              onSetRate={setRate}
               onSetOverride={setOverride}
               onSubjectInfo={applySubjectInfo}
               onClose={() => setOpenId(null)}
@@ -736,6 +756,7 @@ export default function App() {
           hasLocalOverride={openShow.id in overrides}
           onSetStatus={setStatus}
           onSetWatched={setWatched}
+          onSetRate={setRate}
           onSetOverride={setOverride}
           onSubjectInfo={applySubjectInfo}
           onTag={searchTag}

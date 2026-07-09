@@ -29,6 +29,7 @@ interface Props {
   onOpen: (id: number) => void
   onSetStatus: (id: number, s: WatchStatus | null) => void
   onSetWatched: (id: number, n: number) => void
+  onSetRate: (id: number, rate: number) => void
   onSetOverride: (id: number, fix: AirFix | null) => void
   onSubjectInfo: (info: SubjectInfo) => void
   onClose: () => void
@@ -76,6 +77,7 @@ export default function SidePanel(props: Props) {
           hasLocalOverride={props.hasLocalOverride}
           onSetStatus={props.onSetStatus}
           onSetWatched={props.onSetWatched}
+          onSetRate={props.onSetRate}
           onSetOverride={props.onSetOverride}
           onSubjectInfo={props.onSubjectInfo}
           onTag={props.onTag}

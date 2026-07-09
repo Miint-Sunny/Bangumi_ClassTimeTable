@@ -62,6 +62,7 @@ export async function verifyToken(token: string): Promise<Pick<BgmAccount, 'user
 export interface RemotePull {
   status: Record<number, WatchStatus>
   watched: Record<number, number>
+  rates: Record<number, number>
   onHold: number[]
 }
 
@@ -72,7 +73,7 @@ export async function pullCollections(acc: BgmAccount, force = false): Promise<R
     const hit = readCache<RemotePull>(key, 3600_000)
     if (hit) return hit
   }
-  const out: RemotePull = { status: {}, watched: {}, onHold: [] }
+  const out: RemotePull = { status: {}, watched: {}, rates: {}, onHold: [] }
   for (const type of [3, 1, 4, 5, 2]) {
     const maxPages = type === 2 ? 20 : 10
     for (let page = 0, offset = 0; page < maxPages; page++, offset += 50) {
@@ -87,6 +88,7 @@ export async function pullCollections(acc: BgmAccount, force = false): Promise<R
         if (type === 4) out.onHold.push(c.subject_id)
         else out.status[c.subject_id] = TYPE_TO_STATUS[type]
         if (c.ep_status > 0) out.watched[c.subject_id] = c.ep_status
+        if (c.rate > 0) out.rates[c.subject_id] = c.rate
         if (type === 2 && (c.updated_at ?? '9999') < DONE_CUTOFF) pastCutoff = true
       }
       if (offset + 50 >= (data.total ?? 0) || pastCutoff) break
@@ -105,6 +107,7 @@ export function clearPullCache(username: string) {
 export interface PushPatch {
   type: number
   ep?: number
+  rate?: number // 0 = 清除评分
   tries?: number
 }
 type Queue = Record<string, PushPatch>
@@ -151,6 +154,7 @@ export async function drainQueue(acc: BgmAccount): Promise<void> {
       if (!patch) continue
       const body: Record<string, number> = { type: patch.type }
       if (patch.ep !== undefined) body.ep_status = patch.ep
+      if (patch.rate !== undefined) body.rate = patch.rate
       let ok = false
       try {
         const resp = await authed(acc.token, `/v0/users/-/collections/${id}`, {
@@ -191,6 +195,7 @@ export function mergeRemote(
 ): { tracking: Tracking; pushes: Record<number, PushPatch> } {
   const status = { ...local.status }
   const watched = { ...local.watched }
+  const rates = { ...local.rates }
   const pushes: Record<number, PushPatch> = {}
   const onHold = new Set(remote.onHold)
 
@@ -201,24 +206,33 @@ export function mergeRemote(
     if (queued.has(id)) continue
     const rs = remote.status[id]
     const rw = remote.watched[id] ?? 0
+    const rr = remote.rates[id] ?? 0
     if (firstMerge) {
       const ls = local.status[id]
       const merged = ls ?? rs
       const mw = Math.max(local.watched[id] ?? 0, rw)
+      const mr = local.rates[id] ?? rr // 评分:本机优先
       if (merged) status[id] = merged
       if (mw > 0) watched[id] = mw
-      if (merged && !onHold.has(id) && (merged !== rs || mw > rw)) {
-        pushes[id] = { type: STATUS_TO_TYPE[merged], ...(mw > rw ? { ep: mw } : {}) }
+      if (mr > 0) rates[id] = mr
+      if (merged && !onHold.has(id) && (merged !== rs || mw > rw || (mr > 0 && mr !== rr))) {
+        pushes[id] = {
+          type: STATUS_TO_TYPE[merged],
+          ...(mw > rw ? { ep: mw } : {}),
+          ...(mr > 0 && mr !== rr ? { rate: mr } : {}),
+        }
       }
     } else {
       if (rs) status[id] = rs
       if (rw > 0) watched[id] = rw
+      if (rr > 0) rates[id] = rr
     }
   }
-  // 搁置:课表按未追显示(进度保留)。首次合并若本机有状态,以本机为准(上面已推回)。
+  // 搁置:课表按未追显示(进度/评分保留)。首次合并若本机有状态,以本机为准(上面已推回)。
   for (const id of onHold) {
     if (queued.has(id)) continue
     if (!firstMerge || !local.status[id]) delete status[id]
+    if (remote.rates[id]) rates[id] = remote.rates[id]
   }
-  return { tracking: { status, watched }, pushes }
+  return { tracking: { status, watched, rates }, pushes }
 }

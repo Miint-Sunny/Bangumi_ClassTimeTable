@@ -38,12 +38,16 @@ export function loadPersisted(): Persisted {
       delete (settings as Record<string, unknown>).lateNight
       return {
         settings,
-        tracking: { status: p.tracking?.status ?? {}, watched: p.tracking?.watched ?? {} },
+        tracking: {
+          status: p.tracking?.status ?? {},
+          watched: p.tracking?.watched ?? {},
+          rates: p.tracking?.rates ?? {},
+        },
         overrides: p.overrides ?? {},
       }
     }
   } catch {}
-  return { settings: { ...DEFAULT_SETTINGS }, tracking: { status: {}, watched: {} }, overrides: {} }
+  return { settings: { ...DEFAULT_SETTINGS }, tracking: { status: {}, watched: {}, rates: {} }, overrides: {} }
 }
 
 export function savePersisted(p: Persisted) {
