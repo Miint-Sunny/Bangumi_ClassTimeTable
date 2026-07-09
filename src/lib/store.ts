@@ -1,4 +1,5 @@
 import type { AirFix, Settings, Tracking } from '../types'
+import { detectLang } from './i18n'
 
 const KEY = 'btt:v1'
 
@@ -14,6 +15,7 @@ const defaultTheme = (): Settings['theme'] =>
 
 export const DEFAULT_SETTINGS: Settings = {
   theme: defaultTheme(),
+  lang: detectLang(),
   tzMode: 'local',
   lateNightCutoff: 2, // 默认凌晨 2:00 前归前日(表记到 25:59)
   weekStart: 1,

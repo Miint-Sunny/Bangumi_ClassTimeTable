@@ -1,7 +1,8 @@
 import { Fragment, useMemo } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
-import { DAY_MS, WEEKDAY_CN, displayTz, lateNightRef, pad, partsInZone, relTime, startOfDayInstant } from '../lib/time'
+import { DAY_MS, displayTz, lateNightRef, pad, partsInZone, relTime, startOfDayInstant } from '../lib/time'
 import { epTime, hasEnded, occurrencesBetween } from '../lib/schedule'
+import { fmtMDW, t, wdFull } from '../lib/i18n'
 import ShowCard from './ShowCard'
 
 interface Props {
@@ -81,7 +82,7 @@ export default function DayView({
       rows,
       cells,
       unknown,
-      dateLabel: `${p.mo}月${p.d}日(周${WEEKDAY_CN[p.wd]})`,
+      dateLabel: fmtMDW(p.mo, p.d, p.wd),
       md: `${p.mo}/${p.d}`,
       wd: p.wd,
       nowEff,
@@ -97,7 +98,7 @@ export default function DayView({
 
   const nowRow = (
     <>
-      <div className="wg-now-time" title="当前时刻">
+      <div className="wg-now-time" title={t('当前时刻')}>
         {fmtRow(nowEff)}
       </div>
       <div className="wg-now" />
@@ -105,22 +106,24 @@ export default function DayView({
   )
 
   const occText = (c: Cell) =>
-    `${c.epEnd > c.ep ? `第 ${c.ep}-${c.epEnd} 集` : `第 ${c.ep} 集`} · ${relTime(c.t, now)}`
+    `${
+      c.epEnd > c.ep ? t('第 {a}-{b} 集', { a: c.ep, b: c.epEnd }) : t('第 {n} 集', { n: c.ep })
+    } · ${relTime(c.t, now)}`
 
   return (
     <div className="day-axis">
       <div className="month-nav">
         <button className="iconbtn" onClick={() => onDayOffset(dayOffset - 1)}>
-          ‹ 前一天
+          ‹ {t('前一天')}
         </button>
-        <span className="m-title">{relLabel ? `${relLabel} · ${dateLabel}` : dateLabel}</span>
+        <span className="m-title">{relLabel ? `${t(relLabel)} · ${dateLabel}` : dateLabel}</span>
         <button className="iconbtn" onClick={() => onDayOffset(dayOffset + 1)}>
-          后一天 ›
+          {t('后一天')} ›
         </button>
         <span className="reset-slot">
           {!isToday && (
             <button className="iconbtn" onClick={() => onDayOffset(0)}>
-              回到今天
+              {t('回到今天')}
             </button>
           )}
         </span>
@@ -129,7 +132,7 @@ export default function DayView({
       <div className="week-grid day-grid">
         <div className="wg-corner" />
         <div className={`wg-dayhead${nowInDay ? ' today' : ''}`}>
-          <div className="d1">{relLabel ?? `周${WEEKDAY_CN[wd]}`}</div>
+          <div className="d1">{relLabel ? t(relLabel) : wdFull(wd)}</div>
           <div className="d2">{md}</div>
         </div>
 
@@ -137,7 +140,7 @@ export default function DayView({
           <>
             <div className="wg-time">—</div>
             <div className="wg-cell">
-              <div className="day-empty">这一天没有更新。</div>
+              <div className="day-empty">{t('这一天没有更新。')}</div>
             </div>
           </>
         )}
@@ -172,8 +175,8 @@ export default function DayView({
 
         {unknown.length > 0 && (
           <>
-            <div className="wg-time" title="未提供精确时间">
-              未定
+            <div className="wg-time" title={t('未提供精确时间')}>
+              {t('未定')}
             </div>
             <div className="wg-cell">
               {unknown.map((s) => (

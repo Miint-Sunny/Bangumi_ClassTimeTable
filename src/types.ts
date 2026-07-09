@@ -74,6 +74,7 @@ export interface Tracking {
 
 export interface Settings {
   theme: 'bgm-dark' | 'dark' | 'contrast' | 'light'
+  lang: 'zh-Hans' | 'zh-Hant' | 'ja' | 'en' // 界面语言,首访跟随浏览器
   tzMode: 'local' | 'jst'
   lateNightCutoff: number // 深夜表记:凌晨 N 点前归前一天(显示 24+ 小时);0 = 按实际日期
   weekStart: 1 | 7 // 周一或周日开头

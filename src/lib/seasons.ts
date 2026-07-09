@@ -4,9 +4,10 @@
  */
 
 import type { Show } from '../types'
+import { seasonLabel } from './i18n'
 
 export function fmtSeason(yyyymm: string): string {
-  return `${+yyyymm.slice(0, 4)}年${+yyyymm.slice(4)}月`
+  return seasonLabel(+yyyymm.slice(0, 4), +yyyymm.slice(4))
 }
 
 /** 该季度起点(JST 首月 1 日 0 点)的时刻 */

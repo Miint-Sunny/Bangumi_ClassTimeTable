@@ -1,5 +1,6 @@
 import type { FriendsMap, Show, Tracking } from '../types'
 import { airedEps, behindCount, continuity } from '../lib/progress'
+import { t } from '../lib/i18n'
 import { MIN_VOTES } from '../lib/score'
 
 interface Props {
@@ -59,7 +60,7 @@ export default function ShowCard({
           {occText ? <span className="occ">{occText}</span> : null}
           {show.score ? (
             show.ratingTotal !== undefined && show.ratingTotal < MIN_VOTES ? (
-              <span className="score few" title={`仅 ${show.ratingTotal} 人评分,分数仅供参考`}>
+              <span className="score few" title={t('仅 {n} 人评分,分数仅供参考', { n: show.ratingTotal })}>
                 ★{show.score.toFixed(1)}?
               </span>
             ) : (
@@ -72,28 +73,28 @@ export default function ShowCard({
               {show.epsTotal ? `/${show.epsTotal}` : ''}
             </span>
           ) : archive ? (
-            show.epsTotal ? <span className="ep-badge">全{show.epsTotal}集</span> : null
+            show.epsTotal ? <span className="ep-badge">{t('全{n}集', { n: show.epsTotal })}</span> : null
           ) : aired !== undefined && aired > 0 ? (
-            <span className="ep-badge">更新至{aired}</span>
+            <span className="ep-badge">{t('更新至{n}', { n: aired })}</span>
           ) : null}
-          {behind > 0 ? <span className="behind">落后{behind}</span> : null}
-          {friendCount > 0 ? <span className="friends">友{friendCount}</span> : null}
+          {behind > 0 ? <span className="behind">{t('落后{n}', { n: behind })}</span> : null}
+          {friendCount > 0 ? <span className="friends">{t('友{n}', { n: friendCount })}</span> : null}
           {cont === 'carry' ? (
-            <span className="cont" title="上季开始播出,本季继续">
-              续
+            <span className="cont" title={t('上季开始播出,本季继续')}>
+              {t('续')}
             </span>
           ) : cont === 'long' ? (
-            <span className="cont long" title="长期放送(本季开始前已播超过 20 集)">
-              长期
+            <span className="cont long" title={t('长期放送(本季开始前已播超过 20 集)')}>
+              {t('长期')}
             </span>
           ) : null}
           {show.airFix?.advanceEps ? (
-            <span className="cont" title={show.airFix.note ?? `前 ${show.airFix.advanceEps} 集已先行放出`}>
-              先行{show.airFix.advanceEps}
+            <span className="cont" title={show.airFix.note ?? t('先行{n}', { n: show.airFix.advanceEps })}>
+              {t('先行{n}', { n: show.airFix.advanceEps })}
             </span>
           ) : null}
-          {!show.fromCalendar && cont === 'new' ? <span className="streamtag">流媒体</span> : null}
-          {offWeek ? <span>本周无</span> : null}
+          {!show.fromCalendar && cont === 'new' ? <span className="streamtag">{t('流媒体')}</span> : null}
+          {offWeek ? <span>{t('本周无')}</span> : null}
         </span>
       </span>
     </button>

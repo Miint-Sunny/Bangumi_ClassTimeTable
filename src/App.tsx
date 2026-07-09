@@ -17,6 +17,8 @@ import {
 } from './lib/bgm'
 import { beginOauthLogin, completeOauthLogin, fetchOauthConf, refreshIfNeeded, type OauthConf } from './lib/oauth'
 import { withViewTransition } from './lib/anim'
+import { LANGS, setLang, t, type Lang } from './lib/i18n'
+import AboutModal from './components/AboutModal'
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
 import { behindCount, continuity, type Continuity } from './lib/progress'
@@ -73,7 +75,7 @@ const REP_OPTS: { v: number; label: string }[] = [
 ]
 
 const THEMES: [Settings['theme'], string][] = [
-  ['bgm-dark', 'Bangumi 深色'],
+  ['bgm-dark', 'Bangumi深色'],
   ['dark', '深色'],
   ['contrast', '高对比深色'],
   ['light', '白色'],
@@ -82,6 +84,7 @@ const THEMES: [Settings['theme'], string][] = [
 export default function App() {
   const init = useRef(loadPersisted())
   const [settings, setSettings] = useState<Settings>(init.current.settings)
+  setLang(settings.lang) // 渲染最上游设定语言,子组件的 t() 全部生效
   const [tracking, setTracking] = useState<Tracking>(init.current.tracking)
   const [overrides, setOverrides] = useState<Record<number, AirFix>>(init.current.overrides)
 
@@ -104,6 +107,7 @@ export default function App() {
   const [weekCursor, setWeekCursor] = useState(0)
   const [monthCursor, setMonthCursor] = useState<MonthCursor | null>(null) // null = 默认月
   const [showSettings, setShowSettings] = useState(false)
+  const [showAbout, setShowAbout] = useState(false)
   const [friendsMap, setFriendsMap] = useState<FriendsMap>(new Map())
   const [friendErrors, setFriendErrors] = useState<Record<string, string>>({})
   const [now, setNow] = useState(() => Date.now())
@@ -116,6 +120,7 @@ export default function App() {
   useEffect(() => {
     savePersisted({ settings, tracking, overrides })
     document.documentElement.setAttribute('data-theme', settings.theme)
+    document.documentElement.lang = settings.lang
   }, [settings, tracking, overrides])
 
   // 主题切换时给全站颜色一个短暂的渐变窗口(首次挂载不做,避免开屏闪变)
@@ -152,7 +157,7 @@ export default function App() {
     const fresh = await refreshIfNeeded(oauthRef.current, acc)
     if (!fresh) {
       setAccount({ ...acc, invalid: true })
-      setSyncState({ msg: '登录已过期,请重新登录', busy: false })
+      setSyncState({ msg: t('登录已过期,请重新登录'), busy: false })
       return null
     }
     if (fresh !== acc) {
@@ -196,14 +201,17 @@ export default function App() {
       for (const id of pushIds) enqueuePush(Number(id), pushes[Number(id)])
       if (pushIds.length) await drainQueue(acc)
       if (!acc.mergedOnce) setAccount((a) => (a ? { ...a, mergedOnce: true } : a))
-      const t = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
-      setSyncState({ msg: `已同步 ${t}${pushIds.length ? ` · 推回 ${pushIds.length} 条` : ''}`, busy: false })
+      const at = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+      setSyncState({
+        msg: t('已同步 {t}', { t: at }) + (pushIds.length ? t(' · 推回 {n} 条', { n: pushIds.length }) : ''),
+        busy: false,
+      })
     } catch (e) {
       if (e instanceof BgmAuthError) {
         setAccount((a) => (a ? { ...a, invalid: true } : a))
-        setSyncState({ msg: '令牌已失效,请重新连接', busy: false })
+        setSyncState({ msg: t('令牌已失效,请重新连接'), busy: false })
       } else {
-        setSyncState({ msg: `同步失败:${e instanceof Error ? e.message : e}`, busy: false })
+        setSyncState({ msg: t('同步失败:{e}', { e: e instanceof Error ? e.message : String(e) }), busy: false })
       }
     } finally {
       syncingRef.current = false
@@ -244,7 +252,7 @@ export default function App() {
         if (acc && alive) setAccount(acc) // 触发首次双向合并
       } catch (e) {
         if (!alive) return
-        setSyncState({ msg: `Bangumi 登录失败:${e instanceof Error ? e.message : e}`, busy: false })
+        setSyncState({ msg: t('Bangumi 登录失败:{e}', { e: e instanceof Error ? e.message : String(e) }), busy: false })
         setShowSettings(true) // 让错误立刻可见
       }
     })()
@@ -654,7 +662,7 @@ export default function App() {
     <div className="container">
       <header className="site-header">
         <h1>
-          番组课表
+          {t('番组课表')}
           <select
             className="season-sel"
             value={seasonSel}
@@ -662,9 +670,12 @@ export default function App() {
               const v = e.target.value
               withViewTransition(() => setSeasonSel(v))
             }}
-            title="切换季度"
+            title={t('切换季度')}
           >
-            <option value="live">{season.label}(当季)</option>
+            <option value="live">
+              {season.label}
+              {t('(当季)')}
+            </option>
             {seasonList
               .filter((s) => s !== season.yyyymm)
               .map((s) => (
@@ -676,46 +687,53 @@ export default function App() {
         </h1>
         {stats && (
           <span className="stats">
-            {archive ? '该季收录' : '本季在播'} <b>{stats.total}</b> 部 · 在看 <b>{stats.watching}</b> 部
+            {t(archive ? '该季收录' : '本季在播')} <b>{stats.total}</b> {t('部')} · {t('在看')}{' '}
+            <b>{stats.watching}</b>
             {stats.behindTotal > 0 && (
               <>
                 {' '}
-                <span className="behind-total">欠了 {stats.behindTotal} 集没看</span>
+                <span className="behind-total">{t('欠了 {n} 集没看', { n: stats.behindTotal })}</span>
               </>
             )}
           </span>
         )}
         <span className="spacer" />
-        <span className="domains" title="Bangumi 各域名登录互不相通,选常用的">
+        <span className="domains" title={t('Bangumi 各域名登录互不相通,选常用的')}>
           {['bgm.tv', 'bangumi.tv', 'chii.in'].map((d) => (
             <a key={d} href={`https://${d}`} target="_blank" rel="noreferrer">
               {d}
             </a>
           ))}
-          <a
-            className="gh"
-            href="https://github.com/Miint-Sunny/Bangumi_ClassTimeTable"
-            target="_blank"
-            rel="noreferrer"
-            title="源代码 · 反馈问题"
-          >
-            GitHub
-          </a>
         </span>
         <select
           className="season-sel theme-sel"
-          title="色彩模式"
+          title={t('色彩模式')}
           value={settings.theme}
           onChange={(e) => patchSettings({ theme: e.target.value as Settings['theme'] })}
         >
           {THEMES.map(([k, label]) => (
             <option key={k} value={k}>
+              {t(label)}
+            </option>
+          ))}
+        </select>
+        <select
+          className="season-sel lang-sel"
+          title={t('语言')}
+          value={settings.lang}
+          onChange={(e) => patchSettings({ lang: e.target.value as Lang })}
+        >
+          {LANGS.map(([k, label]) => (
+            <option key={k} value={k}>
               {label}
             </option>
           ))}
         </select>
+        <button className="iconbtn" onClick={() => setShowAbout(true)}>
+          ⓘ {t('关于')}
+        </button>
         <button className="iconbtn" onClick={() => setShowSettings(true)}>
-          ⚙ 设置
+          ⚙ {t('设置')}
         </button>
       </header>
 
@@ -732,59 +750,60 @@ export default function App() {
               key={k}
               className={effView === k ? 'on' : ''}
               disabled={archive && k === 'day'}
-              title={archive && k === 'day' ? '日视图仅当季可用' : undefined}
+              title={archive && k === 'day' ? t('日视图仅当季可用') : undefined}
               onClick={() => changeView(k)}
             >
-              {label}
+              {t(label)}
             </button>
           ))}
         </span>
 
         {FILTERS.map((f) => (
           <button key={f.k} className={`chip${filter === f.k ? ' on' : ''}`} onClick={() => setFilter(f.k)}>
-            {f.label}
+            {t(f.label)}
           </button>
         ))}
 
         <span className="adv-wrap">
           <button
             className={`chip${advCount > 0 ? ' on' : ''}`}
-            title="范围 / 口碑 / 来源 / 题材"
+            title={t('范围 / 口碑 / 来源 / 题材')}
             onClick={() => setAdvOpen((v) => !v)}
           >
-            筛选{advCount > 0 ? ` ${advCount}` : ''} ▾
+            {t('筛选')}
+            {advCount > 0 ? ` ${advCount}` : ''} ▾
           </button>
           {advOpen && (
             <div className="filter-pop">
               <div className="fp-row">
-                <span className="fp-t">范围</span>
+                <span className="fp-t">{t('范围')}</span>
                 <span className="fp-chips">
                   {CONT_OPTS.map((o) => (
                     <button
                       key={o.k}
                       className={`chip${contSel.includes(o.k) ? ' on' : ''}`}
-                      title={o.title}
+                      title={t(o.title)}
                       onClick={() => toggleCont(o.k)}
                     >
-                      {o.label} <i>{facets.cont[o.k]}</i>
+                      {t(o.label)} <i>{facets.cont[o.k]}</i>
                     </button>
                   ))}
                 </span>
               </div>
               <div className="fp-row">
-                <span className="fp-t">口碑</span>
+                <span className="fp-t">{t('口碑')}</span>
                 <span className="seg small">
                   {REP_OPTS.map((o) => (
                     <button key={o.v} className={repMin === o.v ? 'on' : ''} onClick={() => setRepMin(o.v)}>
-                      {o.label}
+                      {o.v === 0 ? t('不限') : o.label}
                     </button>
                   ))}
                 </span>
-                <span className="fp-hint">按评分人数加权,小样本高分不虚高</span>
+                <span className="fp-hint">{t('按评分人数加权,小样本高分不虚高')}</span>
               </div>
               {facets.src.length > 0 && (
                 <div className="fp-row">
-                  <span className="fp-t">来源</span>
+                  <span className="fp-t">{t('来源')}</span>
                   <span className="fp-chips">
                     {facets.src.map(([k, n]) => (
                       <button
@@ -800,7 +819,7 @@ export default function App() {
               )}
               {facets.tags.length > 0 && (
                 <div className="fp-row">
-                  <span className="fp-t">题材</span>
+                  <span className="fp-t">{t('题材')}</span>
                   <span className="fp-chips">
                     {facets.tags.map(([k, n]) => (
                       <button
@@ -816,7 +835,7 @@ export default function App() {
               )}
               <div className="fp-row">
                 <button className="iconbtn" disabled={advCount === 0} onClick={clearAdv}>
-                  清除筛选
+                  {t('清除筛选')}
                 </button>
               </div>
             </div>
@@ -826,25 +845,25 @@ export default function App() {
         <input
           type="search"
           className="search"
-          placeholder="搜索标题 / 标签…"
+          placeholder={t('搜索标题 / 标签…')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
 
         <span className="spacer" style={{ flex: 1 }} />
 
-        <span className="seg small" title="时区">
+        <span className="seg small" title={t('时区')}>
           <button className={settings.tzMode === 'local' ? 'on' : ''} onClick={() => patchSettings({ tzMode: 'local' })}>
-            本地时间
+            {t('本地时间')}
           </button>
           <button className={settings.tzMode === 'jst' ? 'on' : ''} onClick={() => patchSettings({ tzMode: 'jst' })}>
-            日本时间
+            {t('日本时间')}
           </button>
         </span>
         {wide && (
           <button
             className="iconbtn"
-            title={settings.panelOpen ? '收起侧栏' : '展开侧栏'}
+            title={settings.panelOpen ? t('收起侧栏') : t('展开侧栏')}
             onClick={() => patchSettings({ panelOpen: !settings.panelOpen })}
           >
             {settings.panelOpen ? '⇥' : '⇤'}
@@ -854,9 +873,10 @@ export default function App() {
 
       {loadError ? (
         <div className="error-box">
-          数据加载失败:{loadError}
+          {t('数据加载失败:')}
+          {loadError}
           <br />
-          请检查网络后
+          {t('请检查网络后')}
           <a
             href="#"
             onClick={(e) => {
@@ -864,11 +884,13 @@ export default function App() {
               location.reload()
             }}
           >
-            重试
+            {t('重试')}
           </a>
         </div>
       ) : effShows === null ? (
-        <div className="loading">{archive ? `正在加载 ${fmtSeason(seasonSel)} 归档…` : '正在拉取本季放送表…'}</div>
+        <div className="loading">
+          {archive ? t('正在加载 {s} 归档…', { s: fmtSeason(seasonSel) }) : t('正在拉取本季放送表…')}
+        </div>
       ) : (
         <div className="content-row">
           <div className="view-area">
@@ -955,6 +977,8 @@ export default function App() {
           onClose={() => setOpenId(null)}
         />
       )}
+
+      {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
 
       {showSettings && (
         <SettingsPanel

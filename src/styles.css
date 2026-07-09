@@ -382,7 +382,7 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
 .wg-dayhead .d1 { font-size: 15px; color: var(--text); }
 .wg-dayhead.today { background: var(--today-bg); }
 .wg-dayhead.today .d1 { color: var(--pink-strong); }
-.wg-dayhead.today .d2::after { content: ' · 今天'; color: var(--pink-strong); }
+.wg-dayhead.today .today-mark { color: var(--pink-strong); }
 .wg-time {
   position: sticky; left: 0; z-index: 8;
   background: var(--axis-bg); color: var(--text-soft);
@@ -514,7 +514,6 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
 .mg-cell.today { background: var(--today-bg); }
 .mg-cell .date { color: var(--text-soft); font-size: 11px; margin-bottom: 2px; }
 .mg-cell.today .date { color: var(--pink-strong); font-weight: bold; }
-.mg-cell.today .date::after { content: ' · 今天'; }
 .mg-entries { display: flex; flex-direction: column; gap: 2px; max-height: 128px; overflow-y: auto; }
 .mg-entry {
   display: flex; gap: 4px; align-items: baseline; width: 100%;
@@ -695,6 +694,21 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
 .fp-chips .chip i { font-style: normal; opacity: 0.55; font-size: 10px; margin-left: 2px; }
 .fp-hint { color: var(--text-subtle); font-size: 10px; line-height: 24px; }
 .fp-row .seg { flex-shrink: 0; }
+
+/* 关于窗口 */
+.modal.about { max-width: 640px; }
+.about-head h2 { margin: 0; font-weight: normal; font-size: 20px; color: var(--pink-strong); }
+.about-head .tagline { color: var(--text-soft); margin-top: 2px; }
+.about-head .ver { color: var(--text-subtle); font-size: 11px; margin-top: 6px; }
+.about-links { display: flex; gap: 8px; margin: 12px 0 4px; flex-wrap: wrap; }
+.about-links .iconbtn { display: inline-flex; align-items: center; gap: 6px; }
+.about-credit { margin-top: 8px; }
+.changelog { max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; }
+.cl-row { display: flex; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--border-soft); align-items: baseline; }
+.cl-row:last-child { border-bottom: none; }
+.cl-date { color: var(--text-subtle); font-family: ui-monospace, monospace; font-size: 10px; flex-shrink: 0; width: 74px; }
+.cl-text { color: var(--text-soft); line-height: 1.6; min-width: 0; }
+.changelog .cl-row:first-child .cl-text { color: var(--text); }
 
 .cut-sel {
   background: var(--bg); border: 1px solid var(--border); border-radius: 5px;

@@ -1,4 +1,5 @@
 import type { AirSlot, Settings, Show } from '../types'
+import { seasonLabel, t } from './i18n'
 
 export const JST = 'Asia/Tokyo'
 export const LOCAL_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -100,21 +101,21 @@ export function startOfWeekInstant(now: number, tz: string, weekStart: 1 | 7): n
 }
 
 /** "3 小时后" / "昨天" 之类的相对时间 */
-export function relTime(t: number, now: number): string {
-  const diff = t - now
+export function relTime(at: number, now: number): string {
+  const diff = at - now
   const abs = Math.abs(diff)
-  const suffix = diff >= 0 ? '后' : '前'
-  if (abs < 60_000) return diff >= 0 ? '马上' : '刚刚'
-  if (abs < 3600_000) return `${Math.round(abs / 60_000)} 分钟${suffix}`
-  if (abs < DAY_MS) return `${Math.round(abs / 3600_000)} 小时${suffix}`
-  return `${Math.round(abs / DAY_MS)} 天${suffix}`
+  const later = diff >= 0
+  if (abs < 60_000) return later ? t('马上') : t('刚刚')
+  if (abs < 3600_000) return t(later ? '{n} 分钟后' : '{n} 分钟前', { n: Math.round(abs / 60_000) })
+  if (abs < DAY_MS) return t(later ? '{n} 小时后' : '{n} 小时前', { n: Math.round(abs / 3600_000) })
+  return t(later ? '{n} 天后' : '{n} 天前', { n: Math.round(abs / DAY_MS) })
 }
 
 /** 当前季度,如 { yyyymm: '202607', label: '2026年7月' } */
 export function currentSeason(now: number) {
   const p = partsInZone(now, JST)
   const startMonth = Math.floor((p.mo - 1) / 3) * 3 + 1
-  return { yyyymm: `${p.y}${pad(startMonth)}`, label: `${p.y}年${startMonth}月` }
+  return { yyyymm: `${p.y}${pad(startMonth)}`, label: seasonLabel(p.y, startMonth) }
 }
 
 /** 当季季度起点(JST 当季首月 1 日 0 点)的时刻 */

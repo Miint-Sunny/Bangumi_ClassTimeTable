@@ -4,7 +4,8 @@ import type { SubjectInfo } from '../lib/api'
 import { airedEps, behindCount } from '../lib/progress'
 import { epLabel, nextEpisode, occurrencesBetween } from '../lib/schedule'
 import { MIN_VOTES, fmtVotes, weightedScore } from '../lib/score'
-import { DAY_MS, WEEKDAY_CN, dayOrder, lateNightRef, pad, partsInZone, relTime, slotFor, startOfDayInstant } from '../lib/time'
+import { DAY_MS, dayOrder, lateNightRef, pad, partsInZone, relTime, slotFor, startOfDayInstant } from '../lib/time'
+import { monthTitle, t, wdFull, wdShort } from '../lib/i18n'
 import { DetailBody } from './DetailModal'
 
 const MIN_WIDTH = 240 // 拖到这以下松手 = 收起
@@ -66,7 +67,7 @@ export default function SidePanel(props: Props) {
       className={`side-panel${openShow ? ' has-detail' : ''}${willCollapse ? ' will-collapse' : ''}`}
       style={{ width: dragW ?? width }}
     >
-      <div className="panel-grip" onPointerDown={onGripDown} title="拖动调宽,拖到最窄即收起" />
+      <div className="panel-grip" onPointerDown={onGripDown} title={t('拖动调宽,拖到最窄即收起')} />
       {openShow ? (
         <DetailBody
           key={openShow.id}
@@ -178,9 +179,9 @@ function DashBody(props: Props) {
       {tracked.length === 0 ? (
         <>
           <div className="dash-hint">
-            点击课表里的番剧卡片,详情会在这里展开。
+            {t('点击课表里的番剧卡片,详情会在这里展开。')}
             <br />
-            标记「在看 / 想看」后,这里会变成你的补番清单和更新日程。
+            {t('标记「在看 / 想看」后,这里会变成你的补番清单和更新日程。')}
           </div>
           <TopRated {...props} openLink={openLink} />
         </>
@@ -188,11 +189,11 @@ function DashBody(props: Props) {
         <>
           <div className="dm-sec">
             <div className="sec-t">
-              补番清单
-              {behindList.length > 0 ? `(欠 ${behindList.reduce((a, x) => a + x.behind, 0)} 集)` : ''}
+              {t('补番清单')}
+              {behindList.length > 0 ? t('(欠 {n} 集)', { n: behindList.reduce((a, x) => a + x.behind, 0) }) : ''}
             </div>
             {behindList.length === 0 ? (
-              <div className="dash-hint">没有落后的番,轻松。</div>
+              <div className="dash-hint">{t('没有落后的番,轻松。')}</div>
             ) : (
               behindList.map(({ s, behind }) => {
                 const watched = tracking.watched[s.id] ?? 0
@@ -206,11 +207,11 @@ function DashBody(props: Props) {
                       {watched}/{aired}
                     </span>
                     <span className="behind">-{behind}</span>
-                    <button className="mini" title="看了一集" onClick={() => onSetWatched(s.id, watched + 1)}>
+                    <button className="mini" title={t('看了一集')} onClick={() => onSetWatched(s.id, watched + 1)}>
                       +1
                     </button>
-                    <button className="mini" title="补到已播" onClick={() => onSetWatched(s.id, aired ?? watched)}>
-                      补齐
+                    <button className="mini" title={t('补到已播')} onClick={() => onSetWatched(s.id, aired ?? watched)}>
+                      {t('补齐')}
                     </button>
                   </div>
                 )
@@ -220,7 +221,7 @@ function DashBody(props: Props) {
 
           {!archive && upcoming.length > 0 && (
             <div className="dm-sec">
-              <div className="sec-t">我的更新日程</div>
+              <div className="sec-t">{t('我的更新日程')}</div>
               {upcoming.map(({ s, nx }) => (
                 <div key={s.id} className="dash-row">
                   <span className="when" title={fmtT(nx.t)}>
@@ -239,11 +240,11 @@ function DashBody(props: Props) {
 
       {!archive && conflicts.length > 0 && (
         <div className="dm-sec">
-          <div className="sec-t">⚡ 撞档提醒</div>
+          <div className="sec-t">{t('⚡ 撞档提醒')}</div>
           {conflicts.map((c) => (
             <div key={`${c.day}:${c.minutes}`} className="conflict-group">
               <div className="cg-when">
-                周{WEEKDAY_CN[c.day]} {pad(Math.floor(c.minutes / 60))}:{pad(c.minutes % 60)}
+                {wdFull(c.day)} {pad(Math.floor(c.minutes / 60))}:{pad(c.minutes % 60)}
               </div>
               {c.shows.map((s) => {
                 const behind = behindCount(s, tracking, now)
@@ -266,7 +267,7 @@ function DashBody(props: Props) {
 
       {mutual.length > 0 && (
         <div className="dm-sec">
-          <div className="sec-t">共同在追</div>
+          <div className="sec-t">{t('共同在追')}</div>
           {mutual.map(([user, list]) => (
             <div key={user} className="mutual-row">
               <span className="user">{user}</span>
@@ -279,7 +280,7 @@ function DashBody(props: Props) {
                     </a>
                   </span>
                 ))}
-                {list.length > 4 ? ` 等 ${list.length} 部` : ''}
+                {list.length > 4 ? t('等 {n} 部', { n: list.length }) : ''}
               </span>
             </div>
           ))}
@@ -288,14 +289,14 @@ function DashBody(props: Props) {
 
       {friendFeed.length > 0 && (
         <div className="dm-sec">
-          <div className="sec-t">好友动态</div>
+          <div className="sec-t">{t('好友动态')}</div>
           {friendFeed.map((f) => (
             <div key={`${f.user}-${f.show.id}`} className="dash-row">
               <span className="user">{f.user}</span>
               <a href="#" className="nm" onClick={openLink(f.show.id)} title={f.show.nameCn}>
                 {f.show.nameCn}
               </a>
-              <span className="ep">看到{f.ep}</span>
+              <span className="ep">{t('看到{n}', { n: f.ep })}</span>
               <span className="ago">{relTime(f.at, now)}</span>
             </div>
           ))}
@@ -317,18 +318,18 @@ function TopRated(props: Props & { openLink: (id: number) => (e: MouseEvent) => 
   if (top.length === 0) return null
   return (
     <div className="dm-sec">
-      <div className="sec-t" title="按评分人数加权排序,少量人打出的高分不虚高">
-        {props.archive ? '该季' : '本季'}高分
+      <div className="sec-t" title={t('按评分人数加权排序,少量人打出的高分不虚高')}>
+        {t(props.archive ? '该季高分' : '本季高分')}
       </div>
       {top.map(({ s, w }) => (
         <div key={s.id} className="dash-row">
-          <span className="score" title={`加权 ${w.toFixed(2)}`}>
+          <span className="score" title={t('加权 {n}', { n: w.toFixed(2) })}>
             ★{s.score!.toFixed(1)}
           </span>
           <a href="#" className="nm" onClick={props.openLink(s.id)}>
             {s.nameCn}
           </a>
-          {s.ratingTotal ? <span className="votes">{fmtVotes(s.ratingTotal)}人</span> : null}
+          {s.ratingTotal ? <span className="votes">{t('{n}人', { n: fmtVotes(s.ratingTotal) })}</span> : null}
         </div>
       ))}
     </div>
@@ -370,12 +371,12 @@ function MiniCal({ shows, tracking, settings, now, tz, view, dayCursor, onJumpDa
   return (
     <div className="dm-sec">
       <div className="sec-t">
-        {p.y} 年 {p.mo} 月 · 点日期看当天
+        {monthTitle(p.y, p.mo)} {t('· 点日期看当天')}
       </div>
       <div className="minical">
         {headWds.map((wd) => (
           <span key={`h${wd}`} className="mc-head">
-            {WEEKDAY_CN[wd]}
+            {wdShort(wd)}
           </span>
         ))}
         {cells.map((d, i) => {
@@ -386,7 +387,7 @@ function MiniCal({ shows, tracking, settings, now, tz, view, dayCursor, onJumpDa
             <button
               key={d}
               className={`mc-cell${offset === 0 ? ' today' : ''}${selected ? ' sel' : ''}`}
-              title={dots.has(d) ? `${p.mo} 月 ${d} 日有追番更新` : undefined}
+              title={dots.has(d) ? t('{mo} 月 {d} 日有追番更新', { mo: p.mo, d }) : undefined}
               onClick={() => onJumpDay(offset)}
             >
               {d}
@@ -396,7 +397,8 @@ function MiniCal({ shows, tracking, settings, now, tz, view, dayCursor, onJumpDa
         })}
       </div>
       <div className="mc-legend">
-        <i className="dot" /> 追番更新日 · 描边 = 今天{view === 'day' ? ' · 填充 = 当前所在日' : ''}
+        <i className="dot" /> {t('追番更新日 · 描边 = 今天')}
+        {view === 'day' ? t(' · 填充 = 当前所在日') : ''}
       </div>
     </div>
   )

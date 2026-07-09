@@ -2,7 +2,7 @@ import { Fragment, useMemo } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
 import {
   DAY_MS,
-  WEEKDAY_CN,
+
   dayOrder,
   displayTz,
   lateNightRef,
@@ -12,6 +12,7 @@ import {
   startOfWeekInstant,
 } from '../lib/time'
 import { hasEnded, occurrencesBetween } from '../lib/schedule'
+import { t, wdFull } from '../lib/i18n'
 import ShowCard from './ShowCard'
 
 const REL_WEEK: Record<number, string> = { [-1]: '上周', 0: '本周', 1: '下周' }
@@ -111,7 +112,7 @@ export default function WeekView({
 
   const nowRow = (
     <>
-      <div className="wg-now-time" title="当前时刻">
+      <div className="wg-now-time" title={t('当前时刻')}>
         {nowLabel}
       </div>
       {days.map((wd) => (
@@ -127,19 +128,19 @@ export default function WeekView({
       {!archive && (
         <div className="month-nav">
           <button className="iconbtn" onClick={() => onWeekOffset(weekOffset - 1)}>
-            ‹ 上周
+            ‹ {t('上周')}
           </button>
           <span className="m-title">
-            {relWeek ? `${relWeek} ` : ''}
+            {relWeek ? `${t(relWeek)} ` : ''}
             {dayHeads[0]?.label} – {dayHeads[6]?.label}
           </span>
           <button className="iconbtn" onClick={() => onWeekOffset(weekOffset + 1)}>
-            下周 ›
+            {t('下周')} ›
           </button>
           <span className="reset-slot">
             {!isCurrentWeek && (
               <button className="iconbtn" onClick={() => onWeekOffset(0)}>
-                回到本周
+                {t('回到本周')}
               </button>
             )}
           </span>
@@ -147,12 +148,20 @@ export default function WeekView({
       )}
       <div className="week-grid">
       <div className="wg-corner" />
-      {dayHeads.map((h) => (
-        <div key={h.wd} className={`wg-dayhead${showToday && h.wd === todayWd ? ' today' : ''}`}>
-          <div className="d1">周{WEEKDAY_CN[h.wd]}</div>
-          {!archive && <div className="d2">{h.label}</div>}
-        </div>
-      ))}
+      {dayHeads.map((h) => {
+        const isToday = showToday && h.wd === todayWd
+        return (
+          <div key={h.wd} className={`wg-dayhead${isToday ? ' today' : ''}`}>
+            <div className="d1">{wdFull(h.wd)}</div>
+            {!archive && (
+              <div className="d2">
+                {h.label}
+                {isToday && <span className="today-mark"> · {t('今天')}</span>}
+              </div>
+            )}
+          </div>
+        )
+      })}
 
       {rows.map((m, i) => {
         const night = m >= 1440 || m < 360
@@ -180,8 +189,8 @@ export default function WeekView({
 
       {hasUnknown && (
         <>
-          <div className="wg-time" title="未提供精确时间">
-            未定
+          <div className="wg-time" title={t('未提供精确时间')}>
+            {t('未定')}
           </div>
           {days.map((wd) => (
             <div key={wd} className={`wg-cell${showToday && wd === todayWd ? ' today' : ''}`}>

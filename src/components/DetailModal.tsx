@@ -4,8 +4,9 @@ import { fetchSubject, type SubjectInfo } from '../lib/api'
 import { airedEps, behindCount } from '../lib/progress'
 import { MIN_VOTES, fmtVotes } from '../lib/score'
 import { nextEpisode, totalEps } from '../lib/schedule'
-import { WEEKDAY_CN, displayTz, pad, partsInZone, relTime, slotFor } from '../lib/time'
+import { displayTz, pad, partsInZone, relTime, slotFor } from '../lib/time'
 import { continuity } from '../lib/progress'
+import { everyWd, fmtMDW, t } from '../lib/i18n'
 
 interface Props {
   show: Show
@@ -34,7 +35,8 @@ const STATUS_BTNS: { k: WatchStatus; label: string }[] = [
 
 /** bgm.tv 官方评分文案(1~10),取自其收藏窗口 */
 const RATE_CAPTIONS = ['', '不忍直视', '很差', '差', '较差', '不过不失', '还行', '推荐', '力荐', '神作', '超神作'] as const
-const rateTitle = (v: number) => `${RATE_CAPTIONS[v]} ${v}${v === 1 || v === 10 ? '(请谨慎评价)' : ''}`
+const rateCap = (v: number) => t(RATE_CAPTIONS[v])
+const rateTitle = (v: number) => `${rateCap(v)} ${v}${v === 1 || v === 10 ? t('(请谨慎评价)') : ''}`
 
 /** 详情内容体:宽屏时装进右侧 SidePanel,窄屏时装进弹窗外壳 */
 export function DetailBody(props: Props) {
@@ -100,14 +102,14 @@ export function DetailBody(props: Props) {
 
   const friends = friendsMap.get(show.id)
 
-  const fmtNext = (t: number) => {
-    const p = partsInZone(t, tz)
-    return `${p.mo}月${p.d}日(周${WEEKDAY_CN[p.wd]}) ${pad(p.hh)}:${pad(p.mm)}`
+  const fmtNext = (at: number) => {
+    const p = partsInZone(at, tz)
+    return `${fmtMDW(p.mo, p.d, p.wd)} ${pad(p.hh)}:${pad(p.mm)}`
   }
 
   return (
     <>
-      <button className="close" onClick={onClose} aria-label="关闭">
+      <button className="close" onClick={onClose} aria-label={t('关闭')}>
         ×
       </button>
 
@@ -124,30 +126,32 @@ export function DetailBody(props: Props) {
               {score ? (
                 <>
                   <span className="score">★ {score.toFixed(1)}</span>
-                  {votes ? <span> · {fmtVotes(votes)} 人评分</span> : null}
-                  {votes !== undefined && votes < MIN_VOTES ? <span className="few-note">(人数少,仅供参考)</span> : null}
-                  {show.rank ? <span> · 排名 #{show.rank}</span> : null}
+                  {votes ? <span> · {t('{n} 人评分', { n: fmtVotes(votes) })}</span> : null}
+                  {votes !== undefined && votes < MIN_VOTES ? (
+                    <span className="few-note">{t('(人数少,仅供参考)')}</span>
+                  ) : null}
+                  {show.rank ? <span> · {t('排名 #{n}', { n: show.rank })}</span> : null}
                   <br />
                 </>
               ) : null}
-              {show.watchers ? <>{show.watchers} 人在看 · </> : null}
+              {show.watchers ? <>{t('{n} 人在看', { n: show.watchers })} · </> : null}
               {show.sourceType ?? ''}
               {continuity(show, seasonStart) === 'carry' ? (
-                <> · 上季续播</>
+                <> · {t('上季续播')}</>
               ) : continuity(show, seasonStart) === 'long' ? (
-                <> · 长期放送{aired ? `(已播 ${aired} 集)` : ''}</>
+                <> · {aired ? t('长期放送(已播 {n} 集)', { n: aired }) : t('长期放送')}</>
               ) : null}
             </div>
             {show.tags && show.tags.length > 0 && (
               <div className="dm-tags">
-                {show.tags.map((t) =>
+                {show.tags.map((tag) =>
                   onTag ? (
-                    <button key={t} className="tag clickable" title={`筛选「${t}」`} onClick={() => onTag(t)}>
-                      {t}
+                    <button key={tag} className="tag clickable" title={t('筛选「{t}」', { t: tag })} onClick={() => onTag(tag)}>
+                      {tag}
                     </button>
                   ) : (
-                    <span key={t} className="tag">
-                      {t}
+                    <span key={tag} className="tag">
+                      {tag}
                     </span>
                   ),
                 )}
@@ -157,28 +161,33 @@ export function DetailBody(props: Props) {
         </div>
 
         <div className="dm-sec">
-          <div className="sec-t">放送</div>
+          <div className="sec-t">{t('放送')}</div>
           <div className="dm-airinfo">
             {slot.known ? (
               <>
-                每周{WEEKDAY_CN[slot.day]} <b>{slot.label}</b>({settings.tzMode === 'jst' ? '日本时间' : '本地时间'})
+                {everyWd(slot.day)} <b>{slot.label}</b>({t(settings.tzMode === 'jst' ? '日本时间' : '本地时间')})
               </>
             ) : show.airWeekdayJst ? (
-              <>每周{WEEKDAY_CN[show.airWeekdayJst]}(日本时间,具体时刻未知)</>
+              <>
+                {everyWd(show.airWeekdayJst)}
+                {t('(日本时间,具体时刻未知)')}
+              </>
             ) : (
-              <>放送时间未知</>
+              <>{t('放送时间未知')}</>
             )}
             {nx && (
               <>
                 <br />
-                下一次更新 {nx.epEnd > nx.ep ? `第 ${nx.ep}-${nx.epEnd} 集` : `第 ${nx.ep} 集`} ·{' '}
+                {t('下一次更新')}{' '}
+                {nx.epEnd > nx.ep ? t('第 {a}-{b} 集', { a: nx.ep, b: nx.epEnd }) : t('第 {n} 集', { n: nx.ep })} ·{' '}
                 <b>{fmtNext(nx.t)}</b>({relTime(nx.t, now)})
               </>
             )}
             {aired !== undefined && (
               <>
                 <br />
-                已播出 <b>{aired}</b> 集{epsTotal ? ` / 全 ${epsTotal} 集` : ''}
+                {t('已播出')} <b>{aired}</b> {t('集')}
+                {epsTotal ? ` ${t('/ 全 {n} 集', { n: epsTotal })}` : ''}
               </>
             )}
           </div>
@@ -189,7 +198,7 @@ export function DetailBody(props: Props) {
                 <>
                   {' '}
                   <a href={show.airFix.source} target="_blank" rel="noreferrer">
-                    [依据]
+                    {t('[依据]')}
                   </a>
                 </>
               )}
@@ -199,8 +208,8 @@ export function DetailBody(props: Props) {
 
         <div className="dm-sec">
           <div className="sec-t">
-            放送校正
-            {hasLocalOverride ? '(本机覆盖中)' : show.airFix ? '(来自季度增强数据)' : ''}
+            {t('放送校正')}
+            {hasLocalOverride ? t('(本机覆盖中)') : show.airFix ? t('(来自季度增强数据)') : ''}
           </div>
           {editingFix ? (
             <FixEditor
@@ -217,13 +226,13 @@ export function DetailBody(props: Props) {
             />
           ) : (
             <button className="iconbtn" onClick={() => setEditingFix(true)}>
-              ✎ 校正放送信息(先行/提前放送等)
+              {t('✎ 校正放送信息(先行/提前放送等)')}
             </button>
           )}
         </div>
 
         <div className="dm-sec">
-          <div className="sec-t">追番状态与评价</div>
+          <div className="sec-t">{t('追番状态与评价')}</div>
           <div className="status-row">
             {STATUS_BTNS.map((b) => (
               <button
@@ -231,7 +240,7 @@ export function DetailBody(props: Props) {
                 className={status === b.k ? `on-${b.k}` : ''}
                 onClick={() => onSetStatus(show.id, status === b.k ? null : b.k)}
               >
-                {b.label}
+                {t(b.label)}
               </button>
             ))}
           </div>
@@ -252,11 +261,7 @@ export function DetailBody(props: Props) {
                   ))}
                 </span>
                 <span className={`rate-cap${hoverRate ? ' preview' : ''}`}>
-                  {hoverRate
-                    ? `${RATE_CAPTIONS[hoverRate]} ${hoverRate}`
-                    : myRate
-                      ? `${RATE_CAPTIONS[myRate]} ${myRate}`
-                      : '我的评价'}
+                  {hoverRate ? `${rateCap(hoverRate)} ${hoverRate}` : myRate ? `${rateCap(myRate)} ${myRate}` : t('我的评价')}
                 </span>
               </div>
               <MemoForm
@@ -272,14 +277,16 @@ export function DetailBody(props: Props) {
 
         {(status === 'watching' || watched > 0) && (
           <div className="dm-sec">
-            <div className="sec-t">进度</div>
+            <div className="sec-t">{t('进度')}</div>
             <div className="ep-stepper">
               <button className="step" onClick={() => onSetWatched(show.id, Math.max(0, watched - 1))}>
                 −
               </button>
               <span className="val">
                 {watched}
-                <small>{epsTotal ? ` / ${epsTotal}` : ''} 集</small>
+                <small>
+                  {epsTotal ? ` / ${epsTotal}` : ''} {t('集')}
+                </small>
               </span>
               <button
                 className="step"
@@ -289,9 +296,9 @@ export function DetailBody(props: Props) {
               </button>
               {behind > 0 && (
                 <>
-                  <span className="behind">落后 {behind} 集</span>
+                  <span className="behind">{t('落后 {n} 集', { n: behind })}</span>
                   <button className="catchup" onClick={() => onSetWatched(show.id, aired ?? watched)}>
-                    补到已播
+                    {t('补到已播')}
                   </button>
                 </>
               )}
@@ -301,11 +308,11 @@ export function DetailBody(props: Props) {
 
         {friends && friends.size > 0 && (
           <div className="dm-sec">
-            <div className="sec-t">好友进度</div>
+            <div className="sec-t">{t('好友进度')}</div>
             <div className="friend-line">
               {[...friends.entries()].map(([user, st]) => (
                 <span key={user}>
-                  <b>{user}</b> 看到第 {st.ep} 集
+                  <b>{user}</b> {t('看到第 {n} 集', { n: st.ep })}
                 </span>
               ))}
             </div>
@@ -314,7 +321,7 @@ export function DetailBody(props: Props) {
 
         {(show.sites.length > 0 || show.officialSite || show.pvUrl) && (
           <div className="dm-sec">
-            <div className="sec-t">链接</div>
+            <div className="sec-t">{t('链接')}</div>
             <div className="links-row">
               {show.pvUrl && (
                 <a href={show.pvUrl} target="_blank" rel="noreferrer">
@@ -323,12 +330,12 @@ export function DetailBody(props: Props) {
               )}
               {pvBv && (
                 <button className="iconbtn pv-toggle" onClick={() => setPvOpen((v) => !v)}>
-                  {pvOpen ? '收起预览' : '内嵌预览'}
+                  {t(pvOpen ? '收起预览' : '内嵌预览')}
                 </button>
               )}
               {show.officialSite && (
                 <a href={show.officialSite} target="_blank" rel="noreferrer">
-                  官网
+                  {t('官网')}
                 </a>
               )}
               {show.sites.map((s, i) => (
@@ -342,7 +349,7 @@ export function DetailBody(props: Props) {
                 <iframe
                   src={`https://player.bilibili.com/player.html?bvid=${pvBv}&autoplay=0&danmaku=0`}
                   allowFullScreen
-                  title="PV 预览"
+                  title={t('PV 预览')}
                 />
               </div>
             )}
@@ -351,7 +358,7 @@ export function DetailBody(props: Props) {
 
       {info?.summary && (
         <div className="dm-sec">
-          <div className="sec-t">简介</div>
+          <div className="sec-t">{t('简介')}</div>
           <div className="dm-summary">{info.summary}</div>
         </div>
       )}
@@ -418,9 +425,13 @@ function MemoForm({
     tags.length > 0 && (
       <div className="memo-sugg">
         <span className="lbl">{label}</span>
-        {tags.map((t) => (
-          <button key={t} className={`tag clickable${parsedTags.includes(t) ? ' on' : ''}`} onClick={() => toggleTag(t)}>
-            {t}
+        {tags.map((tag) => (
+          <button
+            key={tag}
+            className={`tag clickable${parsedTags.includes(tag) ? ' on' : ''}`}
+            onClick={() => toggleTag(tag)}
+          >
+            {tag}
           </button>
         ))}
       </div>
@@ -430,25 +441,25 @@ function MemoForm({
     <div className="memo-form">
       <input
         value={tagsText}
-        placeholder="标签(空格或逗号隔开,至多 10 个)"
+        placeholder={t('标签(空格或逗号隔开,至多 10 个)')}
         onChange={(e) => setTagsText(e.target.value)}
       />
-      {sugg('常用', hotTags)}
-      {sugg('我的', myTags)}
+      {sugg(t('常用'), hotTags)}
+      {sugg(t('我的'), myTags)}
       <textarea
         value={comment}
         rows={2}
-        placeholder="吐槽(随收藏同步到 bgm)"
+        placeholder={t('吐槽(随收藏同步到 bgm)')}
         onChange={(e) => setComment(e.target.value)}
       />
       <div className="memo-actions">
         <button className="iconbtn accent" disabled={!dirty} onClick={save}>
-          保存
+          {t('保存')}
         </button>
         <label className="priv">
-          <input type="checkbox" checked={priv} onChange={(e) => setPriv(e.target.checked)} /> 仅自己可见
+          <input type="checkbox" checked={priv} onChange={(e) => setPriv(e.target.checked)} /> {t('仅自己可见')}
         </label>
-        {savedAt > 0 && !dirty && <span className="saved">已保存</span>}
+        {savedAt > 0 && !dirty && <span className="saved">{t('已保存')}</span>}
       </div>
     </div>
   )
@@ -527,43 +538,54 @@ function FixEditor({
   return (
     <div className="fix-form">
       <div className="fix-row">
-        <span>前</span>
+        <span>{t('前')}</span>
         <input className="num" type="number" min="1" value={advanceEps} onChange={(e) => setAdvanceEps(e.target.value)} />
-        <span>集已整批放出,时刻(本地时间,留空=开播时刻)</span>
+        <span>{t('集已整批放出,时刻(本地时间,留空=开播时刻)')}</span>
         <input type="datetime-local" value={advanceAt} onChange={(e) => setAdvanceAt(e.target.value)} />
       </div>
       <div className="fix-row">
-        <span>常规周更从第</span>
+        <span>{t('常规周更从第')}</span>
         <input className="num" type="number" min="1" value={anchorEp} onChange={(e) => setAnchorEp(e.target.value)} />
-        <span>集起,该集播出于</span>
+        <span>{t('集起,该集播出于')}</span>
         <input type="datetime-local" value={anchorAt} onChange={(e) => setAnchorAt(e.target.value)} />
       </div>
       <div className="fix-row">
-        <span>总集数</span>
+        <span>{t('总集数')}</span>
         <input className="num" type="number" min="1" value={eps} onChange={(e) => setEps(e.target.value)} />
-        <span>备注</span>
-        <input className="wide" value={note} placeholder="如:1~6 集 7/4 全网先行" onChange={(e) => setNote(e.target.value)} />
+        <span>{t('备注')}</span>
+        <input
+          className="wide"
+          value={note}
+          placeholder={t('如:1~6 集 7/4 全网先行')}
+          onChange={(e) => setNote(e.target.value)}
+        />
       </div>
       <div className="fix-row">
-        <span>依据链接</span>
-        <input className="wide" value={source} placeholder="官网公告 / yuc 页面 URL" onChange={(e) => setSource(e.target.value)} />
+        <span>{t('依据链接')}</span>
+        <input
+          className="wide"
+          value={source}
+          placeholder={t('官网公告 / yuc 页面 URL')}
+          onChange={(e) => setSource(e.target.value)}
+        />
       </div>
       <div className="fix-row">
         <button className="iconbtn" disabled={preview === null} onClick={() => preview && onSave(preview)}>
-          保存到本机
+          {t('保存到本机')}
         </button>
         <button className="iconbtn" onClick={onClear}>
-          清除校正
+          {t('清除校正')}
         </button>
         <button className="iconbtn" onClick={onCancel}>
-          取消
+          {t('取消')}
         </button>
       </div>
       {preview && (
         <>
           <div className="fix-hint">
-            校正只保存在本机浏览器。想让它成为站点默认:把下面 JSON 交给 refresh-data skill 合并进
-            enhance.json 后重新部署。
+            {t(
+              '校正只保存在本机浏览器。想让它成为站点默认:把下面 JSON 交给 refresh-data skill 合并进 enhance.json 后重新部署。',
+            )}
           </div>
           <code className="fix-json">{JSON.stringify({ [show.id]: { air: preview } }, null, 1)}</code>
         </>

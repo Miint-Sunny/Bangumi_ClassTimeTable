@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
-import { WEEKDAY_CN, dayOrder, displayTz, partsInZone, slotFor } from '../lib/time'
+import { dayOrder, displayTz, partsInZone, slotFor } from '../lib/time'
 import { epLabel, occurrencesBetween } from '../lib/schedule'
+import { monthTitle, t, wdFull } from '../lib/i18n'
 
 export interface MonthCursor {
   y: number
@@ -117,18 +118,16 @@ export default function MonthView({ shows, tracking, settings, now, archive, cur
     <div>
       <div className="month-nav">
         <button className="iconbtn" onClick={() => nav(-1)}>
-          ‹ 上月
+          ‹ {t('上月')}
         </button>
-        <span className="m-title">
-          {cursor.y} 年 {cursor.mo} 月
-        </span>
+        <span className="m-title">{monthTitle(cursor.y, cursor.mo)}</span>
         <button className="iconbtn" onClick={() => nav(1)}>
-          下月 ›
+          {t('下月')} ›
         </button>
         <span className="reset-slot">
           {(cursor.y !== resetTo.y || cursor.mo !== resetTo.mo) && (
             <button className="iconbtn" onClick={() => onCursor(resetTo)}>
-              {archive ? '回到季首月' : '回到本月'}
+              {t(archive ? '回到季首月' : '回到本月')}
             </button>
           )}
         </span>
@@ -137,12 +136,15 @@ export default function MonthView({ shows, tracking, settings, now, archive, cur
       <div className="month-grid">
         {headWds.map((wd) => (
           <div key={wd} className="mg-head">
-            周{WEEKDAY_CN[wd]}
+            {wdFull(wd)}
           </div>
         ))}
         {weeks.flat().map((c, i) => (
           <div key={i} className={`mg-cell${c.out ? ' out' : ''}${c.isToday ? ' today' : ''}`}>
-            <div className="date">{c.d}</div>
+            <div className="date">
+              {c.d}
+              {c.isToday && ` · ${t('今天')}`}
+            </div>
             {!c.out && (
               <div className="mg-entries">
                 {c.entries.map((e) => {
@@ -152,7 +154,9 @@ export default function MonthView({ shows, tracking, settings, now, archive, cur
                     <button
                       key={`${e.show.id}-${e.ep}`}
                       className={`mg-entry st-${st}${e.aired ? ' aired' : ''}`}
-                      title={`${e.show.nameCn} 第${e.epEnd > e.ep ? `${e.ep}-${e.epEnd}` : e.ep}集`}
+                      title={`${e.show.nameCn} ${
+                        e.epEnd > e.ep ? t('第 {a}-{b} 集', { a: e.ep, b: e.epEnd }) : t('第 {n} 集', { n: e.ep })
+                      }`}
                       onClick={() => onOpen(e.show.id)}
                     >
                       <span className="ep">{epText}</span>
