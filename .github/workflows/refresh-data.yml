@@ -38,6 +38,9 @@ jobs:
           fi
           python3 scripts/bgmwiki_sync.py ${{ inputs.backfill && '--backfill' || '' }} | tee sync.log
 
+      - name: 产地标注(识别放送表里的国创/欧美条目)
+        run: python3 scripts/mark_region.py
+
       - name: 校验产物
         run: |
           python3 - <<'EOF'

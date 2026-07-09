@@ -58,7 +58,11 @@ const DICT: Record<string, [string, string, string]> = {
   看过: ['看過', '視聴済み', 'Done'],
   抛弃: ['拋棄', '中断', 'Dropped'],
   筛选: ['篩選', '絞り込み', 'Filter'],
-  '范围 / 口碑 / 来源 / 题材': ['範圍 / 口碑 / 來源 / 題材', '範囲 / 評価 / 原作 / ジャンル', 'Scope / Rating / Source / Genre'],
+  '范围 / 产地 / 口碑 / 来源 / 题材': [
+    '範圍 / 產地 / 口碑 / 來源 / 題材',
+    '範囲 / 制作国 / 評価 / 原作 / ジャンル',
+    'Scope / Region / Rating / Source / Genre',
+  ],
   范围: ['範圍', '範囲', 'Scope'],
   口碑: ['口碑', '評価', 'Rating'],
   来源: ['來源', '原作', 'Source'],
@@ -76,6 +80,19 @@ const DICT: Record<string, [string, string, string]> = {
     '年番/多年番(季初已播 >20 集)',
     '年間アニメなど(期首時点 >20 話)',
     'Year-long+ shows (>20 eps at season start)',
+  ],
+  产地: ['產地', '制作国', 'Region'],
+  日本: ['日本', '日本', 'Japan'],
+  其他地区: ['其他地區', 'その他の地域', 'Other regions'],
+  '日本动画(默认口径,占绝大多数)': [
+    '日本動畫(預設口徑,佔絕大多數)',
+    '日本のアニメ(既定の対象、大多数)',
+    'Japanese anime (the default scope, vast majority)',
+  ],
+  '国创/欧美等(bgm 官方产地标注 + 信源比对,拿不准的按日本保留)': [
+    '國創/歐美等(bgm 官方產地標註 + 信源比對,拿不準的按日本保留)',
+    '中国/欧米など(bgm公式の制作国タグ+ソース照合。不明な作品は日本扱いで残す)',
+    'Chinese/Western etc. (official bgm region tags + source cross-check; uncertain ones stay as Japanese)',
   ],
   不限: ['不限', '指定なし', 'Any'],
   '按评分人数加权,小样本高分不虚高': [

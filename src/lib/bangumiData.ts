@@ -11,7 +11,7 @@ const CDN_URLS = [
   'https://unpkg.com/bangumi-data/dist/data.json',
 ]
 
-const CACHE_KEY = 'btt:cache:bd4' // v4:含 broadcast 锚点(旧键随清缓存一并清除)
+const CACHE_KEY = 'btt:cache:bd5' // v5:含产地 origin(旧键随清缓存一并清除)
 const TTL = 24 * 3600_000
 
 export interface BdItem {
@@ -24,6 +24,7 @@ export interface BdItem {
   end: number // 0 = 未完结
   periodDays: number
   broadcastAt?: number // broadcast 锚点(R/<ISO>/PnD 的起点):长篇换档后比 begin 新
+  origin?: string // 产地语言(bangumi-data lang),仅非 ja 时存(zh-Hans/en…)
 
   officialSite?: string
   sites: { site: string; url: string }[]
@@ -116,6 +117,7 @@ function trimDataset(raw: any, now: number): BdItem[] {
       periodDays: bc.periodDays,
       // 锚点与 begin 相同(常态)不存,省缓存;不同才有信息量(长篇换档)
       broadcastAt: bc.at !== undefined && bc.at !== begin ? bc.at : undefined,
+      origin: it.lang && it.lang !== 'ja' ? it.lang : undefined,
       officialSite: it.officialSite || undefined,
       sites,
     })

@@ -14,19 +14,29 @@ export interface EnhanceEntry {
 
 export type EnhanceMap = Record<string, EnhanceEntry>
 
-export async function fetchEnhance(): Promise<EnhanceMap> {
+export interface EnhanceData {
+  entries: EnhanceMap
+  /** 产地判定(scripts/mark_region.py):非 ja 前缀 = 非日本作品(cn/us/xx…) */
+  regions: Record<string, string>
+}
+
+export async function fetchEnhance(): Promise<EnhanceData> {
   try {
     const resp = await fetch(`${import.meta.env.BASE_URL}data/enhance.json`)
-    if (!resp.ok) return {}
+    if (!resp.ok) return { entries: {}, regions: {} }
     const data = await resp.json()
-    return data.entries ?? {}
+    return { entries: data.entries ?? {}, regions: data.regions ?? {} }
   } catch {
-    return {}
+    return { entries: {}, regions: {} }
   }
 }
 
+/** ja/ja?(暂定日本)/未标注 → undefined;其余为非日本区码 */
+const nonJa = (v: string | undefined) => (v && !v.startsWith('ja') ? v : undefined)
+
 /** 三源合并:calendar(本周在播骨架) × bangumi-data(精确时间/平台) × yuc 增强 */
-export function buildShows(cal: CalItem[], bd: BdBundle, enh: EnhanceMap, now: number): Show[] {
+export function buildShows(cal: CalItem[], bd: BdBundle, enhData: EnhanceData, now: number): Show[] {
+  const enh = enhData.entries
   const shows: Show[] = []
   const seen = new Set<number>()
 
@@ -57,6 +67,7 @@ export function buildShows(cal: CalItem[], bd: BdBundle, enh: EnhanceMap, now: n
       pvUrl: e?.pv,
       sourceType: e?.sourceType,
       airFix: e?.air,
+      region: b?.origin ?? nonJa(enhData.regions[String(c.id)]),
     })
   }
 
@@ -90,6 +101,7 @@ export function buildShows(cal: CalItem[], bd: BdBundle, enh: EnhanceMap, now: n
       pvUrl: e?.pv,
       sourceType: e?.sourceType,
       airFix: e?.air,
+      region: b.origin ?? nonJa(enhData.regions[String(b.bgmId)]),
     })
   }
 
