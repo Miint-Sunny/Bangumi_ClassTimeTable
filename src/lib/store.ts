@@ -20,7 +20,7 @@ export const DEFAULT_SETTINGS: Settings = {
   friends: [],
   panelOpen: true,
   panelWidth: 380,
-  panelWidthDay: 560,
+  panelWidthDay: 640,
 }
 
 export function loadPersisted(): Persisted {
@@ -28,8 +28,11 @@ export function loadPersisted(): Persisted {
     const raw = localStorage.getItem(KEY)
     if (raw) {
       const p = JSON.parse(raw)
+      const settings = { ...DEFAULT_SETTINGS, ...(p.settings ?? {}) }
+      // 旧默认值一次性升级(560 是曾经的出厂日视图宽度,手动拖到正好 560 的概率可忽略)
+      if (settings.panelWidthDay === 560) settings.panelWidthDay = 640
       return {
-        settings: { ...DEFAULT_SETTINGS, ...(p.settings ?? {}) },
+        settings,
         tracking: { status: p.tracking?.status ?? {}, watched: p.tracking?.watched ?? {} },
         overrides: p.overrides ?? {},
       }

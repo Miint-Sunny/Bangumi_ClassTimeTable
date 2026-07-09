@@ -7,7 +7,7 @@ import { DAY_MS, WEEKDAY_CN, dayOrder, pad, partsInZone, relTime, slotFor, start
 import { DetailBody } from './DetailModal'
 
 const MIN_WIDTH = 240 // 拖到这以下松手 = 收起
-const MAX_WIDTH = 720
+const MAX_WIDTH = 900
 
 interface Props {
   openShow: Show | null
@@ -372,6 +372,7 @@ function MiniCal({ shows, tracking, settings, now, tz, view, dayCursor, onJumpDa
             <button
               key={d}
               className={`mc-cell${offset === 0 ? ' today' : ''}${selected ? ' sel' : ''}`}
+              title={dots.has(d) ? `${p.mo} 月 ${d} 日有追番更新` : undefined}
               onClick={() => onJumpDay(offset)}
             >
               {d}
@@ -379,6 +380,9 @@ function MiniCal({ shows, tracking, settings, now, tz, view, dayCursor, onJumpDa
             </button>
           )
         })}
+      </div>
+      <div className="mc-legend">
+        <i className="dot" /> 追番更新日 · 描边 = 今天{view === 'day' ? ' · 填充 = 当前所在日' : ''}
       </div>
     </div>
   )

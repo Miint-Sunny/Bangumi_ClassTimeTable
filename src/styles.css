@@ -151,11 +151,18 @@ button { font: inherit; cursor: pointer; }
 }
 .side-panel.will-collapse { opacity: .45; border-style: dashed; }
 .panel-grip {
-  position: sticky; top: 0; float: left; margin-left: -14px; z-index: 20;
-  width: 8px; height: 72vh; cursor: col-resize; touch-action: none;
+  position: sticky; top: 0; float: left; margin-left: -16px; z-index: 20;
+  width: 12px; height: 72vh; cursor: col-resize; touch-action: none;
   border-radius: 4px;
 }
-.panel-grip:hover, .panel-grip:active { background: var(--pink-soft); box-shadow: inset 2px 0 0 var(--pink); }
+/* 常驻可见的小短条:居中竖排药丸,悬停变粉加长 */
+.panel-grip::after {
+  content: ''; position: absolute; left: 4px; top: 50%; transform: translateY(-50%);
+  width: 4px; height: 48px; border-radius: 4px; background: var(--text-subtle);
+  transition: background .12s, height .12s;
+}
+.panel-grip:hover, .panel-grip:active { background: var(--pink-soft); }
+.panel-grip:hover::after, .panel-grip:active::after { background: var(--pink); height: 68px; }
 .side-panel.has-detail { animation: panel-in 0.18s ease both; }
 @keyframes panel-in {
   from { opacity: 0; transform: translateX(14px); }
@@ -167,6 +174,10 @@ button { font: inherit; cursor: pointer; }
 }
 .side-panel .close:hover { color: var(--pink-strong); }
 .side-panel .dm-head .cover { width: 84px; height: 118px; }
+
+/* 面板够宽时(日视图)速览自动流成多栏,窄时退回单栏 */
+.side-panel .dash { column-width: 280px; column-gap: 22px; }
+.side-panel .dash > * { break-inside: avoid; }
 
 .dash-hint { color: var(--text-soft); line-height: 1.9; }
 .dash-row {
@@ -209,12 +220,14 @@ button { font: inherit; cursor: pointer; }
 }
 .minical .mc-cell:hover { border-color: var(--pink); }
 .minical .mc-cell.empty { pointer-events: none; }
-.minical .mc-cell.today { color: var(--pink-strong); font-weight: bold; }
-.minical .mc-cell.sel { background: var(--pink-soft); border-color: var(--pink); }
+.minical .mc-cell.today { color: var(--pink-strong); font-weight: bold; border-color: var(--pink); } /* 今天:常驻描边 */
+.minical .mc-cell.sel { background: var(--pink-soft); border-color: var(--pink); } /* 选中日:填充 */
 .minical .mc-cell .dot {
   position: absolute; left: 50%; bottom: 1px; transform: translateX(-50%);
   width: 4px; height: 4px; border-radius: 2px; background: var(--pink-strong);
 }
+.mc-legend { display: flex; align-items: center; gap: 5px; color: var(--text-subtle); font-size: 10px; margin-top: 5px; }
+.mc-legend .dot { width: 4px; height: 4px; border-radius: 2px; background: var(--pink-strong); flex-shrink: 0; }
 
 /* PV 内嵌预览(可选,主入口是新标签页) */
 .pv-embed { margin-top: 8px; aspect-ratio: 16 / 9; }
@@ -426,6 +439,7 @@ button { font: inherit; cursor: pointer; }
 .mg-cell.today { background: var(--today-bg); }
 .mg-cell .date { color: var(--text-soft); font-size: 11px; margin-bottom: 2px; }
 .mg-cell.today .date { color: var(--pink-strong); font-weight: bold; }
+.mg-cell.today .date::after { content: ' · 今天'; }
 .mg-entries { display: flex; flex-direction: column; gap: 2px; max-height: 128px; overflow-y: auto; }
 .mg-entry {
   display: flex; gap: 4px; align-items: baseline; width: 100%;
