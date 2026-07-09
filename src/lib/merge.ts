@@ -57,13 +57,17 @@ export function buildShows(cal: CalItem[], bd: BdBundle, enh: EnhanceMap, now: n
     })
   }
 
-  // bangumi-data 独有条目:流媒体全集上架、尚未进 calendar 的新番。
-  // 只收当季窗口(前 30 天 ~ 后 100 天开播)且未完结的,避免长尾旧番涌入。
+  // bangumi-data 独有条目,两类:
+  //  1) 当季窗口(前 30 天 ~ 后 100 天开播)的新条目 —— 流媒体全集、尚未进 calendar 的新番
+  //  2) 开播已久但仍在播的长篇 —— calendar 每周放送表会漏子供向/长期档
+  //    (小鲨鱼、光之美少女、数码宝贝、アイプリ等),bd 标记未完结即收
   const lo = now - 30 * 86400_000
   const hi = now + 100 * 86400_000
   for (const b of bd.byId.values()) {
     if (seen.has(b.bgmId)) continue
-    if (b.begin < lo || b.begin > hi) continue
+    const recent = b.begin >= lo && b.begin <= hi
+    const ongoingLong = !b.end && b.begin < lo
+    if (!recent && !ongoingLong) continue
     if (b.end && b.end < now) continue
     const e = enh[String(b.bgmId)]
     shows.push({

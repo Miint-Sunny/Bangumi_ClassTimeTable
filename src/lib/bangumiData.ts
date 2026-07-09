@@ -11,7 +11,7 @@ const CDN_URLS = [
   'https://unpkg.com/bangumi-data/dist/data.json',
 ]
 
-const CACHE_KEY = 'btt:cache:bd'
+const CACHE_KEY = 'btt:cache:bd2' // v2:含仍在播的长篇(旧键随清缓存一并清除)
 const TTL = 24 * 3600_000
 
 export interface BdItem {

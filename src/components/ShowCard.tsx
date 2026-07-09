@@ -92,7 +92,7 @@ export default function ShowCard({
               先行{show.airFix.advanceEps}
             </span>
           ) : null}
-          {!show.fromCalendar ? <span className="streamtag">流媒体</span> : null}
+          {!show.fromCalendar && cont === 'new' ? <span className="streamtag">流媒体</span> : null}
           {offWeek ? <span>本周无</span> : null}
         </span>
       </span>
