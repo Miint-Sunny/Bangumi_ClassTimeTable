@@ -99,6 +99,22 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', settings.theme)
   }, [settings, tracking, overrides])
 
+  // 主题切换时给全站颜色一个短暂的渐变窗口(首次挂载不做,避免开屏闪变)
+  const themeAnimReady = useRef(false)
+  useEffect(() => {
+    if (!themeAnimReady.current) {
+      themeAnimReady.current = true
+      return
+    }
+    const el = document.documentElement
+    el.setAttribute('data-theme-anim', '')
+    const t = window.setTimeout(() => el.removeAttribute('data-theme-anim'), 300)
+    return () => {
+      window.clearTimeout(t)
+      el.removeAttribute('data-theme-anim')
+    }
+  }, [settings.theme])
+
   // ── Bangumi 账号:令牌登录 + 双向同步 ───────────────────────────
   const accountRef = useRef(account)
   const trackingRef = useRef(tracking)

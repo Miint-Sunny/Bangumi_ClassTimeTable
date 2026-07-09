@@ -4,6 +4,12 @@
 
 :root {
   --nav-h: 40px; /* 翻页导航条吸附高度,网格表头以此让位 */
+  /* 动效体系:只动 transform/opacity(合成器级,不触发布局);快出发柔着陆,时长压在 0.25s 内 */
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1); /* 减速曲线:列表/淡入 */
+  --ease-spring: cubic-bezier(0.34, 1.3, 0.4, 1); /* 轻微过冲:弹窗/面板,iOS 弹层手感 */
+  --dur-fast: 0.12s;
+  --dur: 0.18s;
+  --dur-pop: 0.24s;
 }
 
 :root[data-theme='light'] {
@@ -140,10 +146,21 @@ button { font: inherit; cursor: pointer; }
 }
 .content-row { flex: 1 1 auto; min-height: 0; display: flex; gap: 14px; }
 .view-area { flex: 1 1 auto; min-width: 0; min-height: 0; overflow: auto; padding-bottom: 40px; }
-.view-area > * { animation: view-in 0.16s ease both; }
+/* 视图切换:只淡不位移 —— 网格里有 sticky 表头,祖先带 transform 会让它们在动画期间失灵 */
+.view-area > * { animation: view-in var(--dur) var(--ease-out) both; }
 @keyframes view-in {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; }
+}
+
+/* 翻页脉冲(上一天/下一周…):内容瞬时更新,容器快速淡入示意"换页了";同样只动 opacity。
+   两组等价关键帧按奇偶交替,保证连续翻页每次都重放 */
+.page-fade { animation: page-fade var(--dur) var(--ease-out); }
+.page-fade-b { animation: page-fade-b var(--dur) var(--ease-out); }
+@keyframes page-fade {
+  from { opacity: 0.25; }
+}
+@keyframes page-fade-b {
+  from { opacity: 0.25; }
 }
 
 /* ── 右侧常驻面板:详情 / 追番速览 ─────────────── */
@@ -167,9 +184,20 @@ button { font: inherit; cursor: pointer; }
 }
 .panel-grip:hover, .panel-grip:active { background: var(--pink-soft); }
 .panel-grip:hover::after, .panel-grip:active::after { background: var(--pink); height: 68px; }
-.side-panel.has-detail { animation: panel-in 0.18s ease both; }
+.side-panel.has-detail { animation: panel-in var(--dur-pop) var(--ease-spring) both; }
 @keyframes panel-in {
-  from { opacity: 0; transform: translateX(14px); }
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* 速览各区块入场:小幅上浮 + 微错峰,只在面板挂载时跑一次 */
+.dash > * { animation: rise-in 0.26s var(--ease-out) both; }
+.dash > *:nth-child(2) { animation-delay: 0.03s; }
+.dash > *:nth-child(3) { animation-delay: 0.06s; }
+.dash > *:nth-child(4) { animation-delay: 0.09s; }
+.dash > *:nth-child(n + 5) { animation-delay: 0.12s; }
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
 }
 .side-panel .close {
@@ -296,6 +324,15 @@ button { font: inherit; cursor: pointer; }
   color: var(--text-soft); padding: 4px 13px;
 }
 .iconbtn:hover { border-color: var(--pink); color: var(--pink-strong); }
+
+/* 可点元素的微交互:悬停渐变 + 按下轻缩,按下用更短时长跟手 */
+.iconbtn, .chip, .seg button, .dash-row .mini, .mc-cell, .show-card .cover {
+  transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+.iconbtn:active, .chip:active, .seg button:active, .dash-row .mini:active, .mc-cell:active {
+  transform: scale(0.94); transition-duration: 0.06s;
+}
 .iconbtn.accent { background: var(--pink); border-color: var(--pink); color: var(--accent-ink); }
 .iconbtn.accent:hover { filter: brightness(1.08); color: var(--accent-ink); }
 
@@ -360,9 +397,10 @@ button { font: inherit; cursor: pointer; }
   display: flex; gap: 6px; text-align: left; width: 100%;
   background: var(--card); border: 1px solid var(--border); border-left-width: 3px;
   border-radius: 8px; padding: 4px; color: var(--text);
-  transition: box-shadow .12s ease, transform .12s ease;
+  transition: box-shadow var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) ease;
 }
 .show-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-1px); }
+.show-card:active { transform: scale(0.985); transition-duration: 0.06s; }
 .show-card .cover {
   width: 38px; height: 53px; object-fit: cover; border-radius: 5px; flex-shrink: 0;
   background: linear-gradient(135deg, var(--pink-soft), var(--chip-bg));
@@ -473,6 +511,16 @@ button { font: inherit; cursor: pointer; }
   position: fixed; inset: 0; background: var(--overlay); z-index: 50;
   display: flex; align-items: flex-start; justify-content: center;
   padding: 6vh 16px 16px; overflow-y: auto;
+  animation: fade-in 0.16s ease both;
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+/* 弹窗:iOS 弹层式起手 —— 略缩略沉,弹到位 */
+.overlay .modal { animation: pop-in var(--dur-pop) var(--ease-spring) both; }
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.96) translateY(10px); }
+  to { opacity: 1; transform: none; }
 }
 .modal {
   background: var(--card); border: 1px solid var(--border); border-radius: 15px;
@@ -589,4 +637,23 @@ button { font: inherit; cursor: pointer; }
   .set-sub { margin-left: 0; }
   .mg-cell { min-height: 64px; }
   .mg-entry .nm { max-width: 100%; }
+}
+
+/* ── 动效兜底 ─────────────────────────────────── */
+
+/* 主题切换:短暂给全站颜色一个 0.25s 渐变窗口(JS 切换后挂 data-theme-anim,300ms 后摘除) */
+[data-theme-anim],
+[data-theme-anim] *,
+[data-theme-anim] *::before,
+[data-theme-anim] *::after {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease !important;
+}
+
+/* 尊重系统"减弱动态效果":所有动画/过渡压到近零 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

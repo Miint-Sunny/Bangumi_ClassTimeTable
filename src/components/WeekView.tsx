@@ -12,6 +12,7 @@ import {
   startOfWeekInstant,
 } from '../lib/time'
 import { hasEnded, occurrencesBetween } from '../lib/schedule'
+import { usePageFade } from '../lib/anim'
 import ShowCard from './ShowCard'
 
 const REL_WEEK: Record<number, string> = { [-1]: '上周', 0: '本周', 1: '下周' }
@@ -121,6 +122,7 @@ export default function WeekView({
   )
 
   const showToday = !archive && isCurrentWeek
+  const fadeCls = usePageFade(weekOffset)
 
   return (
     <>
@@ -145,7 +147,7 @@ export default function WeekView({
           </span>
         </div>
       )}
-      <div className="week-grid">
+      <div className={`week-grid ${fadeCls}`}>
       <div className="wg-corner" />
       {dayHeads.map((h) => (
         <div key={h.wd} className={`wg-dayhead${showToday && h.wd === todayWd ? ' today' : ''}`}>
