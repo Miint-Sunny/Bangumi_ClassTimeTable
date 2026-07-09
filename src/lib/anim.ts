@@ -1,18 +1,26 @@
-import { useEffect, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
+
+let active = false
 
 /**
- * 翻页脉冲:游标变化时让容器重放一次淡入(只动 opacity,不碰 sticky 表头)。
- * 用两个等价关键帧(page-fade / page-fade-b)按奇偶交替触发重放——
- * 不依赖 requestAnimationFrame 或 animationend,后台标签页里也不会卡住状态。
+ * 视图/翻页切换用 View Transitions API 做真正的交叉淡化:
+ * 旧画面淡出与新画面淡入同时进行,任何时刻都没有"暗帧",
+ * 消除"内容瞬间替换再补一次淡入"造成的闪烁感。
+ *
+ * - 不支持的浏览器 / 系统减弱动态偏好 → 直接执行(瞬时切换)
+ * - 连续快速翻页(上一次还没播完)→ 跳过动画直接更新,保持跟手
  */
-export function usePageFade(cursor: unknown): string {
-  const [tick, setTick] = useState(0)
-  const prev = useRef(cursor)
-  useEffect(() => {
-    if (prev.current !== cursor) {
-      prev.current = cursor
-      setTick((t) => t + 1)
-    }
-  }, [cursor])
-  return tick === 0 ? '' : tick % 2 ? 'page-fade' : 'page-fade-b'
+export function withViewTransition(update: () => void) {
+  const doc = document as Document & {
+    startViewTransition?: (cb: () => void) => { finished: Promise<void> }
+  }
+  if (!doc.startViewTransition || active || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    update()
+    return
+  }
+  active = true
+  const t = doc.startViewTransition(() => flushSync(update))
+  t.finished.finally(() => {
+    active = false
+  })
 }

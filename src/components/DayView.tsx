@@ -2,7 +2,6 @@ import { Fragment, useMemo } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
 import { DAY_MS, WEEKDAY_CN, displayTz, lateNightRef, pad, partsInZone, relTime, startOfDayInstant } from '../lib/time'
 import { epTime, hasEnded, occurrencesBetween } from '../lib/schedule'
-import { usePageFade } from '../lib/anim'
 import ShowCard from './ShowCard'
 
 interface Props {
@@ -108,8 +107,6 @@ export default function DayView({
   const occText = (c: Cell) =>
     `${c.epEnd > c.ep ? `第 ${c.ep}-${c.epEnd} 集` : `第 ${c.ep} 集`} · ${relTime(c.t, now)}`
 
-  const fadeCls = usePageFade(dayOffset)
-
   return (
     <div className="day-axis">
       <div className="month-nav">
@@ -129,7 +126,7 @@ export default function DayView({
         </span>
       </div>
 
-      <div className={`week-grid day-grid ${fadeCls}`}>
+      <div className="week-grid day-grid">
         <div className="wg-corner" />
         <div className={`wg-dayhead${nowInDay ? ' today' : ''}`}>
           <div className="d1">{relLabel ?? `周${WEEKDAY_CN[wd]}`}</div>

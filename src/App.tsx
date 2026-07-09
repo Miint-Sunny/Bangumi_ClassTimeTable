@@ -16,6 +16,7 @@ import {
   verifyToken,
 } from './lib/bgm'
 import { beginOauthLogin, completeOauthLogin, fetchOauthConf, refreshIfNeeded, type OauthConf } from './lib/oauth'
+import { withViewTransition } from './lib/anim'
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
 import { behindCount } from './lib/progress'
@@ -474,9 +475,17 @@ export default function App() {
     [],
   )
   const jumpToDay = useCallback((offset: number) => {
-    setDayCursor(offset)
-    setView('day')
+    withViewTransition(() => {
+      setDayCursor(offset)
+      setView('day')
+    })
   }, [])
+
+  // 视图/翻页/换季一律走交叉淡化(不支持时瞬时切换)
+  const changeView = useCallback((v: View) => withViewTransition(() => setView(v)), [])
+  const pageDay = useCallback((o: number) => withViewTransition(() => setDayCursor(o)), [])
+  const pageWeek = useCallback((o: number) => withViewTransition(() => setWeekCursor(o)), [])
+  const pageMonthTo = useCallback((c: MonthCursor | null) => withViewTransition(() => setMonthCursor(c)), [])
 
   // 点详情页的题材标签 → 搜索该标签(搜索本就匹配标签)
   const searchTag = useCallback(
@@ -510,41 +519,41 @@ export default function App() {
       if (e.metaKey || e.ctrlKey || e.altKey) return
       const pageMonth = (d: number) => {
         const idx = effMonthCursor.y * 12 + (effMonthCursor.mo - 1) + d
-        setMonthCursor({ y: Math.floor(idx / 12), mo: (idx % 12) + 1 })
+        pageMonthTo({ y: Math.floor(idx / 12), mo: (idx % 12) + 1 })
       }
       switch (e.key) {
         case 'ArrowLeft':
         case 'ArrowRight': {
           const d = e.key === 'ArrowLeft' ? -1 : 1
-          if (effView === 'day') setDayCursor((c) => c + d)
-          else if (effView === 'week') setWeekCursor((c) => c + d)
+          if (effView === 'day') withViewTransition(() => setDayCursor((c) => c + d))
+          else if (effView === 'week') withViewTransition(() => setWeekCursor((c) => c + d))
           else pageMonth(d)
           e.preventDefault()
           break
         }
         case 'Home':
-          if (effView === 'day') setDayCursor(0)
-          else if (effView === 'week') setWeekCursor(0)
-          else setMonthCursor(null)
+          if (effView === 'day') pageDay(0)
+          else if (effView === 'week') pageWeek(0)
+          else pageMonthTo(null)
           e.preventDefault()
           break
         case 'd':
         case 'D':
-          if (!archive) setView('day')
+          if (!archive) changeView('day')
           break
         case 'w':
         case 'W':
-          setView('week')
+          changeView('week')
           break
         case 'm':
         case 'M':
-          setView('month')
+          changeView('month')
           break
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [effView, archive, effMonthCursor])
+  }, [effView, archive, effMonthCursor, changeView, pageDay, pageWeek, pageMonthTo])
 
   const panelW = effView === 'day' ? settings.panelWidthDay : settings.panelWidth
   const viewProps = { tracking, settings, now, seasonStart, archive, friendsMap, onOpen: openDetail }
@@ -557,7 +566,10 @@ export default function App() {
           <select
             className="season-sel"
             value={seasonSel}
-            onChange={(e) => setSeasonSel(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value
+              withViewTransition(() => setSeasonSel(v))
+            }}
             title="切换季度"
           >
             <option value="live">{season.label}(当季)</option>
@@ -620,7 +632,7 @@ export default function App() {
               className={effView === k ? 'on' : ''}
               disabled={archive && k === 'day'}
               title={archive && k === 'day' ? '日视图仅当季可用' : undefined}
-              onClick={() => setView(k)}
+              onClick={() => changeView(k)}
             >
               {label}
             </button>
@@ -687,7 +699,7 @@ export default function App() {
                 key={seasonSel}
                 shows={visibleShows}
                 weekOffset={weekCursor}
-                onWeekOffset={setWeekCursor}
+                onWeekOffset={pageWeek}
                 {...viewProps}
               />
             )}
@@ -696,7 +708,7 @@ export default function App() {
                 key={seasonSel}
                 shows={visibleShows}
                 dayOffset={dayCursor}
-                onDayOffset={setDayCursor}
+                onDayOffset={pageDay}
                 {...viewProps}
               />
             )}
@@ -706,7 +718,7 @@ export default function App() {
                 shows={visibleShows}
                 cursor={effMonthCursor}
                 resetTo={defaultMonth}
-                onCursor={setMonthCursor}
+                onCursor={pageMonthTo}
                 {...viewProps}
               />
             )}

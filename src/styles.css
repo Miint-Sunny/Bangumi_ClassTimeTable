@@ -143,24 +143,16 @@ button { font: inherit; cursor: pointer; }
 .container {
   max-width: 1440px; margin: 0 auto; padding: 12px 18px 0;
   height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
+  animation: fade-in 0.3s ease; /* 仅首次加载淡入;容器不会因切视图重挂载 */
 }
 .content-row { flex: 1 1 auto; min-height: 0; display: flex; gap: 14px; }
 .view-area { flex: 1 1 auto; min-width: 0; min-height: 0; overflow: auto; padding-bottom: 40px; }
-/* 视图切换:只淡不位移 —— 网格里有 sticky 表头,祖先带 transform 会让它们在动画期间失灵 */
-.view-area > * { animation: view-in var(--dur) var(--ease-out) both; }
-@keyframes view-in {
-  from { opacity: 0; }
-}
-
-/* 翻页脉冲(上一天/下一周…):内容瞬时更新,容器快速淡入示意"换页了";同样只动 opacity。
-   两组等价关键帧按奇偶交替,保证连续翻页每次都重放 */
-.page-fade { animation: page-fade var(--dur) var(--ease-out); }
-.page-fade-b { animation: page-fade-b var(--dur) var(--ease-out); }
-@keyframes page-fade {
-  from { opacity: 0.25; }
-}
-@keyframes page-fade-b {
-  from { opacity: 0.25; }
+/* 视图/翻页/换季切换:View Transitions API 交叉淡化(见 lib/anim.ts)——
+   旧画面淡出与新画面淡入同帧进行,没有"先替换再补淡入"的暗坑,不会闪。
+   只调时长,曲线用浏览器默认的对称交叉曲线。 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.24s;
 }
 
 /* ── 右侧常驻面板:详情 / 追番速览 ─────────────── */

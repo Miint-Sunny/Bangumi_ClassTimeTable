@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
 import { WEEKDAY_CN, dayOrder, displayTz, partsInZone, slotFor } from '../lib/time'
 import { epLabel, occurrencesBetween } from '../lib/schedule'
-import { usePageFade } from '../lib/anim'
 
 export interface MonthCursor {
   y: number
@@ -114,8 +113,6 @@ export default function MonthView({ shows, tracking, settings, now, archive, cur
     return { weeks, headWds }
   }, [cursor, shows, settings, tz, now, nowP.y, nowP.mo, nowP.d, archive])
 
-  const fadeCls = usePageFade(cursor.y * 12 + cursor.mo)
-
   return (
     <div>
       <div className="month-nav">
@@ -137,7 +134,7 @@ export default function MonthView({ shows, tracking, settings, now, archive, cur
         </span>
       </div>
 
-      <div className={`month-grid ${fadeCls}`}>
+      <div className="month-grid">
         {headWds.map((wd) => (
           <div key={wd} className="mg-head">
             周{WEEKDAY_CN[wd]}
