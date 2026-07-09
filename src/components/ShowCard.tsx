@@ -9,13 +9,26 @@ interface Props {
   seasonStart: number // 所选季度起点,用于"续"徽标
   archive?: boolean // 归档季:集数显示"全 N 集"而非"更新至"
   friendsMap: FriendsMap
-  timeLabel?: string
+  wide?: boolean // 日视图加宽卡片:大封面 + 日文名
+  occText?: string // 本次放出说明,如"第 2 集 · 11 小时后"
   airedMark?: boolean // 本周该集已播
   offWeek?: boolean // 本周无更新(完结/延期)
   onOpen: (id: number) => void
 }
 
-export default function ShowCard({ show, tracking, now, seasonStart, archive, friendsMap, airedMark, offWeek, onOpen }: Props) {
+export default function ShowCard({
+  show,
+  tracking,
+  now,
+  seasonStart,
+  archive,
+  friendsMap,
+  wide,
+  occText,
+  airedMark,
+  offWeek,
+  onOpen,
+}: Props) {
   const status = tracking.status[show.id] ?? 'none'
   const watched = tracking.watched[show.id] ?? 0
   const aired = airedEps(show, now)
@@ -25,6 +38,7 @@ export default function ShowCard({ show, tracking, now, seasonStart, archive, fr
   const cls = [
     'show-card',
     `st-${status}`,
+    wide ? 'wide' : '',
     airedMark ? 'aired' : '',
     offWeek ? 'offweek' : '',
   ].join(' ')
@@ -38,7 +52,9 @@ export default function ShowCard({ show, tracking, now, seasonStart, archive, fr
       )}
       <span className="body">
         <span className="title">{show.nameCn}</span>
+        {wide && show.nameJp !== show.nameCn ? <span className="jp">{show.nameJp}</span> : null}
         <span className="meta">
+          {occText ? <span className="occ">{occText}</span> : null}
           {show.score ? <span className="score">★{show.score.toFixed(1)}</span> : null}
           {status === 'watching' && aired !== undefined ? (
             <span className="ep-badge">

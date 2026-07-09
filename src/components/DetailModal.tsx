@@ -27,7 +27,8 @@ const STATUS_BTNS: { k: WatchStatus; label: string }[] = [
   { k: 'dropped', label: '抛弃' },
 ]
 
-export default function DetailModal(props: Props) {
+/** 详情内容体:宽屏时装进右侧 SidePanel,窄屏时装进弹窗外壳 */
+export function DetailBody(props: Props) {
   const {
     show,
     tracking,
@@ -86,13 +87,12 @@ export default function DetailModal(props: Props) {
   }
 
   return (
-    <div className="overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal">
-        <button className="close" onClick={onClose} aria-label="关闭">
-          ×
-        </button>
+    <>
+      <button className="close" onClick={onClose} aria-label="关闭">
+        ×
+      </button>
 
-        <div className="dm-head">
+      <div className="dm-head">
           {image ? <img className="cover" src={image} alt="" /> : null}
           <div>
             <h2>
@@ -266,12 +266,22 @@ export default function DetailModal(props: Props) {
           </div>
         )}
 
-        {info?.summary && (
-          <div className="dm-sec">
-            <div className="sec-t">简介</div>
-            <div className="dm-summary">{info.summary}</div>
-          </div>
-        )}
+      {info?.summary && (
+        <div className="dm-sec">
+          <div className="sec-t">简介</div>
+          <div className="dm-summary">{info.summary}</div>
+        </div>
+      )}
+    </>
+  )
+}
+
+/** 窄屏弹窗外壳(宽屏时 App 直接把 DetailBody 装进 SidePanel) */
+export default function DetailModal(props: Props) {
+  return (
+    <div className="overlay" onClick={(e) => e.target === e.currentTarget && props.onClose()}>
+      <div className="modal">
+        <DetailBody {...props} />
       </div>
     </div>
   )

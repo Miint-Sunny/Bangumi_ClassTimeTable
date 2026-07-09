@@ -4,7 +4,7 @@ import { fetchCalendar, fetchSubject, fetchUserWatching, type SubjectInfo } from
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
 import { behindCount } from './lib/progress'
-import { currentSeason, isCarryOver, seasonStartInstant } from './lib/time'
+import { currentSeason, displayTz, isCarryOver, seasonStartInstant } from './lib/time'
 import { fetchSeasonList, fetchSeasonPack, fmtSeason, seasonMonthOf, seasonStartOf } from './lib/seasons'
 import { buildIcs, downloadIcs } from './lib/ics'
 import { loadPersisted, savePersisted } from './lib/store'
@@ -12,7 +12,25 @@ import WeekView from './components/WeekView'
 import DayView from './components/DayView'
 import MonthView from './components/MonthView'
 import DetailModal from './components/DetailModal'
+import SidePanel from './components/SidePanel'
 import SettingsPanel from './components/SettingsPanel'
+
+/** 视口宽度足够时,详情走右侧常驻面板而非弹窗 */
+function useWideLayout(): boolean {
+  const query = '(min-width: 1000px)'
+  const [wide, setWide] = useState(() => window.matchMedia(query).matches)
+  useEffect(() => {
+    const mq = window.matchMedia(query)
+    const fn = () => setWide(window.matchMedia(query).matches)
+    mq.addEventListener('change', fn)
+    window.addEventListener('resize', fn) // 部分环境 MQL change 不触发,resize 兜底
+    return () => {
+      mq.removeEventListener('change', fn)
+      window.removeEventListener('resize', fn)
+    }
+  }, [])
+  return wide
+}
 
 type View = 'day' | 'week' | 'month'
 type Filter = 'all' | 'mine' | 'watching' | 'wish' | 'new' | 'carry'
@@ -241,6 +259,7 @@ export default function App() {
     if (effShows) downloadIcs(buildIcs(effShows, tracking, Date.now()))
   }, [effShows, tracking])
 
+  const wide = useWideLayout()
   const openShow = openId !== null && effShows ? (effShows.find((s) => s.id === openId) ?? null) : null
   const effView: View = archive && view === 'day' ? 'week' : view
   const viewProps = { tracking, settings, now, seasonStart, archive, friendsMap, onOpen: setOpenId }
@@ -357,21 +376,43 @@ export default function App() {
       ) : effShows === null ? (
         <div className="loading">{archive ? `正在加载 ${fmtSeason(seasonSel)} 归档…` : '正在拉取本季放送表…'}</div>
       ) : (
-        <div className="view-area">
-          {effView === 'week' && <WeekView key={seasonSel} shows={visibleShows} {...viewProps} />}
-          {effView === 'day' && <DayView key={seasonSel} shows={visibleShows} {...viewProps} />}
-          {effView === 'month' && (
-            <MonthView
-              key={seasonSel}
-              shows={visibleShows}
-              initMonth={archive ? seasonMonthOf(seasonSel) : undefined}
-              {...viewProps}
+        <div className="content-row">
+          <div className="view-area">
+            {effView === 'week' && <WeekView key={seasonSel} shows={visibleShows} {...viewProps} />}
+            {effView === 'day' && <DayView key={seasonSel} shows={visibleShows} {...viewProps} />}
+            {effView === 'month' && (
+              <MonthView
+                key={seasonSel}
+                shows={visibleShows}
+                initMonth={archive ? seasonMonthOf(seasonSel) : undefined}
+                {...viewProps}
+              />
+            )}
+          </div>
+          {wide && (
+            <SidePanel
+              openShow={openShow}
+              shows={effShows}
+              tracking={tracking}
+              settings={settings}
+              now={now}
+              seasonStart={seasonStart}
+              archive={archive}
+              friendsMap={friendsMap}
+              hasLocalOverride={openShow ? openShow.id in overrides : false}
+              tz={displayTz(settings)}
+              onOpen={setOpenId}
+              onSetStatus={setStatus}
+              onSetWatched={setWatched}
+              onSetOverride={setOverride}
+              onSubjectInfo={applySubjectInfo}
+              onClose={() => setOpenId(null)}
             />
           )}
         </div>
       )}
 
-      {openShow && (
+      {!wide && openShow && (
         <DetailModal
           show={openShow}
           tracking={tracking}

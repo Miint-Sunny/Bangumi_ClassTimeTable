@@ -100,7 +100,54 @@ button { font: inherit; cursor: pointer; }
   max-width: 1440px; margin: 0 auto; padding: 12px 18px 0;
   height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
 }
-.view-area { flex: 1 1 auto; min-height: 0; overflow: auto; padding-bottom: 40px; }
+.content-row { flex: 1 1 auto; min-height: 0; display: flex; gap: 14px; }
+.view-area { flex: 1 1 auto; min-width: 0; min-height: 0; overflow: auto; padding-bottom: 40px; }
+.view-area > * { animation: view-in 0.16s ease both; }
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── 右侧常驻面板:详情 / 追番速览 ─────────────── */
+
+.side-panel {
+  width: 380px; flex-shrink: 0; min-height: 0; overflow-y: auto;
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 16px; margin-bottom: 12px; position: relative;
+}
+.side-panel.has-detail { animation: panel-in 0.18s ease both; }
+@keyframes panel-in {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: none; }
+}
+.side-panel .close {
+  position: absolute; top: 10px; right: 10px;
+  background: none; border: none; color: var(--text-soft); font-size: 18px; line-height: 1;
+}
+.side-panel .close:hover { color: var(--pink-strong); }
+.side-panel .dm-head .cover { width: 84px; height: 118px; }
+
+.dash-hint { color: var(--text-soft); line-height: 1.9; }
+.dash-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 0; border-bottom: 1px solid var(--border-soft);
+}
+.dash-row:last-child { border-bottom: none; }
+.dash-row .nm {
+  flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--text);
+}
+.dash-row .nm:hover { color: var(--pink-strong); text-decoration: none; }
+.dash-row .score { color: var(--gold); flex-shrink: 0; }
+.dash-row .prog { color: var(--text-soft); font-family: ui-monospace, monospace; flex-shrink: 0; }
+.dash-row .behind { color: var(--red); background: var(--red-bg); border-radius: 7px; padding: 0 6px; flex-shrink: 0; }
+.dash-row .when { color: var(--pink-strong); flex-shrink: 0; width: 64px; }
+.dash-row .ep { color: var(--blue); font-family: ui-monospace, monospace; flex-shrink: 0; }
+.dash-row .mini {
+  background: var(--chip-bg); border: 1px solid var(--border); border-radius: 3px;
+  color: var(--text-soft); padding: 1px 7px; flex-shrink: 0;
+}
+.dash-row .mini:hover { border-color: var(--pink); color: var(--pink-strong); }
 
 /* ── 顶栏 ─────────────────────────────────────── */
 
@@ -254,29 +301,23 @@ button { font: inherit; cursor: pointer; }
 .show-card.aired .title::before { content: '✓ '; color: var(--green); }
 .show-card.offweek { opacity: .45; }
 
-/* ── 日视图 ───────────────────────────────────── */
+/* 日视图加宽卡片 */
+.show-card.wide { padding: 6px; gap: 9px; }
+.show-card.wide .cover { width: 54px; height: 76px; }
+.show-card.wide .title { font-size: 12.5px; }
+.show-card.wide .jp {
+  display: block; color: var(--text-soft); font-size: 10.5px; margin-top: 1px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.show-card.wide .meta { font-size: 11px; margin-top: 3px; }
+.show-card .meta .occ { color: var(--pink-strong); }
 
-.day-view { max-width: 760px; }
-.day-section-title {
-  color: var(--text-soft); margin: 18px 0 8px; font-size: 12px;
-  display: flex; align-items: center; gap: 8px;
+/* 日视图:与周视图同构的单日时间轴 */
+.day-axis .day-grid {
+  grid-template-columns: 52px minmax(260px, 1fr);
+  min-width: 0; max-width: 780px;
 }
-.day-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.day-row {
-  display: flex; align-items: center; gap: 12px;
-  border: 1px solid var(--border); border-radius: 6px; background: var(--card);
-  padding: 8px 12px; margin-bottom: 6px;
-}
-.day-row.past { opacity: .55; }
-.day-row .when { width: 74px; flex-shrink: 0; text-align: center; }
-.day-row .when .t { font-size: 16px; color: var(--pink-strong); font-family: ui-monospace, monospace; }
-.day-row .when .rel { color: var(--text-soft); font-size: 10px; }
-.day-row .cover { width: 44px; height: 62px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
-.day-row .body { flex: 1; min-width: 0; }
-.day-row .title { font-size: 13px; }
-.day-row .sub { color: var(--text-soft); font-size: 11px; margin-top: 2px; }
-.day-row .epnum { color: var(--blue); font-size: 13px; flex-shrink: 0; }
-.day-empty { color: var(--text-soft); padding: 12px; }
+.day-axis .day-empty { color: var(--text-soft); padding: 10px; }
 
 /* ── 月视图 ───────────────────────────────────── */
 

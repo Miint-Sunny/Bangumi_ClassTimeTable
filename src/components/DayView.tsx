@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
 import { DAY_MS, WEEKDAY_CN, displayTz, pad, partsInZone, relTime, startOfDayInstant } from '../lib/time'
-import { epTime, hasEnded, occurrencesBetween, totalEps } from '../lib/schedule'
+import { epTime, hasEnded, occurrencesBetween } from '../lib/schedule'
+import ShowCard from './ShowCard'
 
 interface Props {
   shows: Show[]
@@ -14,97 +15,88 @@ interface Props {
   onOpen: (id: number) => void
 }
 
-interface Occ {
+interface Cell {
   show: Show
-  t: number
   ep: number
   epEnd: number
+  t: number
+  aired: boolean
 }
 
 const REL_DAY: Record<number, string> = { [-2]: '前天', [-1]: '昨天', 0: '今天', 1: '明天', 2: '后天' }
 
-/** 日视图:今天是"过去 6 小时 + 未来 24 小时"时间线,翻页后是指定日期的完整更新表 */
-export default function DayView({ shows, tracking, settings, now, friendsMap, onOpen }: Props) {
+/** 日视图:与周视图同构的单日时间轴(时间列 + 加宽卡片列) */
+export default function DayView({ shows, tracking, settings, now, seasonStart, friendsMap, onOpen }: Props) {
   const tz = displayTz(settings)
-  const [dayOffset, setDayOffset] = useState(0) // 0 = 今天(相对视角)
+  const [dayOffset, setDayOffset] = useState(0)
   const isToday = dayOffset === 0
-  const relLabel = REL_DAY[dayOffset] // 前天/昨天/今天/明天/后天,超出为 undefined
+  const relLabel = REL_DAY[dayOffset]
 
-  const { past, upcoming, unknownDay, dateLabel } = useMemo(() => {
-    const dayStart = startOfDayInstant(now, tz) + dayOffset * DAY_MS
-    const dayMid = dayStart + 12 * 3600_000
-    const [lo, hi] = isToday ? [now - 6 * 3600_000, now + 24 * 3600_000] : [dayStart, dayStart + DAY_MS - 1]
+  const { rows, cells, unknown, dateLabel, md, wd, nowEff, nowInDay } = useMemo(() => {
+    const dayBase = startOfDayInstant(now, tz) + dayOffset * DAY_MS
+    // 深夜表记下,一"天"是 06:00 ~ 次日 05:59(0-6 点归前一天)
+    const lo = dayBase + (settings.lateNight ? 6 * 3600_000 : 0)
+    const hi = lo + DAY_MS - 1
 
-    const occs: Occ[] = []
-    const unknownDay: Show[] = []
+    const cells = new Map<number, Cell[]>()
+    const unknown: Show[] = []
+    const dayMid = dayBase + 12 * 3600_000
     const targetWdJst = partsInZone(dayMid, 'Asia/Tokyo').wd
 
     for (const show of shows) {
       if (epTime(show, 1) === null) {
-        // 无法推导日程:退回 calendar 的周几归类
-        if (show.airWeekdayJst === targetWdJst) unknownDay.push(show)
+        if (show.airWeekdayJst === targetWdJst) unknown.push(show)
         continue
       }
       for (const o of occurrencesBetween(show, lo, hi)) {
         if (hasEnded(show, now) && o.t > now) continue
-        occs.push({ show, t: o.t, ep: o.ep, epEnd: o.epEnd })
+        const p = partsInZone(o.t, tz)
+        let m = p.hh * 60 + p.mm
+        if (settings.lateNight && p.hh < 6) m += 1440
+        const list = cells.get(m) ?? []
+        list.push({ show, ep: o.ep, epEnd: o.epEnd, t: o.t, aired: o.t <= now })
+        cells.set(m, list)
       }
     }
-    occs.sort((a, b) => a.t - b.t || a.show.id - b.show.id)
+    const rows = [...cells.keys()].sort((a, b) => a - b)
 
     const p = partsInZone(dayMid, tz)
-    const dateLabel = `${p.mo}月${p.d}日(周${WEEKDAY_CN[p.wd]})`
+    const np = partsInZone(now, tz)
+    let nowEff = np.hh * 60 + np.mm
+    if (settings.lateNight && np.hh < 6) nowEff += 1440
+
     return {
-      past: occs.filter((o) => o.t <= now),
-      upcoming: occs.filter((o) => o.t > now),
-      unknownDay,
-      dateLabel,
+      rows,
+      cells,
+      unknown,
+      dateLabel: `${p.mo}月${p.d}日(周${WEEKDAY_CN[p.wd]})`,
+      md: `${p.mo}/${p.d}`,
+      wd: p.wd,
+      nowEff,
+      nowInDay: now >= lo && now <= hi,
     }
-  }, [shows, now, tz, dayOffset, isToday])
+  }, [shows, now, tz, dayOffset, settings])
 
-  const fmt = (t: number) => {
-    const p = partsInZone(t, tz)
-    return `${pad(p.hh)}:${pad(p.mm)}`
-  }
+  const fmtRow = (m: number) => `${pad(Math.floor(m / 60))}:${pad(m % 60)}`
+  const nowIdx = (() => {
+    const i = rows.findIndex((m) => m > nowEff)
+    return i === -1 ? rows.length : i
+  })()
 
-  const row = (o: Occ, isPast: boolean) => {
-    const status = tracking.status[o.show.id] ?? 'none'
-    const friendCount = friendsMap.get(o.show.id)?.size ?? 0
-    return (
-      <div key={`${o.show.id}-${o.t}`} className={`day-row${isPast ? ' past' : ''}`}>
-        <div className="when">
-          <div className="t">{fmt(o.t)}</div>
-          <div className="rel">{relTime(o.t, now)}</div>
-        </div>
-        {o.show.image ? <img className="cover" src={o.show.image} loading="lazy" alt="" /> : null}
-        <div className="body">
-          <div className="title">
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault()
-                onOpen(o.show.id)
-              }}
-            >
-              {o.show.nameCn}
-            </a>
-          </div>
-          <div className="sub">
-            {o.show.nameJp !== o.show.nameCn ? `${o.show.nameJp} · ` : ''}
-            {status === 'watching' ? '在看' : status === 'wish' ? '想看' : ''}
-            {friendCount > 0 ? ` · ${friendCount} 位好友在看` : ''}
-          </div>
-        </div>
-        <div className="epnum">
-          {o.epEnd > o.ep ? `第 ${o.ep}-${o.epEnd} 集` : `第 ${o.ep} 集`}
-          {totalEps(o.show) ? ` / 全 ${totalEps(o.show)} 集` : ''}
-        </div>
+  const nowRow = (
+    <>
+      <div className="wg-now-time" title="当前时刻">
+        {fmtRow(nowEff)}
       </div>
-    )
-  }
+      <div className="wg-now" />
+    </>
+  )
+
+  const occText = (c: Cell) =>
+    `${c.epEnd > c.ep ? `第 ${c.ep}-${c.epEnd} 集` : `第 ${c.ep} 集`} · ${relTime(c.t, now)}`
 
   return (
-    <div className="day-view">
+    <div className="day-axis">
       <div className="month-nav">
         <button className="iconbtn" onClick={() => setDayOffset((o) => o - 1)}>
           ‹ 前一天
@@ -122,62 +114,72 @@ export default function DayView({ shows, tracking, settings, now, friendsMap, on
         </span>
       </div>
 
-      {isToday ? (
-        <>
-          <div className="day-section-title">刚刚播出(6 小时内)</div>
-          {past.length === 0 ? <div className="day-empty">—</div> : past.map((o) => row(o, true))}
+      <div className="week-grid day-grid">
+        <div className="wg-corner" />
+        <div className={`wg-dayhead${nowInDay ? ' today' : ''}`}>
+          <div className="d1">{relLabel ?? `周${WEEKDAY_CN[wd]}`}</div>
+          <div className="d2">{md}</div>
+        </div>
 
-          <div className="day-section-title">接下来 24 小时</div>
-          {upcoming.length === 0 ? (
-            <div className="day-empty">没有更新,清净的一天。</div>
-          ) : (
-            upcoming.map((o) => row(o, false))
-          )}
-        </>
-      ) : (
-        <>
-          <div className="day-section-title">
-            {relLabel ? `${relLabel} ` : ''}
-            {dateLabel} 的更新({past.length + upcoming.length} 次)
-          </div>
-          {past.length + upcoming.length === 0 ? (
-            <div className="day-empty">这一天没有更新。</div>
-          ) : (
-            <>
-              {past.map((o) => row(o, true))}
-              {upcoming.map((o) => row(o, false))}
-            </>
-          )}
-        </>
-      )}
-
-      {unknownDay.length > 0 && (
-        <>
-          <div className="day-section-title">{relLabel ?? '当天'}更新 · 具体时间未知</div>
-          {unknownDay.map((s) => (
-            <div key={s.id} className="day-row">
-              <div className="when">
-                <div className="t">--:--</div>
-              </div>
-              {s.image ? <img className="cover" src={s.image} loading="lazy" alt="" /> : null}
-              <div className="body">
-                <div className="title">
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      onOpen(s.id)
-                    }}
-                  >
-                    {s.nameCn}
-                  </a>
-                </div>
-                <div className="sub">{s.nameJp !== s.nameCn ? s.nameJp : ''}</div>
-              </div>
+        {rows.length === 0 && unknown.length === 0 && (
+          <>
+            <div className="wg-time">—</div>
+            <div className="wg-cell">
+              <div className="day-empty">这一天没有更新。</div>
             </div>
-          ))}
-        </>
-      )}
+          </>
+        )}
+
+        {rows.map((m, i) => {
+          const night = m >= 1440 || m < 360
+          const list = cells.get(m) ?? []
+          return (
+            <Fragment key={m}>
+              {nowInDay && i === nowIdx && nowRow}
+              <div className={`wg-time${night ? ' night' : ''}`}>{fmtRow(m)}</div>
+              <div className={`wg-cell${night ? ' night' : ''}`}>
+                {list.map((c) => (
+                  <ShowCard
+                    key={`${c.show.id}-${c.ep}`}
+                    show={c.show}
+                    tracking={tracking}
+                    now={now}
+                    seasonStart={seasonStart}
+                    friendsMap={friendsMap}
+                    wide
+                    occText={occText(c)}
+                    airedMark={c.aired}
+                    onOpen={onOpen}
+                  />
+                ))}
+              </div>
+            </Fragment>
+          )
+        })}
+        {nowInDay && rows.length > 0 && nowIdx === rows.length && nowRow}
+
+        {unknown.length > 0 && (
+          <>
+            <div className="wg-time" title="未提供精确时间">
+              未定
+            </div>
+            <div className="wg-cell">
+              {unknown.map((s) => (
+                <ShowCard
+                  key={s.id}
+                  show={s}
+                  tracking={tracking}
+                  now={now}
+                  seasonStart={seasonStart}
+                  friendsMap={friendsMap}
+                  wide
+                  onOpen={onOpen}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   )
 }
