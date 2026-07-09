@@ -41,6 +41,7 @@
 | Bangumi API `/v0/subjects` | 集数、简介 | 按需懒加载,缓存 7 天 |
 | Bangumi API `/v0/users/*/collections` | 好友公开进度 | 缓存 1h |
 | yuc.wiki(可选增强:标签/PV) | `public/data/enhance.json` | **不自动抓取**,由 `/refresh-data` skill 人工触发,页面由人手动保存 |
+| [番組維基 bgm.wiki](https://bgm.wiki)(每集精确时刻) | `enhance.json` 的 `air.epDates` | 经其**开发者 API**(token 认证)每日 CI 同步,数据由其编辑者社区维护,特此致谢 |
 
 所有远端响应均本地缓存,正常使用一天只产生个位数 API 请求。
 

@@ -13,13 +13,14 @@ export interface SiteLink {
  * 已播集数 = 各规则推得的最大值。
  */
 export interface AirFix {
+  epDates?: Record<string, string> // 指定集数的精确播出时刻 ISO(最高优先;可表达休播/提档/先行)
   advanceEps?: number // 前 N 集已整批放出
   advanceAt?: string // 放出时刻 ISO(缺省 = 开播时刻)
   anchorEp?: number // 常规周更锚点:第 anchorEp 集…
   anchorAt?: string // …于 anchorAt 播出,此后每 periodDays 一集
   eps?: number // 总集数覆盖
   note?: string // 人话说明,显示在详情页
-  source?: string // 查证依据链接(yuc/官网/公告)
+  source?: string // 查证依据链接(yuc/官网/公告/bgm.wiki)
 }
 
 /** 合并后的番剧条目(calendar API + bangumi-data + yuc 增强) */

@@ -165,6 +165,11 @@ export default function SettingsPanel({ settings, friendErrors, onChange, onExpo
 
         <div className="set-note">
           数据来源:Bangumi 官方 API(每 6 小时缓存)· bangumi-data 数据集(jsDelivr CDN,每日缓存)·
+          每集精确时刻来自{' '}
+          <a href="https://bgm.wiki" target="_blank" rel="noreferrer">
+            番組維基 bgm.wiki
+          </a>
+          (经其开发者 API 每日同步,致谢其编辑者社区)·
           可选的 yuc.wiki 增强数据由 AI 辅助的 refresh-data skill 人工触发生成,不做自动抓取。
           <br />
           追番状态与进度目前保存在本机浏览器(localStorage),Bangumi OAuth 云同步在路线图上。

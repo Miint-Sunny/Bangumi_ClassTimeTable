@@ -34,6 +34,8 @@ function advanceAt(s: Show): number | null {
 
 /** 第 ep 集的播出时刻;无法推导返回 null */
 export function epTime(s: Show, ep: number): number | null {
+  const exact = epDateOf(s, ep)
+  if (exact !== null) return exact
   const f = s.airFix
   if (f?.advanceEps && ep <= f.advanceEps) return advanceAt(s)
   if (f?.anchorEp != null && ep >= f.anchorEp) {
@@ -44,33 +46,45 @@ export function epTime(s: Show, ep: number): number | null {
   return null
 }
 
+/** 指定集的精确时刻覆盖(bgm.wiki 同步/人工校正),最高优先 */
+function epDateOf(s: Show, ep: number): number | null {
+  const d = s.airFix?.epDates?.[String(ep)]
+  return d ? parseAt(d) : null
+}
+
+function epDateKeys(s: Show): number[] {
+  const m = s.airFix?.epDates
+  return m ? Object.keys(m).map(Number).filter((n) => Number.isFinite(n) && n > 0) : []
+}
+
 /**
- * 已放送集数:各规则推得的最大值,封顶总集数。
+ * 已放送集数 = 满足 epTime <= now 的最大集号,封顶总集数。
  * 无任何可用规则(无 begin 且无校正,或长篇周数折算不可靠)返回 undefined。
  */
 export function airedCount(s: Show, now: number): number | undefined {
   const total = totalEps(s)
   const f = s.airFix
-  const vals: number[] = []
+  const keys = epDateKeys(s)
 
-  if (s.begin) {
-    const longRunUnreliable = !total && now - s.begin > 400 * DAY_MS
-    if (!longRunUnreliable) {
-      vals.push(now < s.begin ? 0 : Math.floor((now - s.begin) / periodMs(s)) + 1)
-    }
-  }
-  if (f?.advanceEps) {
-    const at = advanceAt(s)
-    if (at !== null) vals.push(now >= at ? f.advanceEps : 0)
-  }
-  if (f?.anchorEp != null) {
-    const at = parseAt(f.anchorAt)
-    if (at !== null && now >= at) vals.push(f.anchorEp + Math.floor((now - at) / periodMs(s)))
-  }
+  const hasRule = !!(s.begin || f?.advanceEps || (f?.anchorEp != null && f.anchorAt) || keys.length)
+  if (!hasRule) return undefined
+  // 开播 400 天以上且不知总集数的长篇,周数折算不可靠(除非有校正兜底)
+  if (s.begin && !total && now - s.begin > 400 * DAY_MS && !f) return undefined
 
-  if (vals.length === 0) return undefined
-  const n = Math.max(...vals)
-  return total ? Math.min(n, total) : Math.max(n, 0)
+  // 扫描上限:总集数,否则取线性推导与各校正键的最大值加余量
+  let cap = total ?? 0
+  if (!cap) {
+    const linear = s.begin && now >= s.begin ? Math.floor((now - s.begin) / periodMs(s)) + 1 : 0
+    cap = Math.max(linear, f?.advanceEps ?? 0, f?.anchorEp ?? 0, keys.length ? Math.max(...keys) : 0) + 2
+  }
+  cap = Math.min(Math.max(cap, 1), 500)
+
+  let aired = 0
+  for (let ep = 1; ep <= cap; ep++) {
+    const t = epTime(s, ep)
+    if (t !== null && t <= now) aired = ep
+  }
+  return total ? Math.min(aired, total) : aired
 }
 
 /** 下一次放出(含整批);完结或无法推导返回 null */
@@ -89,17 +103,31 @@ export function nextEpisode(s: Show, now: number): Occurrence | null {
   return { ep, epEnd, t }
 }
 
-/** [lo, hi] 时间窗内的所有放出,按时刻排序;整批合并为单条 */
+/** [lo, hi] 时间窗内的所有放出,按时刻排序;同刻连续集合并为单条 */
 export function occurrencesBetween(s: Show, lo: number, hi: number): Occurrence[] {
   const total = totalEps(s)
   const f = s.airFix
   const pm = periodMs(s)
-  const out: Occurrence[] = []
+  const raw: { ep: number; t: number }[] = []
+  const covered = new Set(epDateKeys(s)) // epDates 覆盖的集不再由其他规则生成
+
+  // 精确时刻段(最高优先)
+  if (f?.epDates) {
+    for (const ep of covered) {
+      if (total && ep > total) continue
+      const t = epDateOf(s, ep)
+      if (t !== null && t >= lo && t <= hi) raw.push({ ep, t })
+    }
+  }
 
   // 整批先行段
   if (f?.advanceEps) {
     const at = advanceAt(s)
-    if (at !== null && at >= lo && at <= hi) out.push({ ep: 1, epEnd: f.advanceEps, t: at })
+    if (at !== null && at >= lo && at <= hi) {
+      for (let ep = 1; ep <= f.advanceEps; ep++) {
+        if (!covered.has(ep)) raw.push({ ep, t: at })
+      }
+    }
   }
 
   // 线性段(避开先行/锚点覆盖的集数区间)
@@ -109,9 +137,10 @@ export function occurrencesBetween(s: Show, lo: number, hi: number): Occurrence[
     const e0 = Math.max(linLo, Math.ceil((lo - s.begin) / pm + 1))
     const e1 = Math.min(linHi, Math.floor((hi - s.begin) / pm) + 1, total ?? Infinity)
     for (let ep = e0; ep <= e1; ep++) {
+      if (covered.has(ep)) continue
       const t = s.begin + (ep - 1) * pm
       if (s.end && t > s.end && !f) continue
-      out.push({ ep, epEnd: ep, t })
+      raw.push({ ep, t })
     }
   }
 
@@ -121,11 +150,20 @@ export function occurrencesBetween(s: Show, lo: number, hi: number): Occurrence[
     if (at !== null) {
       const e0 = Math.max(f.anchorEp, f.anchorEp + Math.ceil((lo - at) / pm))
       const e1 = Math.min(f.anchorEp + Math.floor((hi - at) / pm), total ?? Infinity)
-      for (let ep = e0; ep <= e1; ep++) out.push({ ep, epEnd: ep, t: at + (ep - f.anchorEp) * pm })
+      for (let ep = e0; ep <= e1; ep++) {
+        if (!covered.has(ep)) raw.push({ ep, t: at + (ep - f.anchorEp) * pm })
+      }
     }
   }
 
-  out.sort((a, b) => a.t - b.t || a.ep - b.ep)
+  // 同刻连续集合并为批(先行整批/一举多话)
+  raw.sort((a, b) => a.t - b.t || a.ep - b.ep)
+  const out: Occurrence[] = []
+  for (const r of raw) {
+    const last = out[out.length - 1]
+    if (last && last.t === r.t && r.ep === last.epEnd + 1) last.epEnd = r.ep
+    else out.push({ ep: r.ep, epEnd: r.ep, t: r.t })
+  }
   return out
 }
 

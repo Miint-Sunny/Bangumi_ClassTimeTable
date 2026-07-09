@@ -1,0 +1,66 @@
+name: refresh-data
+
+on:
+  schedule:
+    - cron: '20 22 * * *' # 每日 22:20 UTC ≈ 北京 06:20,新番深夜档播完后
+  workflow_dispatch:
+    inputs:
+      backfill:
+        description: '回填整季(而非增量窗口)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 拉取 bangumi-data 数据集(jsDelivr CDN)
+        run: |
+          python3 -c "import sys; sys.path.insert(0,'scripts'); from bgm_dataset import fetch_dataset; fetch_dataset()"
+
+      - name: 同步 bgm.wiki 每集精确时刻
+        env:
+          BGM_WIKI_TOKEN: ${{ secrets.BGM_WIKI_TOKEN }}
+        run: |
+          if [ -z "$BGM_WIKI_TOKEN" ]; then
+            echo "::warning::缺 BGM_WIKI_TOKEN secret,跳过同步"
+            exit 0
+          fi
+          python3 scripts/bgmwiki_sync.py ${{ inputs.backfill && '--backfill' || '' }} | tee sync.log
+
+      - name: 校验产物
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+          d = json.load(open('public/data/enhance.json'))
+          n = len(d.get('entries') or {})
+          assert n >= 50, f'entries 数量异常: {n}'
+          air_manual = sum(1 for e in d['entries'].values()
+                           if any(k in (e.get('air') or {}) for k in ('advanceEps','anchorEp')))
+          print(f'entries={n}, 人工 air 校正={air_manual} (应 >= 3)')
+          assert air_manual >= 3, '人工校正疑似被覆盖!'
+          EOF
+
+      - name: 开 PR(有变更才开)
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: data/bgmwiki-sync
+          title: 'data: bgm.wiki 每日同步(每集精确时刻)'
+          commit-message: 'data: bgm.wiki 每日同步'
+          body: |
+            自动同步 bgm.wiki 每集精确放送时刻(epDates)。
+
+            人工维护的 advanceEps/anchor/note/source 已由校验步骤确认保留。
+            数据来源:https://bgm.wiki(番組維基)
+          add-paths: public/data/enhance.json
+          delete-branch: true
