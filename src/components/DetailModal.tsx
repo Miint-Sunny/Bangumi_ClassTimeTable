@@ -4,7 +4,8 @@ import { fetchSubject, type SubjectInfo } from '../lib/api'
 import { airedEps, behindCount } from '../lib/progress'
 import { MIN_VOTES, fmtVotes } from '../lib/score'
 import { nextEpisode, totalEps } from '../lib/schedule'
-import { WEEKDAY_CN, displayTz, isCarryOver, pad, partsInZone, relTime, slotFor } from '../lib/time'
+import { WEEKDAY_CN, displayTz, pad, partsInZone, relTime, slotFor } from '../lib/time'
+import { continuity } from '../lib/progress'
 
 interface Props {
   show: Show
@@ -131,7 +132,11 @@ export function DetailBody(props: Props) {
               ) : null}
               {show.watchers ? <>{show.watchers} 人在看 · </> : null}
               {show.sourceType ?? ''}
-              {isCarryOver(show, seasonStart) ? <> · 上季续播</> : null}
+              {continuity(show, seasonStart) === 'carry' ? (
+                <> · 上季续播</>
+              ) : continuity(show, seasonStart) === 'long' ? (
+                <> · 长期放送{aired ? `(已播 ${aired} 集)` : ''}</>
+              ) : null}
             </div>
             {show.tags && show.tags.length > 0 && (
               <div className="dm-tags">

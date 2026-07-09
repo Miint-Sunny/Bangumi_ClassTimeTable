@@ -1,7 +1,6 @@
 import type { FriendsMap, Show, Tracking } from '../types'
-import { airedEps, behindCount } from '../lib/progress'
+import { airedEps, behindCount, continuity } from '../lib/progress'
 import { MIN_VOTES } from '../lib/score'
-import { isCarryOver } from '../lib/time'
 
 interface Props {
   show: Show
@@ -35,10 +34,12 @@ export default function ShowCard({
   const aired = airedEps(show, now)
   const behind = behindCount(show, tracking, now)
   const friendCount = friendsMap.get(show.id)?.size ?? 0
+  const cont = continuity(show, seasonStart) // 跨季分级:新番 / 上季续播 / 长期放送
 
   const cls = [
     'show-card',
     `st-${status}`,
+    cont !== 'new' ? `cont-${cont}` : '',
     wide ? 'wide' : '',
     airedMark ? 'aired' : '',
     offWeek ? 'offweek' : '',
@@ -77,9 +78,13 @@ export default function ShowCard({
           ) : null}
           {behind > 0 ? <span className="behind">落后{behind}</span> : null}
           {friendCount > 0 ? <span className="friends">友{friendCount}</span> : null}
-          {isCarryOver(show, seasonStart) ? (
+          {cont === 'carry' ? (
             <span className="cont" title="上季开始播出,本季继续">
               续
+            </span>
+          ) : cont === 'long' ? (
+            <span className="cont long" title="长期放送(本季开始前已播超过 20 集)">
+              长期
             </span>
           ) : null}
           {show.airFix?.advanceEps ? (

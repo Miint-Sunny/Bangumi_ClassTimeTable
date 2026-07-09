@@ -19,8 +19,8 @@ import { beginOauthLogin, completeOauthLogin, fetchOauthConf, refreshIfNeeded, t
 import { withViewTransition } from './lib/anim'
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
-import { behindCount } from './lib/progress'
-import { currentSeason, displayTz, isCarryOver, partsInZone, seasonStartInstant } from './lib/time'
+import { behindCount, continuity } from './lib/progress'
+import { currentSeason, displayTz, partsInZone, seasonStartInstant } from './lib/time'
 import { fetchSeasonList, fetchSeasonPack, fmtSeason, seasonMonthOf, seasonStartOf } from './lib/seasons'
 import { buildIcs, downloadIcs } from './lib/ics'
 import { loadPersisted, savePersisted } from './lib/store'
@@ -49,15 +49,16 @@ function useWideLayout(): boolean {
 }
 
 type View = 'day' | 'week' | 'month'
-type Filter = 'all' | 'mine' | 'watching' | 'wish' | 'new' | 'carry'
+type Filter = 'all' | 'mine' | 'watching' | 'wish' | 'new' | 'carry' | 'long'
 
-const FILTERS: { k: Filter; label: string }[] = [
+const FILTERS: { k: Filter; label: string; title?: string }[] = [
   { k: 'all', label: '全部' },
   { k: 'mine', label: '我的课表' },
   { k: 'watching', label: '在看' },
   { k: 'wish', label: '想看' },
   { k: 'new', label: '本季新番' },
-  { k: 'carry', label: '上季续播' },
+  { k: 'carry', label: '上季续播', title: '上季开播、本季继续(季初已播 ≤20 集)' },
+  { k: 'long', label: '长期放送', title: '年番/多年番(季初已播 >20 集)' },
 ]
 
 const THEMES: [Settings['theme'], string][] = [
@@ -387,8 +388,9 @@ export default function App() {
       if (filter === 'mine' && st !== 'watching' && st !== 'wish') return false
       if (filter === 'watching' && st !== 'watching') return false
       if (filter === 'wish' && st !== 'wish') return false
-      if (filter === 'new' && isCarryOver(s, seasonStart)) return false
-      if (filter === 'carry' && !isCarryOver(s, seasonStart)) return false
+      if (filter === 'new' && continuity(s, seasonStart) !== 'new') return false
+      if (filter === 'carry' && continuity(s, seasonStart) !== 'carry') return false
+      if (filter === 'long' && continuity(s, seasonStart) !== 'long') return false
       if (q) {
         const hay = `${s.nameCn} ${s.nameJp} ${(s.tags ?? []).join(' ')}`.toLowerCase()
         if (!hay.includes(q)) return false
@@ -674,7 +676,12 @@ export default function App() {
         </span>
 
         {FILTERS.map((f) => (
-          <button key={f.k} className={`chip${filter === f.k ? ' on' : ''}`} onClick={() => setFilter(f.k)}>
+          <button
+            key={f.k}
+            className={`chip${filter === f.k ? ' on' : ''}`}
+            title={f.title}
+            onClick={() => setFilter(f.k)}
+          >
             {f.label}
           </button>
         ))}

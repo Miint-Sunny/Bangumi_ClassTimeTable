@@ -440,6 +440,12 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
   color: var(--gold); border: 1px solid var(--gold);
   border-radius: 5px; padding: 0 4px; line-height: 1.3;
 }
+.show-card .meta .cont.long { color: var(--blue); border-color: var(--blue); }
+
+/* 跨季垫色:与徽标同色系 —— 上季续播金色轻垫(续),长期放送冷色轻垫(长期),
+   一眼区分"不是本季新开的";8% 混色保持克制,不与状态左边线打架 */
+.show-card.cont-carry { background: color-mix(in srgb, var(--card) 92%, var(--gold)); }
+.show-card.cont-long { background: color-mix(in srgb, var(--card) 92%, var(--blue)); }
 
 .show-card.st-wish { border-left-color: var(--gold); }
 .show-card.st-watching { border-left-color: var(--pink-strong); }
