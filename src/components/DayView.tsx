@@ -21,11 +21,14 @@ interface Occ {
   epEnd: number
 }
 
+const REL_DAY: Record<number, string> = { [-2]: '前天', [-1]: '昨天', 0: '今天', 1: '明天', 2: '后天' }
+
 /** 日视图:今天是"过去 6 小时 + 未来 24 小时"时间线,翻页后是指定日期的完整更新表 */
 export default function DayView({ shows, tracking, settings, now, friendsMap, onOpen }: Props) {
   const tz = displayTz(settings)
   const [dayOffset, setDayOffset] = useState(0) // 0 = 今天(相对视角)
   const isToday = dayOffset === 0
+  const relLabel = REL_DAY[dayOffset] // 前天/昨天/今天/明天/后天,超出为 undefined
 
   const { past, upcoming, unknownDay, dateLabel } = useMemo(() => {
     const dayStart = startOfDayInstant(now, tz) + dayOffset * DAY_MS
@@ -106,7 +109,7 @@ export default function DayView({ shows, tracking, settings, now, friendsMap, on
         <button className="iconbtn" onClick={() => setDayOffset((o) => o - 1)}>
           ‹ 前一天
         </button>
-        <span className="m-title">{isToday ? `今天 · ${dateLabel}` : dateLabel}</span>
+        <span className="m-title">{relLabel ? `${relLabel} · ${dateLabel}` : dateLabel}</span>
         <button className="iconbtn" onClick={() => setDayOffset((o) => o + 1)}>
           后一天 ›
         </button>
@@ -134,6 +137,7 @@ export default function DayView({ shows, tracking, settings, now, friendsMap, on
       ) : (
         <>
           <div className="day-section-title">
+            {relLabel ? `${relLabel} ` : ''}
             {dateLabel} 的更新({past.length + upcoming.length} 次)
           </div>
           {past.length + upcoming.length === 0 ? (
@@ -149,7 +153,7 @@ export default function DayView({ shows, tracking, settings, now, friendsMap, on
 
       {unknownDay.length > 0 && (
         <>
-          <div className="day-section-title">{isToday ? '今天' : '当天'}更新 · 具体时间未知</div>
+          <div className="day-section-title">{relLabel ?? '当天'}更新 · 具体时间未知</div>
           {unknownDay.map((s) => (
             <div key={s.id} className="day-row">
               <div className="when">

@@ -282,6 +282,8 @@ button { font: inherit; cursor: pointer; }
 
 .month-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .month-nav .iconbtn { flex-shrink: 0; }
+/* 翻页键统一宽度,跨日/周/月视图对齐("前一天"比"上周"宽) */
+.month-nav > .iconbtn { min-width: 68px; }
 .month-nav .m-title {
   font-size: 16px; color: var(--text);
   width: 172px; text-align: center; white-space: nowrap; flex-shrink: 0;

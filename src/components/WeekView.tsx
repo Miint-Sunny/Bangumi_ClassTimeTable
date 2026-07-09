@@ -13,6 +13,8 @@ import {
 import { hasEnded, occurrencesBetween } from '../lib/schedule'
 import ShowCard from './ShowCard'
 
+const REL_WEEK: Record<number, string> = { [-1]: '上周', 0: '本周', 1: '下周' }
+
 interface Props {
   shows: Show[]
   tracking: Tracking
@@ -29,6 +31,7 @@ export default function WeekView({ shows, tracking, settings, now, seasonStart, 
   const days = dayOrder(settings.weekStart)
   const [weekOffset, setWeekOffset] = useState(0) // 0 = 本周
   const isCurrentWeek = weekOffset === 0
+  const relWeek = REL_WEEK[weekOffset] // 上周/本周/下周,超出为 undefined
 
   const { rows, cells, unknownByDay, dayHeads, todayWd, nowEff } = useMemo(() => {
     const weekStart = startOfWeekInstant(now, tz, settings.weekStart) + weekOffset * 7 * DAY_MS
@@ -112,7 +115,7 @@ export default function WeekView({ shows, tracking, settings, now, seasonStart, 
             ‹ 上周
           </button>
           <span className="m-title">
-            {isCurrentWeek ? '本周 ' : ''}
+            {relWeek ? `${relWeek} ` : ''}
             {dayHeads[0]?.label} – {dayHeads[6]?.label}
           </span>
           <button className="iconbtn" onClick={() => setWeekOffset((o) => o + 1)}>
