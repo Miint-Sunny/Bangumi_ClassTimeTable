@@ -220,9 +220,19 @@ button { font: inherit; cursor: pointer; }
 .side-panel .close:hover { color: var(--pink-strong); }
 .side-panel .dm-head .cover { width: 84px; height: 118px; }
 
-/* 面板够宽时(日视图)速览自动流成多栏,窄时退回单栏 */
-.side-panel .dash { column-width: 280px; column-gap: 22px; }
-.side-panel .dash > * { break-inside: avoid; }
+/* 面板够宽时(日视图)速览排成两列网格:区块成对同排、行首对齐;窄时单栏。
+   minmax(0,1fr) 是硬约束:轨道宽度与内容 min-content 解耦,长番名交给
+   行内省略号,列永远严格对半(裸 1fr 的隐含 auto 下限会被内容撑爆)。 */
+@container panel (min-width: 560px) {
+  .side-panel .dash {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 22px;
+    align-items: start;
+  }
+  .side-panel .dash > * { min-width: 0; }
+  .side-panel .dash > .dash-hint { grid-column: 1 / -1; }
+}
 
 .dash-hint { color: var(--text-soft); line-height: 1.9; }
 .dash-row {
@@ -596,10 +606,6 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
   overscroll-behavior: contain; /* 滚到头不把整个面板带着滚 */
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
-}
-/* 面板够宽流成双栏时,两个清单各居一栏,限高放宽到接近整栏 */
-@container panel (min-width: 560px) {
-  .dm-sec.cap .sec-body { max-height: calc(100cqh - 130px); }
 }
 .dm-sec.cap.grow .sec-body { max-height: none; }
 .sec-x {
