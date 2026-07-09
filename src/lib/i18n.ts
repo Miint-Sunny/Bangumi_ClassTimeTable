@@ -81,6 +81,8 @@ const DICT: Record<string, [string, string, string]> = {
     '年間アニメなど(期首時点 >20 話)',
     'Year-long+ shows (>20 eps at season start)',
   ],
+  展开: ['展開', '展開する', 'Expand'],
+  收起: ['收起', '折りたたむ', 'Collapse'],
   产地: ['產地', '制作国', 'Region'],
   日本: ['日本', '日本', 'Japan'],
   中国: ['中國', '中国', 'China'],

@@ -138,17 +138,29 @@ function DashBody(props: Props) {
     return [...byFriend.entries()].sort((a, b) => b[1].length - a[1].length)
   })()
 
+  // 不再按条数截断:清单在限高滚动区里完整可见(欠得多的番不会凭空消失)
   const behindList = shows
     .map((s) => ({ s, behind: behindCount(s, tracking, now) }))
     .filter((x) => x.behind > 0)
     .sort((a, b) => b.behind - a.behind)
-    .slice(0, 10)
 
   const upcoming = tracked
     .map((s) => ({ s, nx: nextEpisode(s, now) }))
     .filter((x): x is { s: Show; nx: NonNullable<ReturnType<typeof nextEpisode>> } => x.nx !== null)
     .sort((a, b) => a.nx.t - b.nx.t)
-    .slice(0, 6)
+
+  // 补番清单/更新日程:默认各限高约半栏内部滚动,可展开到完整长度
+  const [grown, setGrown] = useState<{ backlog?: boolean; sched?: boolean }>({})
+  const growBtn = (k: 'backlog' | 'sched') => (
+    <button
+      className="sec-x"
+      title={t(grown[k] ? '收起' : '展开')}
+      aria-expanded={!!grown[k]}
+      onClick={() => setGrown((g) => ({ ...g, [k]: !g[k] }))}
+    >
+      ▾
+    </button>
+  )
 
   // 好友动态:公开收藏里最近有进度变化的本季番
   const friendFeed = (() => {
@@ -187,52 +199,60 @@ function DashBody(props: Props) {
         </>
       ) : (
         <>
-          <div className="dm-sec">
+          <div className={`dm-sec cap${grown.backlog ? ' grow' : ''}`}>
             <div className="sec-t">
               {t('补番清单')}
               {behindList.length > 0 ? t('(欠 {n} 集)', { n: behindList.reduce((a, x) => a + x.behind, 0) }) : ''}
+              {behindList.length > 0 && growBtn('backlog')}
             </div>
             {behindList.length === 0 ? (
               <div className="dash-hint">{t('没有落后的番,轻松。')}</div>
             ) : (
-              behindList.map(({ s, behind }) => {
-                const watched = tracking.watched[s.id] ?? 0
-                const aired = airedEps(s, now)
-                return (
-                  <div key={s.id} className="dash-row">
-                    <a href="#" className="nm" onClick={openLink(s.id)} title={displayName(s)}>
-                      {displayName(s)}
-                    </a>
-                    <span className="prog">
-                      {watched}/{aired}
-                    </span>
-                    <span className="behind">-{behind}</span>
-                    <button className="mini" title={t('看了一集')} onClick={() => onSetWatched(s.id, watched + 1)}>
-                      +1
-                    </button>
-                    <button className="mini" title={t('补到已播')} onClick={() => onSetWatched(s.id, aired ?? watched)}>
-                      {t('补齐')}
-                    </button>
-                  </div>
-                )
-              })
+              <div className="sec-body">
+                {behindList.map(({ s, behind }) => {
+                  const watched = tracking.watched[s.id] ?? 0
+                  const aired = airedEps(s, now)
+                  return (
+                    <div key={s.id} className="dash-row">
+                      <a href="#" className="nm" onClick={openLink(s.id)} title={displayName(s)}>
+                        {displayName(s)}
+                      </a>
+                      <span className="prog">
+                        {watched}/{aired}
+                      </span>
+                      <span className="behind">-{behind}</span>
+                      <button className="mini" title={t('看了一集')} onClick={() => onSetWatched(s.id, watched + 1)}>
+                        +1
+                      </button>
+                      <button className="mini" title={t('补到已播')} onClick={() => onSetWatched(s.id, aired ?? watched)}>
+                        {t('补齐')}
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
             )}
           </div>
 
           {!archive && upcoming.length > 0 && (
-            <div className="dm-sec">
-              <div className="sec-t">{t('我的更新日程')}</div>
-              {upcoming.map(({ s, nx }) => (
-                <div key={s.id} className="dash-row">
-                  <span className="when" title={fmtT(nx.t)}>
-                    {relTime(nx.t, now)}
-                  </span>
-                  <a href="#" className="nm" onClick={openLink(s.id)} title={displayName(s)}>
-                    {displayName(s)}
-                  </a>
-                  <span className="ep">{epLabel(nx)}</span>
-                </div>
-              ))}
+            <div className={`dm-sec cap${grown.sched ? ' grow' : ''}`}>
+              <div className="sec-t">
+                {t('我的更新日程')}
+                {growBtn('sched')}
+              </div>
+              <div className="sec-body">
+                {upcoming.map(({ s, nx }) => (
+                  <div key={s.id} className="dash-row">
+                    <span className="when" title={fmtT(nx.t)}>
+                      {relTime(nx.t, now)}
+                    </span>
+                    <a href="#" className="nm" onClick={openLink(s.id)} title={displayName(s)}>
+                      {displayName(s)}
+                    </a>
+                    <span className="ep">{epLabel(nx)}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </>

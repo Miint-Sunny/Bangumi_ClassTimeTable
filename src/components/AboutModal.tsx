@@ -13,10 +13,10 @@ const CHANGELOG: LogEntry[] = [
   {
     d: '2026-07-10',
     x: {
-      'zh-Hans': '筛选新增「产地」:日本/中国/其他地区/未知 四类(拿不准的诚实标未知、每日复查,不误删);筛选选择跨会话记住',
-      'zh-Hant': '篩選新增「產地」:日本/中國/其他地區/未知 四類(拿不準的誠實標未知、每日複查,不誤刪);篩選選擇跨會話記住',
-      ja: '絞り込みに「制作国」を追加:日本/中国/その他/不明の4分類(不明作品は無理に分類せず毎日再確認)。絞り込みの選択は保存されます',
-      en: 'New "Region" filter: Japan / China / Other / Unknown (uncertain shows stay Unknown, rechecked daily); filter choices now persist',
+      'zh-Hans': '筛选新增「产地」:日本/中国/其他地区/未知 四类(拿不准的诚实标未知、每日复查,不误删);筛选选择跨会话记住;侧栏补番清单/更新日程限高滚动、可展开,不再截断条数',
+      'zh-Hant': '篩選新增「產地」:日本/中國/其他地區/未知 四類(拿不準的誠實標未知、每日複查,不誤刪);篩選選擇跨會話記住;側欄補番清單/更新日程限高滾動、可展開,不再截斷條數',
+      ja: '絞り込みに「制作国」を追加:日本/中国/その他/不明の4分類(不明作品は無理に分類せず毎日再確認)。絞り込み選択は保存。サイドバーの積みリスト/更新予定はスクロール+展開式で全件表示に',
+      en: 'New "Region" filter: Japan / China / Other / Unknown (uncertain shows stay Unknown, rechecked daily); filter choices persist; sidebar backlog & schedule now scroll + expand, no more truncation',
     },
   },
   {
