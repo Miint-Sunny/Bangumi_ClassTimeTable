@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
 import {
   DAY_MS,
@@ -27,9 +27,11 @@ interface Props {
 export default function WeekView({ shows, tracking, settings, now, seasonStart, archive, friendsMap, onOpen }: Props) {
   const tz = displayTz(settings)
   const days = dayOrder(settings.weekStart)
+  const [weekOffset, setWeekOffset] = useState(0) // 0 = 本周
+  const isCurrentWeek = weekOffset === 0
 
   const { rows, cells, unknownByDay, dayHeads, todayWd, nowEff } = useMemo(() => {
-    const weekStart = startOfWeekInstant(now, tz, settings.weekStart)
+    const weekStart = startOfWeekInstant(now, tz, settings.weekStart) + weekOffset * 7 * DAY_MS
     const nowP = partsInZone(now, tz)
     const todayWd = nowP.wd
     // 当前时刻在时间轴上的位置(深夜表记下 0-6 点折算为 24+)
@@ -76,7 +78,7 @@ export default function WeekView({ shows, tracking, settings, now, seasonStart, 
     })
 
     return { rows, cells, unknownByDay, dayHeads, todayWd, nowEff }
-  }, [shows, settings, now, tz, days, archive])
+  }, [shows, settings, now, tz, days, archive, weekOffset])
 
   const fmtRow = (m: number) =>
     `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
@@ -100,11 +102,33 @@ export default function WeekView({ shows, tracking, settings, now, seasonStart, 
     </>
   )
 
+  const showToday = !archive && isCurrentWeek
+
   return (
-    <div className="week-grid">
+    <>
+      {!archive && (
+        <div className="month-nav">
+          <button className="iconbtn" onClick={() => setWeekOffset((o) => o - 1)}>
+            ‹ 上周
+          </button>
+          <span className="m-title">
+            {isCurrentWeek ? '本周 ' : ''}
+            {dayHeads[0]?.label} – {dayHeads[6]?.label}
+          </span>
+          <button className="iconbtn" onClick={() => setWeekOffset((o) => o + 1)}>
+            下周 ›
+          </button>
+          {!isCurrentWeek && (
+            <button className="iconbtn" onClick={() => setWeekOffset(0)}>
+              回到本周
+            </button>
+          )}
+        </div>
+      )}
+      <div className="week-grid">
       <div className="wg-corner" />
       {dayHeads.map((h) => (
-        <div key={h.wd} className={`wg-dayhead${!archive && h.wd === todayWd ? ' today' : ''}`}>
+        <div key={h.wd} className={`wg-dayhead${showToday && h.wd === todayWd ? ' today' : ''}`}>
           <div className="d1">周{WEEKDAY_CN[h.wd]}</div>
           {!archive && <div className="d2">{h.label}</div>}
         </div>
@@ -114,13 +138,13 @@ export default function WeekView({ shows, tracking, settings, now, seasonStart, 
         const night = m >= 1440 || m < 360
         return (
           <Fragment key={m}>
-            {!archive && i === nowIdx && nowRow}
+            {showToday && i === nowIdx && nowRow}
             <RowFrag
               minutes={m}
               night={night}
               label={fmtRow(m)}
               days={days}
-              todayWd={archive ? 0 : todayWd}
+              todayWd={showToday ? todayWd : 0}
               cells={cells}
               tracking={tracking}
               now={now}
@@ -132,7 +156,7 @@ export default function WeekView({ shows, tracking, settings, now, seasonStart, 
           </Fragment>
         )
       })}
-      {!archive && rows.length > 0 && nowIdx === rows.length && nowRow}
+      {showToday && rows.length > 0 && nowIdx === rows.length && nowRow}
 
       {hasUnknown && (
         <>
@@ -140,7 +164,7 @@ export default function WeekView({ shows, tracking, settings, now, seasonStart, 
             未定
           </div>
           {days.map((wd) => (
-            <div key={wd} className={`wg-cell${!archive && wd === todayWd ? ' today' : ''}`}>
+            <div key={wd} className={`wg-cell${showToday && wd === todayWd ? ' today' : ''}`}>
               {(unknownByDay.get(wd) ?? []).map((s) => (
                 <ShowCard
                   key={s.id}
@@ -157,7 +181,8 @@ export default function WeekView({ shows, tracking, settings, now, seasonStart, 
           ))}
         </>
       )}
-    </div>
+      </div>
+    </>
   )
 }
 

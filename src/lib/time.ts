@@ -78,13 +78,18 @@ export function slotFor(show: Show, settings: Settings): AirSlot {
   return { show, day: show.airWeekdayJst ?? 0, minutes: -1, label: '未定', known: false }
 }
 
+/** 展示时区下今日 0 点的时刻 */
+export function startOfDayInstant(now: number, tz: string): number {
+  const p = partsInZone(now, tz)
+  const d = new Date(now)
+  return now - (p.hh * 60 + p.mm) * 60_000 - d.getSeconds() * 1000 - d.getMilliseconds()
+}
+
 /** 展示时区下本周起点(周起始日 0 点)的时刻 */
 export function startOfWeekInstant(now: number, tz: string, weekStart: 1 | 7): number {
   const p = partsInZone(now, tz)
   const diff = weekStart === 1 ? p.wd - 1 : p.wd % 7
-  const d = new Date(now)
-  const midToday = now - (p.hh * 60 + p.mm) * 60_000 - d.getSeconds() * 1000 - d.getMilliseconds()
-  return midToday - diff * DAY_MS
+  return startOfDayInstant(now, tz) - diff * DAY_MS
 }
 
 /** "3 小时后" / "昨天" 之类的相对时间 */

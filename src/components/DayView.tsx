@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
-import { displayTz, pad, partsInZone, relTime } from '../lib/time'
+import { DAY_MS, WEEKDAY_CN, displayTz, pad, partsInZone, relTime, startOfDayInstant } from '../lib/time'
 import { epTime, hasEnded, occurrencesBetween, totalEps } from '../lib/schedule'
 
 interface Props {
@@ -21,21 +21,25 @@ interface Occ {
   epEnd: number
 }
 
-/** 日视图:过去 6 小时 + 未来 24 小时的更新时间线 */
+/** 日视图:今天是"过去 6 小时 + 未来 24 小时"时间线,翻页后是指定日期的完整更新表 */
 export default function DayView({ shows, tracking, settings, now, friendsMap, onOpen }: Props) {
   const tz = displayTz(settings)
+  const [dayOffset, setDayOffset] = useState(0) // 0 = 今天(相对视角)
+  const isToday = dayOffset === 0
 
-  const { past, upcoming, unknownToday } = useMemo(() => {
-    const lo = now - 6 * 3600_000
-    const hi = now + 24 * 3600_000
+  const { past, upcoming, unknownDay, dateLabel } = useMemo(() => {
+    const dayStart = startOfDayInstant(now, tz) + dayOffset * DAY_MS
+    const dayMid = dayStart + 12 * 3600_000
+    const [lo, hi] = isToday ? [now - 6 * 3600_000, now + 24 * 3600_000] : [dayStart, dayStart + DAY_MS - 1]
+
     const occs: Occ[] = []
-    const unknownToday: Show[] = []
-    const todayWdJst = partsInZone(now, 'Asia/Tokyo').wd
+    const unknownDay: Show[] = []
+    const targetWdJst = partsInZone(dayMid, 'Asia/Tokyo').wd
 
     for (const show of shows) {
       if (epTime(show, 1) === null) {
         // 无法推导日程:退回 calendar 的周几归类
-        if (show.airWeekdayJst === todayWdJst) unknownToday.push(show)
+        if (show.airWeekdayJst === targetWdJst) unknownDay.push(show)
         continue
       }
       for (const o of occurrencesBetween(show, lo, hi)) {
@@ -44,12 +48,16 @@ export default function DayView({ shows, tracking, settings, now, friendsMap, on
       }
     }
     occs.sort((a, b) => a.t - b.t || a.show.id - b.show.id)
+
+    const p = partsInZone(dayMid, tz)
+    const dateLabel = `${p.mo}月${p.d}日(周${WEEKDAY_CN[p.wd]})`
     return {
       past: occs.filter((o) => o.t <= now),
       upcoming: occs.filter((o) => o.t > now),
-      unknownToday,
+      unknownDay,
+      dateLabel,
     }
-  }, [shows, now])
+  }, [shows, now, tz, dayOffset, isToday])
 
   const fmt = (t: number) => {
     const p = partsInZone(t, tz)
@@ -94,16 +102,53 @@ export default function DayView({ shows, tracking, settings, now, friendsMap, on
 
   return (
     <div className="day-view">
-      <div className="day-section-title">刚刚播出(6 小时内)</div>
-      {past.length === 0 ? <div className="day-empty">—</div> : past.map((o) => row(o, true))}
+      <div className="month-nav">
+        <button className="iconbtn" onClick={() => setDayOffset((o) => o - 1)}>
+          ‹ 前一天
+        </button>
+        <span className="m-title">{isToday ? `今天 · ${dateLabel}` : dateLabel}</span>
+        <button className="iconbtn" onClick={() => setDayOffset((o) => o + 1)}>
+          后一天 ›
+        </button>
+        {!isToday && (
+          <button className="iconbtn" onClick={() => setDayOffset(0)}>
+            回到今天
+          </button>
+        )}
+      </div>
 
-      <div className="day-section-title">接下来 24 小时</div>
-      {upcoming.length === 0 ? <div className="day-empty">没有更新,清净的一天。</div> : upcoming.map((o) => row(o, false))}
-
-      {unknownToday.length > 0 && (
+      {isToday ? (
         <>
-          <div className="day-section-title">今天更新 · 具体时间未知</div>
-          {unknownToday.map((s) => (
+          <div className="day-section-title">刚刚播出(6 小时内)</div>
+          {past.length === 0 ? <div className="day-empty">—</div> : past.map((o) => row(o, true))}
+
+          <div className="day-section-title">接下来 24 小时</div>
+          {upcoming.length === 0 ? (
+            <div className="day-empty">没有更新,清净的一天。</div>
+          ) : (
+            upcoming.map((o) => row(o, false))
+          )}
+        </>
+      ) : (
+        <>
+          <div className="day-section-title">
+            {dateLabel} 的更新({past.length + upcoming.length} 次)
+          </div>
+          {past.length + upcoming.length === 0 ? (
+            <div className="day-empty">这一天没有更新。</div>
+          ) : (
+            <>
+              {past.map((o) => row(o, true))}
+              {upcoming.map((o) => row(o, false))}
+            </>
+          )}
+        </>
+      )}
+
+      {unknownDay.length > 0 && (
+        <>
+          <div className="day-section-title">{isToday ? '今天' : '当天'}更新 · 具体时间未知</div>
+          {unknownDay.map((s) => (
             <div key={s.id} className="day-row">
               <div className="when">
                 <div className="t">--:--</div>
