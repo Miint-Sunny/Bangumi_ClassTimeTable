@@ -281,7 +281,13 @@ button { font: inherit; cursor: pointer; }
 /* ── 月视图 ───────────────────────────────────── */
 
 .month-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.month-nav .m-title { font-size: 16px; color: var(--text); min-width: 110px; text-align: center; }
+.month-nav .iconbtn { flex-shrink: 0; }
+.month-nav .m-title {
+  font-size: 16px; color: var(--text);
+  width: 172px; text-align: center; white-space: nowrap; flex-shrink: 0;
+}
+/* "回到今天/本周/本月" 始终占位,出现与否不改变布局 */
+.month-nav .reset-slot { width: 84px; flex-shrink: 0; display: flex; }
 .month-grid {
   display: grid; grid-template-columns: repeat(7, 1fr);
   border-left: 1px solid var(--border);

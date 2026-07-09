@@ -118,11 +118,13 @@ export default function WeekView({ shows, tracking, settings, now, seasonStart, 
           <button className="iconbtn" onClick={() => setWeekOffset((o) => o + 1)}>
             下周 ›
           </button>
-          {!isCurrentWeek && (
-            <button className="iconbtn" onClick={() => setWeekOffset(0)}>
-              回到本周
-            </button>
-          )}
+          <span className="reset-slot">
+            {!isCurrentWeek && (
+              <button className="iconbtn" onClick={() => setWeekOffset(0)}>
+                回到本周
+              </button>
+            )}
+          </span>
         </div>
       )}
       <div className="week-grid">

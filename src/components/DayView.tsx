@@ -110,11 +110,13 @@ export default function DayView({ shows, tracking, settings, now, friendsMap, on
         <button className="iconbtn" onClick={() => setDayOffset((o) => o + 1)}>
           后一天 ›
         </button>
-        {!isToday && (
-          <button className="iconbtn" onClick={() => setDayOffset(0)}>
-            回到今天
-          </button>
-        )}
+        <span className="reset-slot">
+          {!isToday && (
+            <button className="iconbtn" onClick={() => setDayOffset(0)}>
+              回到今天
+            </button>
+          )}
+        </span>
       </div>
 
       {isToday ? (

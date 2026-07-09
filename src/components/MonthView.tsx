@@ -121,16 +121,18 @@ export default function MonthView({ shows, tracking, settings, now, archive, ini
         <button className="iconbtn" onClick={() => nav(1)}>
           下月 ›
         </button>
-        {!archive && (cursor.y !== nowP.y || cursor.mo !== nowP.mo) && (
-          <button className="iconbtn" onClick={() => setCursor({ y: nowP.y, mo: nowP.mo })}>
-            回到本月
-          </button>
-        )}
-        {archive && initMonth && (cursor.y !== initMonth.y || cursor.mo !== initMonth.mo) && (
-          <button className="iconbtn" onClick={() => setCursor(initMonth)}>
-            回到季首月
-          </button>
-        )}
+        <span className="reset-slot">
+          {!archive && (cursor.y !== nowP.y || cursor.mo !== nowP.mo) && (
+            <button className="iconbtn" onClick={() => setCursor({ y: nowP.y, mo: nowP.mo })}>
+              回到本月
+            </button>
+          )}
+          {archive && initMonth && (cursor.y !== initMonth.y || cursor.mo !== initMonth.mo) && (
+            <button className="iconbtn" onClick={() => setCursor(initMonth)}>
+              回到季首月
+            </button>
+          )}
+        </span>
       </div>
 
       <div className="month-grid">
