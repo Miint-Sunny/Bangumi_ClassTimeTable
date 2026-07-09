@@ -5,6 +5,15 @@ name = "bangumi-timetable"
 main = "worker/worker.js"
 compatibility_date = "2026-01-01"
 
+# 正式域名(Cloudflare Registrar 购入,zone 已在账号内):deploy 时自动创建绑定与 DNS。
+# 若域名还没进这个 Cloudflare 账号,先在仪表盘 Add site 接管;绑定报错时可临时
+# 注释掉下面两行 + 把 workers_dev 改回 true,先用 workers.dev 预览地址。
+routes = [
+  { pattern = "bgmtimetable.com", custom_domain = true }
+]
+# 正式域名作为唯一入口,不开 workers.dev 地址(避免同一站点两个 origin)
+workers_dev = false
+
 [assets]
 directory = "./dist"
 

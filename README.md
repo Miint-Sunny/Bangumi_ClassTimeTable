@@ -63,9 +63,10 @@ npm run build   # 产物在 dist/,纯静态,可部署到任意静态托管
 
 ## 部署
 
-**Cloudflare Workers(推荐,含 OAuth 一键登录)**:静态站点与 OAuth 令牌代理
-部署在同一个免费域名下,`npm run deploy` 一条命令发布;设 `CLOUDFLARE_API_TOKEN`
-secret 后推 main 自动部署。完整步骤见 [worker/README.md](worker/README.md)。
+**正式站点 [bgmtimetable.com](https://bgmtimetable.com)(Cloudflare Workers,含
+OAuth 一键登录)**:静态站点与 OAuth 令牌代理同域名,`npm run deploy` 一条命令
+发布 + 自动绑定域名;设 `CLOUDFLARE_API_TOKEN` secret 后推 main 自动部署。
+完整步骤见 [worker/README.md](worker/README.md)。
 
 **GitHub Pages(纯静态镜像)**:仓库 Settings → Pages 选择 "GitHub Actions",
 `.github/workflows/deploy.yml` 每次 push main 自动构建发布。镜像上 OAuth 按钮
