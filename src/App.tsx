@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { AirFix, BgmAccount, FriendsMap, Settings, Show, Tracking, WatchStatus } from './types'
+import type { AirFix, BgmAccount, CollectMemo, FriendsMap, Settings, Show, Tracking, WatchStatus } from './types'
 import { fetchCalendar, fetchSubject, fetchUserWatching, type SubjectInfo } from './lib/api'
 import {
   BgmAuthError,
@@ -436,6 +436,30 @@ export default function App() {
     [scheduleDrain],
   )
 
+  const setMemo = useCallback(
+    (id: number, memo: CollectMemo) => {
+      setTracking((t) => {
+        const memos = { ...t.memos }
+        if (Object.keys(memo).length === 0) delete memos[id]
+        else memos[id] = memo
+        return { ...t, memos }
+      })
+      const acc = accountRef.current
+      const st = trackingRef.current.status[id]
+      if (acc && !acc.invalid && st) {
+        // 全量三字段一起写回,空值即清空,与 bgm 收藏面板语义一致
+        enqueuePush(id, {
+          type: STATUS_TO_TYPE[st],
+          tags: memo.tags ?? [],
+          comment: memo.comment ?? '',
+          private: memo.private ?? false,
+        })
+        scheduleDrain()
+      }
+    },
+    [scheduleDrain],
+  )
+
   const setRate = useCallback(
     (id: number, rate: number) => {
       setTracking((t) => {
@@ -750,6 +774,7 @@ export default function App() {
               onSetStatus={setStatus}
               onSetWatched={setWatched}
               onSetRate={setRate}
+              onSetMemo={setMemo}
               onSetOverride={setOverride}
               onSubjectInfo={applySubjectInfo}
               onClose={() => setOpenId(null)}
@@ -770,6 +795,7 @@ export default function App() {
           onSetStatus={setStatus}
           onSetWatched={setWatched}
           onSetRate={setRate}
+          onSetMemo={setMemo}
           onSetOverride={setOverride}
           onSubjectInfo={applySubjectInfo}
           onTag={searchTag}

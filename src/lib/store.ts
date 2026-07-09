@@ -42,12 +42,17 @@ export function loadPersisted(): Persisted {
           status: p.tracking?.status ?? {},
           watched: p.tracking?.watched ?? {},
           rates: p.tracking?.rates ?? {},
+          memos: p.tracking?.memos ?? {},
         },
         overrides: p.overrides ?? {},
       }
     }
   } catch {}
-  return { settings: { ...DEFAULT_SETTINGS }, tracking: { status: {}, watched: {}, rates: {} }, overrides: {} }
+  return {
+    settings: { ...DEFAULT_SETTINGS },
+    tracking: { status: {}, watched: {}, rates: {}, memos: {} },
+    overrides: {},
+  }
 }
 
 export function savePersisted(p: Persisted) {

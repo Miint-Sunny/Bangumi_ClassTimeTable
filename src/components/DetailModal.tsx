@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import type { AirFix, FriendsMap, Settings, Show, Tracking, WatchStatus } from '../types'
+import { useEffect, useMemo, useState } from 'react'
+import type { AirFix, CollectMemo, FriendsMap, Settings, Show, Tracking, WatchStatus } from '../types'
 import { fetchSubject, type SubjectInfo } from '../lib/api'
 import { airedEps, behindCount } from '../lib/progress'
 import { MIN_VOTES, fmtVotes } from '../lib/score'
@@ -17,6 +17,7 @@ interface Props {
   onSetStatus: (id: number, s: WatchStatus | null) => void
   onSetWatched: (id: number, n: number) => void
   onSetRate: (id: number, rate: number) => void
+  onSetMemo: (id: number, memo: CollectMemo) => void
   onSetOverride: (id: number, fix: AirFix | null) => void
   onSubjectInfo: (info: SubjectInfo) => void
   onTag?: (tag: string) => void // 点题材标签 → 按标签筛选
@@ -47,6 +48,7 @@ export function DetailBody(props: Props) {
     onSetStatus,
     onSetWatched,
     onSetRate,
+    onSetMemo,
     onSetOverride,
     onSubjectInfo,
     onTag,
@@ -229,28 +231,37 @@ export function DetailBody(props: Props) {
             ))}
           </div>
           {collected && (
-            <div className="rate-row" onMouseLeave={() => setHoverRate(0)}>
-              <span className="stars">
-                {Array.from({ length: 10 }, (_, i) => i + 1).map((v) => (
-                  <button
-                    key={v}
-                    className={`star${(hoverRate || myRate) >= v ? ' lit' : ''}`}
-                    title={rateTitle(v)}
-                    onMouseEnter={() => setHoverRate(v)}
-                    onClick={() => onSetRate(show.id, myRate === v ? 0 : v)}
-                  >
-                    ★
-                  </button>
-                ))}
-              </span>
-              <span className={`rate-cap${hoverRate ? ' preview' : ''}`}>
-                {hoverRate
-                  ? `${RATE_CAPTIONS[hoverRate]} ${hoverRate}`
-                  : myRate
-                    ? `${RATE_CAPTIONS[myRate]} ${myRate}`
-                    : '我的评价'}
-              </span>
-            </div>
+            <>
+              <div className="rate-row" onMouseLeave={() => setHoverRate(0)}>
+                <span className="stars">
+                  {Array.from({ length: 10 }, (_, i) => i + 1).map((v) => (
+                    <button
+                      key={v}
+                      className={`star${(hoverRate || myRate) >= v ? ' lit' : ''}`}
+                      title={rateTitle(v)}
+                      onMouseEnter={() => setHoverRate(v)}
+                      onClick={() => onSetRate(show.id, myRate === v ? 0 : v)}
+                    >
+                      ★
+                    </button>
+                  ))}
+                </span>
+                <span className={`rate-cap${hoverRate ? ' preview' : ''}`}>
+                  {hoverRate
+                    ? `${RATE_CAPTIONS[hoverRate]} ${hoverRate}`
+                    : myRate
+                      ? `${RATE_CAPTIONS[myRate]} ${myRate}`
+                      : '我的评价'}
+                </span>
+              </div>
+              <MemoForm
+                key={show.id}
+                memo={tracking.memos[show.id]}
+                hotTags={info?.hotTags ?? show.tags ?? []}
+                myTags={myFrequentTags(tracking)}
+                onSave={(m) => onSetMemo(show.id, m)}
+              />
+            </>
           )}
         </div>
 
@@ -340,6 +351,101 @@ export function DetailBody(props: Props) {
         </div>
       )}
     </>
+  )
+}
+
+/** 我的常用标签:从全部收藏的标签里按使用频次取前 12 */
+function myFrequentTags(tracking: Tracking): string[] {
+  const freq = new Map<string, number>()
+  for (const m of Object.values(tracking.memos)) {
+    for (const t of m.tags ?? []) freq.set(t, (freq.get(t) ?? 0) + 1)
+  }
+  return [...freq.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12)
+    .map(([t]) => t)
+}
+
+/** 收藏面板的标签/吐槽/可见性(对齐 bgm 的加入收藏窗口),显式保存 */
+function MemoForm({
+  memo,
+  hotTags,
+  myTags,
+  onSave,
+}: {
+  memo?: CollectMemo
+  hotTags: string[]
+  myTags: string[]
+  onSave: (m: CollectMemo) => void
+}) {
+  const [tagsText, setTagsText] = useState((memo?.tags ?? []).join(' '))
+  const [comment, setComment] = useState(memo?.comment ?? '')
+  const [priv, setPriv] = useState(memo?.private ?? false)
+  const [savedAt, setSavedAt] = useState(0)
+
+  const parsedTags = useMemo(
+    () => [...new Set(tagsText.split(/[\s,,、]+/).filter(Boolean))].slice(0, 10),
+    [tagsText],
+  )
+  const dirty =
+    parsedTags.join(' ') !== (memo?.tags ?? []).join(' ') ||
+    comment.trim() !== (memo?.comment ?? '') ||
+    priv !== (memo?.private ?? false)
+
+  const toggleTag = (t: string) => {
+    // 函数式更新:同一帧连点多个标签也不丢
+    setTagsText((prev) => {
+      const cur = [...new Set(prev.split(/[\s,,、]+/).filter(Boolean))]
+      return (cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]).slice(0, 10).join(' ')
+    })
+  }
+
+  const save = () => {
+    const m: CollectMemo = {}
+    if (parsedTags.length > 0) m.tags = parsedTags
+    if (comment.trim()) m.comment = comment.trim()
+    if (priv) m.private = true
+    onSave(m)
+    setSavedAt(Date.now())
+  }
+
+  const sugg = (label: string, tags: string[]) =>
+    tags.length > 0 && (
+      <div className="memo-sugg">
+        <span className="lbl">{label}</span>
+        {tags.map((t) => (
+          <button key={t} className={`tag clickable${parsedTags.includes(t) ? ' on' : ''}`} onClick={() => toggleTag(t)}>
+            {t}
+          </button>
+        ))}
+      </div>
+    )
+
+  return (
+    <div className="memo-form">
+      <input
+        value={tagsText}
+        placeholder="标签(空格或逗号隔开,至多 10 个)"
+        onChange={(e) => setTagsText(e.target.value)}
+      />
+      {sugg('常用', hotTags)}
+      {sugg('我的', myTags)}
+      <textarea
+        value={comment}
+        rows={2}
+        placeholder="吐槽(随收藏同步到 bgm)"
+        onChange={(e) => setComment(e.target.value)}
+      />
+      <div className="memo-actions">
+        <button className="iconbtn accent" disabled={!dirty} onClick={save}>
+          保存
+        </button>
+        <label className="priv">
+          <input type="checkbox" checked={priv} onChange={(e) => setPriv(e.target.checked)} /> 仅自己可见
+        </label>
+        {savedAt > 0 && !dirty && <span className="saved">已保存</span>}
+      </div>
+    </div>
   )
 }
 

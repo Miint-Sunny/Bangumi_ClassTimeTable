@@ -556,9 +556,24 @@ button { font: inherit; cursor: pointer; }
 .dm-head .facts { margin-top: 8px; color: var(--text-soft); line-height: 1.9; }
 .dm-head .facts .score { color: var(--gold); font-size: 14px; }
 .dm-tags { margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap; }
-.dm-tags .tag { background: var(--chip-bg); border: 1px solid var(--border); border-radius: 5px; padding: 0 6px; color: var(--text-soft); font-size: 11px; }
-.dm-tags .tag.clickable { cursor: pointer; }
-.dm-tags .tag.clickable:hover { border-color: var(--pink); color: var(--pink-strong); }
+.dm-tags .tag, .memo-sugg .tag { background: var(--chip-bg); border: 1px solid var(--border); border-radius: 5px; padding: 0 6px; color: var(--text-soft); font-size: 11px; }
+.dm-tags .tag.clickable, .memo-sugg .tag.clickable { cursor: pointer; }
+.dm-tags .tag.clickable:hover, .memo-sugg .tag.clickable:hover { border-color: var(--pink); color: var(--pink-strong); }
+.memo-sugg .tag.on { background: var(--pink-soft); border-color: var(--pink); color: var(--pink-strong); }
+
+/* 收藏面板:标签 / 吐槽 / 可见性(对齐 bgm 加入收藏窗口) */
+.memo-form { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
+.memo-form input, .memo-form textarea {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 5px;
+  color: var(--text); padding: 5px 8px; outline: none; font: inherit; resize: vertical;
+}
+.memo-form input:focus, .memo-form textarea:focus { border-color: var(--pink); }
+.memo-sugg { display: flex; align-items: baseline; gap: 5px; flex-wrap: wrap; }
+.memo-sugg .lbl { color: var(--text-subtle); font-size: 10px; flex-shrink: 0; }
+.memo-actions { display: flex; align-items: center; gap: 12px; }
+.memo-actions .priv { color: var(--text-soft); display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.memo-actions .saved { color: var(--green); font-size: 11px; }
+.memo-actions .iconbtn:disabled { opacity: 0.45; cursor: default; }
 
 .dm-sec { margin-top: 14px; }
 .dm-sec .sec-t { color: var(--text-subtle); font-size: 11px; margin-bottom: 6px; }

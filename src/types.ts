@@ -58,10 +58,18 @@ export interface AirSlot {
   known: boolean // 是否有精确时间
 }
 
+/** 收藏的附加信息(对应 bgm 收藏面板):标签 / 吐槽 / 仅自己可见 */
+export interface CollectMemo {
+  tags?: string[]
+  comment?: string
+  private?: boolean
+}
+
 export interface Tracking {
   status: Record<number, WatchStatus>
   watched: Record<number, number> // subject id → 看到第几集
   rates: Record<number, number> // subject id → 我的评分 1~10(bgm 同一套语义)
+  memos: Record<number, CollectMemo> // subject id → 标签/吐槽/可见性
 }
 
 export interface Settings {

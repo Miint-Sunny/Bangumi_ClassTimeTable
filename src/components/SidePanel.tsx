@@ -1,5 +1,5 @@
 import { useRef, useState, type MouseEvent, type PointerEvent as ReactPointerEvent } from 'react'
-import type { AirFix, FriendsMap, Settings, Show, Tracking, WatchStatus } from '../types'
+import type { AirFix, CollectMemo, FriendsMap, Settings, Show, Tracking, WatchStatus } from '../types'
 import type { SubjectInfo } from '../lib/api'
 import { airedEps, behindCount } from '../lib/progress'
 import { epLabel, nextEpisode, occurrencesBetween } from '../lib/schedule'
@@ -31,6 +31,7 @@ interface Props {
   onSetStatus: (id: number, s: WatchStatus | null) => void
   onSetWatched: (id: number, n: number) => void
   onSetRate: (id: number, rate: number) => void
+  onSetMemo: (id: number, memo: CollectMemo) => void
   onSetOverride: (id: number, fix: AirFix | null) => void
   onSubjectInfo: (info: SubjectInfo) => void
   onClose: () => void
@@ -79,6 +80,7 @@ export default function SidePanel(props: Props) {
           onSetStatus={props.onSetStatus}
           onSetWatched={props.onSetWatched}
           onSetRate={props.onSetRate}
+          onSetMemo={props.onSetMemo}
           onSetOverride={props.onSetOverride}
           onSubjectInfo={props.onSubjectInfo}
           onTag={props.onTag}

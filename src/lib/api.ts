@@ -99,6 +99,7 @@ export interface SubjectInfo {
   score?: number
   rank?: number
   ratingTotal?: number
+  hotTags?: string[] // 大家打得最多的标签,收藏面板的"常用标签"推荐
 }
 
 export function fetchSubject(id: number): Promise<SubjectInfo> {
@@ -110,6 +111,13 @@ export function fetchSubject(id: number): Promise<SubjectInfo> {
     score: raw.rating?.score || undefined,
     rank: raw.rating?.rank || undefined,
     ratingTotal: raw.rating?.total || undefined,
+    hotTags: Array.isArray(raw.tags)
+      ? raw.tags
+          .slice()
+          .sort((a: any, b: any) => (b.count ?? 0) - (a.count ?? 0))
+          .slice(0, 12)
+          .map((t: any) => t.name)
+      : undefined,
   }))
 }
 
