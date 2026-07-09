@@ -61,9 +61,10 @@ export default function SettingsPanel({ settings, friendErrors, onChange, onExpo
           <span className="seg small">
             {(
               [
+                ['bgm-dark', 'Bangumi深色'],
                 ['dark', '深色'],
-                ['light', '浅色'],
-                ['contrast', '高对比'],
+                ['contrast', '高对比深色'],
+                ['light', '白色'],
               ] as const
             ).map(([k, label]) => (
               <button key={k} className={settings.theme === k ? 'on' : ''} onClick={() => onChange({ theme: k })}>

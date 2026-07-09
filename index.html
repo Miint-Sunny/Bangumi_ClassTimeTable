@@ -16,7 +16,7 @@
         var s = localStorage.getItem('btt:v1');
         if (s) {
           var theme = JSON.parse(s).settings?.theme;
-          if (theme === 'light' || theme === 'dark' || theme === 'contrast')
+          if (['light', 'dark', 'contrast', 'bgm-dark'].includes(theme))
             document.documentElement.setAttribute('data-theme', theme);
         }
       } catch (_) {}

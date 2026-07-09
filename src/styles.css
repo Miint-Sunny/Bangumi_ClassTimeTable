@@ -53,6 +53,32 @@
   --accent-ink: #fff;
 }
 
+/* ── Bangumi 深色:取自 bgm.tv 官方 dark 主题的实际值 ── */
+:root[data-theme='bgm-dark'] {
+  --bg: #2d2e2f; /* html[data-theme=dark] body */
+  --card: #3d3d3d; /* 站内盒子最常用底色 */
+  --border: #555; /* section_line */
+  --border-soft: #444; /* 表格虚线/分隔 */
+  --text: #dcdcdc; /* 正文 */
+  --text-soft: #999;
+  --text-subtle: #7a7a7a;
+  --axis-bg: #323232;
+  --chip-bg: #353535;
+  --today-bg: #473a3d;
+  --band-night: #333138;
+  --pink: #f09199; /* primary-color */
+  --pink-strong: #f4a8ae;
+  --pink-soft: #4d3a3d;
+  --blue: #2ea6ff; /* 链接悬停蓝 */
+  --gold: #d4a94a;
+  --green: #4caf50; /* btnGreen */
+  --red: #ff7b94;
+  --red-bg: #462b31;
+  --shadow-hover: 0 2px 8px rgba(240, 145, 153, 0.35);
+  --overlay: rgba(0, 0, 0, 0.7);
+  --accent-ink: #fff;
+}
+
 /* ── 高对比主题:纯黑底、亮字、粗边 ───────────── */
 :root[data-theme='contrast'] {
   --bg: #000000;
@@ -203,6 +229,7 @@ button { font: inherit; cursor: pointer; }
   vertical-align: middle; cursor: pointer;
 }
 .season-sel:hover, .season-sel:focus { border-color: var(--pink); }
+.theme-sel { margin-left: 0; font-size: 12px; }
 .site-header .stats { color: var(--text-soft); }
 .site-header .stats b { color: var(--pink-strong); font-weight: normal; }
 .site-header .domains { display: inline-flex; gap: 10px; }

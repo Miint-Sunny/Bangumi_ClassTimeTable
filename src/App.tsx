@@ -44,9 +44,12 @@ const FILTERS: { k: Filter; label: string }[] = [
   { k: 'carry', label: '上季续播' },
 ]
 
-const THEME_NEXT = { dark: 'light', light: 'contrast', contrast: 'dark' } as const
-const THEME_ICON = { dark: '🌙', light: '☀', contrast: '◐' } as const
-const THEME_NAME = { dark: '深色', light: '浅色', contrast: '高对比' } as const
+const THEMES: [Settings['theme'], string][] = [
+  ['bgm-dark', 'Bangumi 深色'],
+  ['dark', '深色'],
+  ['contrast', '高对比深色'],
+  ['light', '白色'],
+]
 
 export default function App() {
   const init = useRef(loadPersisted())
@@ -390,13 +393,18 @@ export default function App() {
             </a>
           ))}
         </span>
-        <button
-          className="iconbtn"
-          title={`主题:${THEME_NAME[settings.theme]}(点击切换)`}
-          onClick={() => patchSettings({ theme: THEME_NEXT[settings.theme] })}
+        <select
+          className="season-sel theme-sel"
+          title="色彩模式"
+          value={settings.theme}
+          onChange={(e) => patchSettings({ theme: e.target.value as Settings['theme'] })}
         >
-          {THEME_ICON[settings.theme]}
-        </button>
+          {THEMES.map(([k, label]) => (
+            <option key={k} value={k}>
+              {label}
+            </option>
+          ))}
+        </select>
         <button className="iconbtn" onClick={() => setShowSettings(true)}>
           ⚙ 设置
         </button>
