@@ -63,6 +63,7 @@ export default function App() {
   const [filter, setFilter] = useState<Filter>('all')
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState<number | null>(null)
+  const [dayCursor, setDayCursor] = useState(0) // 日视图偏移,提升到 App 供迷你月历跳转
   const [showSettings, setShowSettings] = useState(false)
   const [friendsMap, setFriendsMap] = useState<FriendsMap>(new Map())
   const [friendErrors, setFriendErrors] = useState<Record<string, string>>({})
@@ -262,7 +263,22 @@ export default function App() {
   const wide = useWideLayout()
   const openShow = openId !== null && effShows ? (effShows.find((s) => s.id === openId) ?? null) : null
   const effView: View = archive && view === 'day' ? 'week' : view
-  const viewProps = { tracking, settings, now, seasonStart, archive, friendsMap, onOpen: setOpenId }
+
+  // 点卡片打开详情;侧栏收起时自动展开
+  const openDetail = useCallback(
+    (id: number) => {
+      setOpenId(id)
+      setSettings((s) => (s.panelOpen ? s : { ...s, panelOpen: true }))
+    },
+    [],
+  )
+  const jumpToDay = useCallback((offset: number) => {
+    setDayCursor(offset)
+    setView('day')
+  }, [])
+
+  const panelW = effView === 'day' ? settings.panelWidthDay : settings.panelWidth
+  const viewProps = { tracking, settings, now, seasonStart, archive, friendsMap, onOpen: openDetail }
 
   return (
     <div className="container">
@@ -297,9 +313,23 @@ export default function App() {
           </span>
         )}
         <span className="spacer" />
-        <a href="https://bgm.tv" target="_blank" rel="noreferrer">
-          bgm.tv
-        </a>
+        <span className="domains" title="Bangumi 各域名登录互不相通,选常用的">
+          {['bgm.tv', 'bangumi.tv', 'chii.in'].map((d) => (
+            <a key={d} href={`https://${d}`} target="_blank" rel="noreferrer">
+              {d}
+            </a>
+          ))}
+        </span>
+        <button
+          className="iconbtn"
+          title={`主题:${THEME_NAME[settings.theme]}(点击切换)`}
+          onClick={() => patchSettings({ theme: THEME_NEXT[settings.theme] })}
+        >
+          {THEME_ICON[settings.theme]}
+        </button>
+        <button className="iconbtn" onClick={() => setShowSettings(true)}>
+          ⚙ 设置
+        </button>
       </header>
 
       <div className="toolbar">
@@ -346,16 +376,15 @@ export default function App() {
             日本时间
           </button>
         </span>
-        <button
-          className="iconbtn"
-          title={`主题:${THEME_NAME[settings.theme]}(点击切换)`}
-          onClick={() => patchSettings({ theme: THEME_NEXT[settings.theme] })}
-        >
-          {THEME_ICON[settings.theme]}
-        </button>
-        <button className="iconbtn" onClick={() => setShowSettings(true)}>
-          ⚙ 设置
-        </button>
+        {wide && (
+          <button
+            className="iconbtn"
+            title={settings.panelOpen ? '收起侧栏' : '展开侧栏'}
+            onClick={() => patchSettings({ panelOpen: !settings.panelOpen })}
+          >
+            {settings.panelOpen ? '⇥' : '⇤'}
+          </button>
+        )}
       </div>
 
       {loadError ? (
@@ -379,7 +408,15 @@ export default function App() {
         <div className="content-row">
           <div className="view-area">
             {effView === 'week' && <WeekView key={seasonSel} shows={visibleShows} {...viewProps} />}
-            {effView === 'day' && <DayView key={seasonSel} shows={visibleShows} {...viewProps} />}
+            {effView === 'day' && (
+              <DayView
+                key={seasonSel}
+                shows={visibleShows}
+                dayOffset={dayCursor}
+                onDayOffset={setDayCursor}
+                {...viewProps}
+              />
+            )}
             {effView === 'month' && (
               <MonthView
                 key={seasonSel}
@@ -389,7 +426,7 @@ export default function App() {
               />
             )}
           </div>
-          {wide && (
+          {wide && settings.panelOpen && (
             <SidePanel
               openShow={openShow}
               shows={effShows}
@@ -401,7 +438,16 @@ export default function App() {
               friendsMap={friendsMap}
               hasLocalOverride={openShow ? openShow.id in overrides : false}
               tz={displayTz(settings)}
-              onOpen={setOpenId}
+              width={panelW}
+              view={effView}
+              dayCursor={dayCursor}
+              onResizeEnd={(w) =>
+                w === null
+                  ? patchSettings({ panelOpen: false })
+                  : patchSettings(effView === 'day' ? { panelWidthDay: w } : { panelWidth: w })
+              }
+              onJumpDay={jumpToDay}
+              onOpen={openDetail}
               onSetStatus={setStatus}
               onSetWatched={setWatched}
               onSetOverride={setOverride}

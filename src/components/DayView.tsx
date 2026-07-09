@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useMemo } from 'react'
 import type { FriendsMap, Settings, Show, Tracking } from '../types'
 import { DAY_MS, WEEKDAY_CN, displayTz, pad, partsInZone, relTime, startOfDayInstant } from '../lib/time'
 import { epTime, hasEnded, occurrencesBetween } from '../lib/schedule'
@@ -12,6 +12,8 @@ interface Props {
   seasonStart: number
   archive?: boolean // 归档季不提供日视图,App 层已拦截
   friendsMap: FriendsMap
+  dayOffset: number // 由 App 持有,迷你月历可跳转
+  onDayOffset: (o: number) => void
   onOpen: (id: number) => void
 }
 
@@ -26,9 +28,18 @@ interface Cell {
 const REL_DAY: Record<number, string> = { [-2]: '前天', [-1]: '昨天', 0: '今天', 1: '明天', 2: '后天' }
 
 /** 日视图:与周视图同构的单日时间轴(时间列 + 加宽卡片列) */
-export default function DayView({ shows, tracking, settings, now, seasonStart, friendsMap, onOpen }: Props) {
+export default function DayView({
+  shows,
+  tracking,
+  settings,
+  now,
+  seasonStart,
+  friendsMap,
+  dayOffset,
+  onDayOffset,
+  onOpen,
+}: Props) {
   const tz = displayTz(settings)
-  const [dayOffset, setDayOffset] = useState(0)
   const isToday = dayOffset === 0
   const relLabel = REL_DAY[dayOffset]
 
@@ -98,16 +109,16 @@ export default function DayView({ shows, tracking, settings, now, seasonStart, f
   return (
     <div className="day-axis">
       <div className="month-nav">
-        <button className="iconbtn" onClick={() => setDayOffset((o) => o - 1)}>
+        <button className="iconbtn" onClick={() => onDayOffset(dayOffset - 1)}>
           ‹ 前一天
         </button>
         <span className="m-title">{relLabel ? `${relLabel} · ${dateLabel}` : dateLabel}</span>
-        <button className="iconbtn" onClick={() => setDayOffset((o) => o + 1)}>
+        <button className="iconbtn" onClick={() => onDayOffset(dayOffset + 1)}>
           后一天 ›
         </button>
         <span className="reset-slot">
           {!isToday && (
-            <button className="iconbtn" onClick={() => setDayOffset(0)}>
+            <button className="iconbtn" onClick={() => onDayOffset(0)}>
               回到今天
             </button>
           )}

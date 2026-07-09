@@ -45,6 +45,9 @@ export function DetailBody(props: Props) {
   } = props
   const [info, setInfo] = useState<SubjectInfo | null>(null)
   const [editingFix, setEditingFix] = useState(false)
+  const [pvOpen, setPvOpen] = useState(false)
+  // B 站 PV 可选内嵌预览;主入口仍是新标签页跳转
+  const pvBv = show.pvUrl ? (/BV[0-9A-Za-z]{10}/.exec(show.pvUrl)?.[0] ?? null) : null
 
   useEffect(() => {
     let alive = true
@@ -252,6 +255,11 @@ export function DetailBody(props: Props) {
                   ▶ PV
                 </a>
               )}
+              {pvBv && (
+                <button className="iconbtn pv-toggle" onClick={() => setPvOpen((v) => !v)}>
+                  {pvOpen ? '收起预览' : '内嵌预览'}
+                </button>
+              )}
               {show.officialSite && (
                 <a href={show.officialSite} target="_blank" rel="noreferrer">
                   官网
@@ -263,6 +271,15 @@ export function DetailBody(props: Props) {
                 </a>
               ))}
             </div>
+            {pvOpen && pvBv && (
+              <div className="pv-embed">
+                <iframe
+                  src={`https://player.bilibili.com/player.html?bvid=${pvBv}&autoplay=0&danmaku=0`}
+                  allowFullScreen
+                  title="PV 预览"
+                />
+              </div>
+            )}
           </div>
         )}
 

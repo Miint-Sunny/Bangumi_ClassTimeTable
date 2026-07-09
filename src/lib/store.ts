@@ -14,6 +14,9 @@ export const DEFAULT_SETTINGS: Settings = {
   lateNight: false,
   weekStart: 1,
   friends: [],
+  panelOpen: true,
+  panelWidth: 380,
+  panelWidthDay: 560,
 }
 
 export function loadPersisted(): Persisted {
