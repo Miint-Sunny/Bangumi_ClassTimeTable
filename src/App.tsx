@@ -625,6 +625,15 @@ export default function App() {
               {d}
             </a>
           ))}
+          <a
+            className="gh"
+            href="https://github.com/Miint-Sunny/Bangumi_ClassTimeTable"
+            target="_blank"
+            rel="noreferrer"
+            title="源代码 · 反馈问题"
+          >
+            GitHub
+          </a>
         </span>
         <select
           className="season-sel theme-sel"

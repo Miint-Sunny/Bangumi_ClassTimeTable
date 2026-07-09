@@ -299,6 +299,7 @@ button { font: inherit; cursor: pointer; }
 .site-header .stats { color: var(--text-soft); }
 .site-header .stats b { color: var(--pink-strong); font-weight: normal; }
 .site-header .domains { display: inline-flex; gap: 10px; }
+.site-header .domains .gh { border-left: 1px solid var(--border); padding-left: 10px; }
 .site-header .spacer { flex: 1; }
 .behind-total {
   color: var(--red); background: var(--red-bg);
@@ -348,6 +349,9 @@ button { font: inherit; cursor: pointer; }
 }
 .iconbtn.accent { background: var(--pink); border-color: var(--pink); color: var(--accent-ink); }
 .iconbtn.accent:hover { filter: brightness(1.08); color: var(--accent-ink); }
+/* 链接充当按钮时沿用按钮外观,去掉链接的下划线/配色 */
+a.iconbtn { color: var(--text-soft); display: inline-flex; align-items: center; }
+a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
 
 .loading, .error-box { padding: 60px 0; text-align: center; color: var(--text-soft); font-size: 14px; }
 .error-box { color: var(--red); }

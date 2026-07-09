@@ -285,6 +285,27 @@ export default function SettingsPanel({
           </button>
         </div>
 
+        <div className="set-row">
+          <span className="lbl">关于</span>
+          <a
+            className="iconbtn"
+            href="https://github.com/Miint-Sunny/Bangumi_ClassTimeTable"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub 仓库
+          </a>
+          <a
+            className="iconbtn"
+            href="https://github.com/Miint-Sunny/Bangumi_ClassTimeTable/issues/new"
+            target="_blank"
+            rel="noreferrer"
+            title="用得不顺、数据不对、想要新功能,都欢迎"
+          >
+            🐛 反馈问题
+          </a>
+        </div>
+
         <div className="set-note">
           数据来源:Bangumi 官方 API(每 6 小时缓存)· bangumi-data 数据集(jsDelivr CDN,每日缓存)·
           每集精确时刻来自{' '}
