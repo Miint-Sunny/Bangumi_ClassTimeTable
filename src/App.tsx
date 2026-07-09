@@ -19,7 +19,8 @@ import { beginOauthLogin, completeOauthLogin, fetchOauthConf, refreshIfNeeded, t
 import { withViewTransition } from './lib/anim'
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
-import { behindCount, continuity } from './lib/progress'
+import { behindCount, continuity, type Continuity } from './lib/progress'
+import { weightedScore } from './lib/score'
 import { currentSeason, displayTz, partsInZone, seasonStartInstant } from './lib/time'
 import { fetchSeasonList, fetchSeasonPack, fmtSeason, seasonMonthOf, seasonStartOf } from './lib/seasons'
 import { buildIcs, downloadIcs } from './lib/ics'
@@ -49,16 +50,26 @@ function useWideLayout(): boolean {
 }
 
 type View = 'day' | 'week' | 'month'
-type Filter = 'all' | 'mine' | 'watching' | 'wish' | 'new' | 'carry' | 'long'
+type Filter = 'all' | 'mine' | 'watching' | 'wish'
 
-const FILTERS: { k: Filter; label: string; title?: string }[] = [
+const FILTERS: { k: Filter; label: string }[] = [
   { k: 'all', label: '全部' },
   { k: 'mine', label: '我的课表' },
   { k: 'watching', label: '在看' },
   { k: 'wish', label: '想看' },
-  { k: 'new', label: '本季新番' },
+]
+
+const CONT_OPTS: { k: Continuity; label: string; title: string }[] = [
+  { k: 'new', label: '本季新番', title: '本季新开播' },
   { k: 'carry', label: '上季续播', title: '上季开播、本季继续(季初已播 ≤20 集)' },
   { k: 'long', label: '长期放送', title: '年番/多年番(季初已播 >20 集)' },
+]
+
+const REP_OPTS: { v: number; label: string }[] = [
+  { v: 0, label: '不限' },
+  { v: 6.5, label: '≥6.5' },
+  { v: 7, label: '≥7' },
+  { v: 7.5, label: '≥7.5' },
 ]
 
 const THEMES: [Settings['theme'], string][] = [
@@ -82,6 +93,12 @@ export default function App() {
   const [view, setView] = useState<View>('week')
   const [filter, setFilter] = useState<Filter>('all')
   const [query, setQuery] = useState('')
+  // 筛选面板(搜索框左侧):范围多选 / 口碑加权分下限 / 来源 / 题材
+  const [advOpen, setAdvOpen] = useState(false)
+  const [contSel, setContSel] = useState<Continuity[]>(['new', 'carry', 'long'])
+  const [repMin, setRepMin] = useState(0)
+  const [srcSel, setSrcSel] = useState<string | null>(null)
+  const [tagSel, setTagSel] = useState<string | null>(null)
   const [openId, setOpenId] = useState<number | null>(null)
   const [dayCursor, setDayCursor] = useState(0) // 日/周/月游标提升到 App:迷你月历跳转 + 键盘翻页
   const [weekCursor, setWeekCursor] = useState(0)
@@ -388,16 +405,64 @@ export default function App() {
       if (filter === 'mine' && st !== 'watching' && st !== 'wish') return false
       if (filter === 'watching' && st !== 'watching') return false
       if (filter === 'wish' && st !== 'wish') return false
-      if (filter === 'new' && continuity(s, seasonStart) !== 'new') return false
-      if (filter === 'carry' && continuity(s, seasonStart) !== 'carry') return false
-      if (filter === 'long' && continuity(s, seasonStart) !== 'long') return false
+      if (!contSel.includes(continuity(s, seasonStart))) return false
+      if (repMin > 0) {
+        const w = weightedScore(s.score, s.ratingTotal)
+        if (w === undefined || w < repMin) return false
+      }
+      if (srcSel && s.sourceType !== srcSel) return false
+      if (tagSel && !(s.tags ?? []).includes(tagSel)) return false
       if (q) {
         const hay = `${s.nameCn} ${s.nameJp} ${(s.tags ?? []).join(' ')}`.toLowerCase()
         if (!hay.includes(q)) return false
       }
       return true
     })
-  }, [effShows, filter, query, tracking.status, seasonStart])
+  }, [effShows, filter, query, tracking.status, seasonStart, contSel, repMin, srcSel, tagSel])
+
+  // 筛选面板的 facet 统计(基于未过滤全集,数量不随选择跳动)
+  const facets = useMemo(() => {
+    const cont: Record<Continuity, number> = { new: 0, carry: 0, long: 0 }
+    const src = new Map<string, number>()
+    const tags = new Map<string, number>()
+    for (const s of effShows ?? []) {
+      cont[continuity(s, seasonStart)]++
+      if (s.sourceType) src.set(s.sourceType, (src.get(s.sourceType) ?? 0) + 1)
+      for (const t of s.tags ?? []) tags.set(t, (tags.get(t) ?? 0) + 1)
+    }
+    const desc = (m: Map<string, number>) => [...m.entries()].sort((a, b) => b[1] - a[1])
+    return { cont, src: desc(src), tags: desc(tags).slice(0, 24) }
+  }, [effShows, seasonStart])
+
+  const advCount =
+    (contSel.length < 3 ? 1 : 0) + (repMin > 0 ? 1 : 0) + (srcSel ? 1 : 0) + (tagSel ? 1 : 0)
+
+  const toggleCont = useCallback((k: Continuity) => {
+    setContSel((cur) => {
+      if (cur.includes(k)) {
+        const next = cur.filter((x) => x !== k)
+        return next.length > 0 ? next : cur // 至少留一类,清空没有意义
+      }
+      return [...cur, k]
+    })
+  }, [])
+
+  const clearAdv = useCallback(() => {
+    setContSel(['new', 'carry', 'long'])
+    setRepMin(0)
+    setSrcSel(null)
+    setTagSel(null)
+  }, [])
+
+  // 点击面板外关闭
+  useEffect(() => {
+    if (!advOpen) return
+    const onDown = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest('.adv-wrap')) setAdvOpen(false)
+    }
+    document.addEventListener('mousedown', onDown)
+    return () => document.removeEventListener('mousedown', onDown)
+  }, [advOpen])
 
   const stats = useMemo(() => {
     if (!effShows) return null
@@ -514,10 +579,10 @@ export default function App() {
   const pageWeek = useCallback((o: number) => withViewTransition(() => setWeekCursor(o)), [])
   const pageMonthTo = useCallback((c: MonthCursor | null) => withViewTransition(() => setMonthCursor(c)), [])
 
-  // 点详情页的题材标签 → 搜索该标签(搜索本就匹配标签)
+  // 点详情页的题材标签 → 落到筛选面板的题材项(精确匹配,筛选按钮亮起计数)
   const searchTag = useCallback(
     (t: string) => {
-      setQuery(t)
+      setTagSel(t)
       if (!wide) setOpenId(null)
     },
     [wide],
@@ -676,15 +741,87 @@ export default function App() {
         </span>
 
         {FILTERS.map((f) => (
-          <button
-            key={f.k}
-            className={`chip${filter === f.k ? ' on' : ''}`}
-            title={f.title}
-            onClick={() => setFilter(f.k)}
-          >
+          <button key={f.k} className={`chip${filter === f.k ? ' on' : ''}`} onClick={() => setFilter(f.k)}>
             {f.label}
           </button>
         ))}
+
+        <span className="adv-wrap">
+          <button
+            className={`chip${advCount > 0 ? ' on' : ''}`}
+            title="范围 / 口碑 / 来源 / 题材"
+            onClick={() => setAdvOpen((v) => !v)}
+          >
+            筛选{advCount > 0 ? ` ${advCount}` : ''} ▾
+          </button>
+          {advOpen && (
+            <div className="filter-pop">
+              <div className="fp-row">
+                <span className="fp-t">范围</span>
+                <span className="fp-chips">
+                  {CONT_OPTS.map((o) => (
+                    <button
+                      key={o.k}
+                      className={`chip${contSel.includes(o.k) ? ' on' : ''}`}
+                      title={o.title}
+                      onClick={() => toggleCont(o.k)}
+                    >
+                      {o.label} <i>{facets.cont[o.k]}</i>
+                    </button>
+                  ))}
+                </span>
+              </div>
+              <div className="fp-row">
+                <span className="fp-t">口碑</span>
+                <span className="seg small">
+                  {REP_OPTS.map((o) => (
+                    <button key={o.v} className={repMin === o.v ? 'on' : ''} onClick={() => setRepMin(o.v)}>
+                      {o.label}
+                    </button>
+                  ))}
+                </span>
+                <span className="fp-hint">按评分人数加权,小样本高分不虚高</span>
+              </div>
+              {facets.src.length > 0 && (
+                <div className="fp-row">
+                  <span className="fp-t">来源</span>
+                  <span className="fp-chips">
+                    {facets.src.map(([k, n]) => (
+                      <button
+                        key={k}
+                        className={`chip${srcSel === k ? ' on' : ''}`}
+                        onClick={() => setSrcSel(srcSel === k ? null : k)}
+                      >
+                        {k} <i>{n}</i>
+                      </button>
+                    ))}
+                  </span>
+                </div>
+              )}
+              {facets.tags.length > 0 && (
+                <div className="fp-row">
+                  <span className="fp-t">题材</span>
+                  <span className="fp-chips">
+                    {facets.tags.map(([k, n]) => (
+                      <button
+                        key={k}
+                        className={`chip${tagSel === k ? ' on' : ''}`}
+                        onClick={() => setTagSel(tagSel === k ? null : k)}
+                      >
+                        {k} <i>{n}</i>
+                      </button>
+                    ))}
+                  </span>
+                </div>
+              )}
+              <div className="fp-row">
+                <button className="iconbtn" disabled={advCount === 0} onClick={clearAdv}>
+                  清除筛选
+                </button>
+              </div>
+            </div>
+          )}
+        </span>
 
         <input
           type="search"

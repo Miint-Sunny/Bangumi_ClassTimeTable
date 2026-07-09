@@ -672,6 +672,30 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
 .friend-item .rm:hover { color: var(--red); }
 .friend-item .err { color: var(--red); font-size: 11px; }
 .set-note { color: var(--text-subtle); font-size: 11px; line-height: 1.7; margin-top: 12px; border-top: 1px solid var(--border-soft); padding-top: 10px; }
+/* 筛选面板(搜索框左侧):范围 / 口碑 / 来源 / 题材 */
+.adv-wrap { position: relative; }
+.filter-pop {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 45;
+  width: min(560px, 86vw);
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 14px; display: flex; flex-direction: column; gap: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  animation: pop-in var(--dur-pop) var(--ease-spring) both;
+}
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .filter-pop {
+    background: color-mix(in srgb, var(--card) 88%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    backdrop-filter: blur(12px) saturate(1.4);
+  }
+}
+.fp-row { display: flex; align-items: flex-start; gap: 8px; }
+.fp-t { width: 30px; flex-shrink: 0; color: var(--text-subtle); font-size: 11px; line-height: 24px; }
+.fp-chips { display: flex; flex-wrap: wrap; gap: 5px; min-width: 0; }
+.fp-chips .chip i { font-style: normal; opacity: 0.55; font-size: 10px; margin-left: 2px; }
+.fp-hint { color: var(--text-subtle); font-size: 10px; line-height: 24px; }
+.fp-row .seg { flex-shrink: 0; }
+
 .cut-sel {
   background: var(--bg); border: 1px solid var(--border); border-radius: 5px;
   color: var(--text); padding: 4px 6px; outline: none;
