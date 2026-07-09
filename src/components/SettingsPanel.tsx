@@ -1,25 +1,61 @@
 import { useRef, useState } from 'react'
-import type { Settings } from '../types'
+import type { BgmAccount, Settings } from '../types'
 import { clearApiCache } from '../lib/api'
 import { loadPersisted } from '../lib/store'
 
 interface Props {
   settings: Settings
   friendErrors: Record<string, string>
+  account: BgmAccount | null
+  sync: { msg: string; busy: boolean }
+  onLogin: (token: string) => Promise<void>
+  onLogout: () => void
+  onSyncNow: () => void
   onChange: (patch: Partial<Settings>) => void
   onExportIcs: () => void
   onClose: () => void
 }
 
-export default function SettingsPanel({ settings, friendErrors, onChange, onExportIcs, onClose }: Props) {
+export default function SettingsPanel({
+  settings,
+  friendErrors,
+  account,
+  sync,
+  onLogin,
+  onLogout,
+  onSyncNow,
+  onChange,
+  onExportIcs,
+  onClose,
+}: Props) {
   const [name, setName] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
+  const [token, setToken] = useState('')
+  const [verifying, setVerifying] = useState(false)
+  const [loginErr, setLoginErr] = useState('')
 
   const addFriend = () => {
     const n = name.trim()
     if (!n || settings.friends.includes(n)) return
     onChange({ friends: [...settings.friends, n] })
     setName('')
+  }
+
+  const doLogin = async () => {
+    const t = token.trim()
+    if (!t || verifying) return
+    setVerifying(true)
+    setLoginErr('')
+    try {
+      await onLogin(t)
+      setToken('')
+    } catch (e) {
+      setLoginErr(
+        e instanceof Error && e.message.includes('401') ? '令牌无效或已过期' : '验证失败,请检查网络后重试',
+      )
+    } finally {
+      setVerifying(false)
+    }
   }
 
   // 追番数据备份:localStorage 是唯一存储,换浏览器/清缓存前先导出
@@ -55,6 +91,51 @@ export default function SettingsPanel({ settings, friendErrors, onChange, onExpo
           ×
         </button>
         <h2 style={{ margin: '0 0 10px', fontWeight: 'normal', fontSize: 16, color: 'var(--pink-strong)' }}>设置</h2>
+
+        <div className="set-row">
+          <span className="lbl">Bangumi</span>
+          {account && !account.invalid ? (
+            <span className="bgm-acc">
+              {account.avatar && <img src={account.avatar} alt="" />}
+              <b>{account.nickname}</b>
+              <span className="dim">@{account.username}</span>
+              <button className="iconbtn" disabled={sync.busy} onClick={onSyncNow}>
+                {sync.busy ? '同步中…' : '↻ 立即同步'}
+              </button>
+              <button className="iconbtn" onClick={onLogout}>
+                断开
+              </button>
+            </span>
+          ) : (
+            <span className="friend-add">
+              <input
+                type="password"
+                value={token}
+                placeholder="粘贴访问令牌(token)"
+                onChange={(e) => setToken(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && doLogin()}
+              />
+              <button className="iconbtn" disabled={verifying || !token.trim()} onClick={doLogin}>
+                {verifying ? '验证中…' : '连接'}
+              </button>
+            </span>
+          )}
+        </div>
+        {account?.invalid && <div className="set-sub err">令牌已失效或被吊销,请生成新令牌后重新粘贴。</div>}
+        {loginErr && <div className="set-sub err">{loginErr}</div>}
+        {account && !account.invalid && sync.msg && <div className="set-sub">{sync.msg}</div>}
+        {!account && (
+          <div className="set-sub">
+            在{' '}
+            <a href="https://next.bgm.tv/demo/access-token" target="_blank" rel="noreferrer">
+              next.bgm.tv/demo/access-token
+            </a>{' '}
+            生成个人令牌(建议选一年有效期)。令牌只保存在本机浏览器,不进备份文件,可随时在同页吊销。
+            连接后:应用内的追番改动即时写回 bgm.tv;bgm.tv 侧的改动每半小时拉取合并(以 bgm 为准)。
+            首次连接会双向合并(状态本机优先、进度取较大值)。bgm 的「搁置」在课表按未追显示;
+            本地取消追番不会删除 bgm 收藏。
+          </div>
+        )}
 
         <div className="set-row">
           <span className="lbl">主题</span>
@@ -172,7 +253,8 @@ export default function SettingsPanel({ settings, friendErrors, onChange, onExpo
           (经其开发者 API 每日同步,致谢其编辑者社区)·
           可选的 yuc.wiki 增强数据由 AI 辅助的 refresh-data skill 人工触发生成,不做自动抓取。
           <br />
-          追番状态与进度目前保存在本机浏览器(localStorage),Bangumi OAuth 云同步在路线图上。
+          追番状态与进度保存在本机浏览器(localStorage);连接 Bangumi 账号(上方个人令牌)后与
+          bgm.tv 收藏双向同步。OAuth 一键登录在路线图上。
           <br />
           好友进度读取的是对方在 bgm.tv 上公开的收藏,仅"在看"状态,缓存 1 小时。
         </div>

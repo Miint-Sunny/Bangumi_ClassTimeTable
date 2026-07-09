@@ -31,6 +31,10 @@
 - **点标签筛选**:详情页题材标签可点,一键筛出同题材番剧
 - **数据备份**:设置里一键导出/导入追番数据 JSON(localStorage 换浏览器必备)
 - **PWA**:可安装到桌面/手机主屏,静态资源离线缓存
+- **Bangumi 账号双向同步**:设置里粘贴[个人令牌](https://next.bgm.tv/demo/access-token)即可连接
+  bgm.tv——应用内改状态/进度即时写回收藏,bgm 侧改动定期拉取合并;
+  首次连接双向合并(状态本机优先、进度取较大值),离线改动进队列断网不丢。
+  令牌只存本机浏览器、不进备份文件,可随时吊销
 
 ## 数据来源与流量原则
 
@@ -40,6 +44,7 @@
 | bangumi-data 数据集 | 精确放送时刻、周期、播放平台 | jsDelivr CDN,缓存 24h |
 | Bangumi API `/v0/subjects` | 集数、简介 | 按需懒加载,缓存 7 天 |
 | Bangumi API `/v0/users/*/collections` | 好友公开进度 | 缓存 1h |
+| Bangumi API `/v0/me`、收藏读写(仅登录后) | 自己的追番双向同步 | 个人令牌 Bearer 认证;写回逐条慢速,拉取缓存 1h |
 | yuc.wiki(可选增强:标签/PV) | `public/data/enhance.json` | **不自动抓取**,由 `/refresh-data` skill 人工触发,页面由人手动保存 |
 | [番組維基 bgm.wiki](https://bgm.wiki)(每集精确时刻) | `enhance.json` 的 `air.epDates` | 经其**开发者 API**(token 认证)每日 CI 同步,数据由其编辑者社区维护,特此致谢 |
 
@@ -78,5 +83,7 @@ python3 scripts/bake_season.py 202607        # 可一次传多个 YYYYMM
 
 ## 路线图
 
-- [ ] Bangumi OAuth:追番状态云同步(当前为 localStorage)
-- [ ] 收藏状态双向写回 bgm.tv
+- [x] Bangumi 账号云同步 + 收藏双向写回(个人令牌,已完成)
+- [ ] Bangumi OAuth 一键登录:免手动生成令牌(需注册应用 + 一个无状态 Worker 保管
+      client_secret;令牌获取之外的同步逻辑与现状完全复用)
+- [ ] 换季对比(上季 vs 本季追番回顾)

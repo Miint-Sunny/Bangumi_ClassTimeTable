@@ -1,6 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { AirFix, FriendsMap, Settings, Show, Tracking, WatchStatus } from './types'
+import type { AirFix, BgmAccount, FriendsMap, Settings, Show, Tracking, WatchStatus } from './types'
 import { fetchCalendar, fetchSubject, fetchUserWatching, type SubjectInfo } from './lib/api'
+import {
+  BgmAuthError,
+  STATUS_TO_TYPE,
+  clearPullCache,
+  clearQueue,
+  drainQueue,
+  enqueuePush,
+  loadAccount,
+  mergeRemote,
+  pullCollections,
+  queuedIds,
+  saveAccount,
+  verifyToken,
+} from './lib/bgm'
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
 import { behindCount } from './lib/progress'
@@ -73,12 +87,85 @@ export default function App() {
   const [friendsMap, setFriendsMap] = useState<FriendsMap>(new Map())
   const [friendErrors, setFriendErrors] = useState<Record<string, string>>({})
   const [now, setNow] = useState(() => Date.now())
+  const [account, setAccount] = useState<BgmAccount | null>(() => loadAccount())
+  const [syncState, setSyncState] = useState<{ msg: string; busy: boolean }>({ msg: '', busy: false })
 
   // ── 持久化 & 主题 ──────────────────────────────────────────────
   useEffect(() => {
     savePersisted({ settings, tracking, overrides })
     document.documentElement.setAttribute('data-theme', settings.theme)
   }, [settings, tracking, overrides])
+
+  // ── Bangumi 账号:令牌登录 + 双向同步 ───────────────────────────
+  const accountRef = useRef(account)
+  const trackingRef = useRef(tracking)
+  useEffect(() => {
+    accountRef.current = account
+    saveAccount(account)
+  }, [account])
+  useEffect(() => {
+    trackingRef.current = tracking
+  }, [tracking])
+
+  const drainTimer = useRef<number | null>(null)
+  const drainNow = useCallback(async () => {
+    const acc = accountRef.current
+    if (!acc || acc.invalid) return
+    try {
+      await drainQueue(acc)
+    } catch (e) {
+      if (e instanceof BgmAuthError) setAccount((a) => (a ? { ...a, invalid: true } : a))
+    }
+  }, [])
+  const scheduleDrain = useCallback(() => {
+    if (drainTimer.current) window.clearTimeout(drainTimer.current)
+    drainTimer.current = window.setTimeout(drainNow, 1500)
+  }, [drainNow])
+
+  const doSync = useCallback(async (force = false) => {
+    const acc = accountRef.current
+    if (!acc || acc.invalid) return
+    setSyncState((s) => ({ ...s, busy: true }))
+    try {
+      if (acc.mergedOnce) await drainQueue(acc) // 先推后拉,拉到的就包含本机改动
+      const remote = await pullCollections(acc, force)
+      const { tracking: merged, pushes } = mergeRemote(trackingRef.current, remote, !acc.mergedOnce, queuedIds())
+      setTracking(merged)
+      const pushIds = Object.keys(pushes)
+      for (const id of pushIds) enqueuePush(Number(id), pushes[Number(id)])
+      if (pushIds.length) await drainQueue(acc)
+      if (!acc.mergedOnce) setAccount((a) => (a ? { ...a, mergedOnce: true } : a))
+      const t = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+      setSyncState({ msg: `已同步 ${t}${pushIds.length ? ` · 推回 ${pushIds.length} 条` : ''}`, busy: false })
+    } catch (e) {
+      if (e instanceof BgmAuthError) {
+        setAccount((a) => (a ? { ...a, invalid: true } : a))
+        setSyncState({ msg: '令牌已失效,请重新连接', busy: false })
+      } else {
+        setSyncState({ msg: `同步失败:${e instanceof Error ? e.message : e}`, busy: false })
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!account?.token || account.invalid) return
+    doSync()
+    const id = window.setInterval(() => doSync(), 30 * 60_000) // 拉取本身有 1h 缓存,间隔只是兜底
+    return () => window.clearInterval(id)
+  }, [account?.token, account?.invalid, doSync])
+
+  const bgmLogin = useCallback(async (token: string) => {
+    const me = await verifyToken(token.trim()) // 失败抛错,由设置页展示
+    setAccount({ token: token.trim(), ...me, mergedOnce: false })
+  }, [])
+
+  const bgmLogout = useCallback(() => {
+    const acc = accountRef.current
+    if (acc) clearPullCache(acc.username)
+    clearQueue()
+    setAccount(null) // 本机追番记录保留
+    setSyncState({ msg: '', busy: false })
+  }, [])
 
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 30_000)
@@ -239,23 +326,42 @@ export default function App() {
 
   const stats = useMemo(() => {
     if (!effShows) return null
-    const watching = Object.values(tracking.status).filter((s) => s === 'watching').length
+    // 只数本季在播的(账号同步后 tracking 会含跨季收藏,不能全量数)
+    const watching = effShows.filter((s) => tracking.status[s.id] === 'watching').length
     const behindTotal = effShows.reduce((acc, s) => acc + behindCount(s, tracking, now), 0)
     return { total: effShows.length, watching, behindTotal }
   }, [effShows, tracking, now])
 
-  const setStatus = useCallback((id: number, s: WatchStatus | null) => {
-    setTracking((t) => {
-      const status = { ...t.status }
-      if (s === null) delete status[id]
-      else status[id] = s
-      return { ...t, status }
-    })
-  }, [])
+  const setStatus = useCallback(
+    (id: number, s: WatchStatus | null) => {
+      setTracking((t) => {
+        const status = { ...t.status }
+        if (s === null) delete status[id]
+        else status[id] = s
+        return { ...t, status }
+      })
+      // bgm API 无"删除收藏",本地取消追番不回写
+      const acc = accountRef.current
+      if (acc && !acc.invalid && s !== null) {
+        enqueuePush(id, { type: STATUS_TO_TYPE[s] })
+        scheduleDrain()
+      }
+    },
+    [scheduleDrain],
+  )
 
-  const setWatched = useCallback((id: number, n: number) => {
-    setTracking((t) => ({ ...t, watched: { ...t.watched, [id]: n } }))
-  }, [])
+  const setWatched = useCallback(
+    (id: number, n: number) => {
+      setTracking((t) => ({ ...t, watched: { ...t.watched, [id]: n } }))
+      const acc = accountRef.current
+      if (acc && !acc.invalid) {
+        const st = trackingRef.current.status[id] ?? 'watching' // 改进度即视为在看
+        enqueuePush(id, { type: STATUS_TO_TYPE[st], ep: n })
+        scheduleDrain()
+      }
+    },
+    [scheduleDrain],
+  )
 
   const patchSettings = useCallback((patch: Partial<Settings>) => {
     setSettings((s) => ({ ...s, ...patch }))
@@ -570,6 +676,11 @@ export default function App() {
         <SettingsPanel
           settings={settings}
           friendErrors={friendErrors}
+          account={account}
+          sync={syncState}
+          onLogin={bgmLogin}
+          onLogout={bgmLogout}
+          onSyncNow={() => doSync(true)}
           onChange={patchSettings}
           onExportIcs={exportIcs}
           onClose={() => setShowSettings(false)}

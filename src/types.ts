@@ -73,6 +73,16 @@ export interface Settings {
   panelWidthDay: number // 日视图下的面板宽度(当日信息少,默认更宽)
 }
 
+/** Bangumi 账号(个人令牌)。存独立的 localStorage 键,不随备份导出。 */
+export interface BgmAccount {
+  token: string
+  username: string
+  nickname: string
+  avatar?: string
+  mergedOnce?: boolean // 首次双向合并已完成,此后拉取以 bgm 为准
+  invalid?: boolean // 令牌已失效(401),等用户重新粘贴
+}
+
 export interface FriendState {
   ep: number
   updatedAt?: string

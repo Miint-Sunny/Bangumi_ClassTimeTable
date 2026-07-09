@@ -13,7 +13,7 @@ interface CacheEntry<T> {
   v: T
 }
 
-function readCache<T>(key: string, ttlMs: number): T | null {
+export function readCache<T>(key: string, ttlMs: number): T | null {
   try {
     const raw = localStorage.getItem(CACHE_PREFIX + key)
     if (!raw) return null
@@ -25,7 +25,7 @@ function readCache<T>(key: string, ttlMs: number): T | null {
   }
 }
 
-function writeCache<T>(key: string, v: T) {
+export function writeCache<T>(key: string, v: T) {
   try {
     localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({ t: Date.now(), v }))
   } catch {
@@ -39,6 +39,12 @@ function writeCache<T>(key: string, v: T) {
 
 export function clearApiCache() {
   for (const k of Object.keys(localStorage)) if (k.startsWith(CACHE_PREFIX)) localStorage.removeItem(k)
+}
+
+export function clearCacheKey(key: string) {
+  try {
+    localStorage.removeItem(CACHE_PREFIX + key)
+  } catch {}
 }
 
 async function cachedJson<T>(key: string, url: string, ttlMs: number, trim: (raw: any) => T): Promise<T> {

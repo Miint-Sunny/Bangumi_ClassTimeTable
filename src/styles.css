@@ -540,6 +540,11 @@ button { font: inherit; cursor: pointer; }
 .friend-item .rm:hover { color: var(--red); }
 .friend-item .err { color: var(--red); font-size: 11px; }
 .set-note { color: var(--text-subtle); font-size: 11px; line-height: 1.7; margin-top: 12px; border-top: 1px solid var(--border-soft); padding-top: 10px; }
+.set-sub { color: var(--text-subtle); font-size: 11px; line-height: 1.7; margin: 2px 0 8px 82px; }
+.set-sub.err { color: var(--red); }
+.bgm-acc { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.bgm-acc img { width: 22px; height: 22px; border-radius: 50%; }
+.bgm-acc .dim { color: var(--text-subtle); }
 
 /* ── 移动端 ───────────────────────────────────── */
 
@@ -547,6 +552,7 @@ button { font: inherit; cursor: pointer; }
   .container { padding: 10px 10px 40px; }
   .site-header h1 { font-size: 18px; }
   .search { width: 120px; }
+  .set-sub { margin-left: 0; }
   .mg-cell { min-height: 64px; }
   .mg-entry .nm { max-width: 100%; }
 }
