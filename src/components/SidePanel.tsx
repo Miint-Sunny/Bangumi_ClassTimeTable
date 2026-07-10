@@ -187,7 +187,7 @@ function DashBody(props: Props) {
   }
 
   return (
-    <div className="dash">
+    <div className={`dash${tracked.length > 0 ? ' quad' : ''}`}>
       {tracked.length === 0 ? (
         <>
           <div className="dash-hint">
@@ -199,7 +199,7 @@ function DashBody(props: Props) {
         </>
       ) : (
         <>
-          <div className={`dm-sec cap${grown.backlog ? ' grow' : ''}`}>
+          <div className={`dm-sec cap sec-backlog${grown.backlog ? ' grow' : ''}`}>
             <div className="sec-t">
               {t('补番清单')}
               {behindList.length > 0 ? t('(欠 {n} 集)', { n: behindList.reduce((a, x) => a + x.behind, 0) }) : ''}
@@ -235,7 +235,7 @@ function DashBody(props: Props) {
           </div>
 
           {!archive && upcoming.length > 0 && (
-            <div className={`dm-sec cap${grown.sched ? ' grow' : ''}`}>
+            <div className={`dm-sec cap sec-sched${grown.sched ? ' grow' : ''}`}>
               <div className="sec-t">
                 {t('我的更新日程')}
                 {growBtn('sched')}
@@ -259,7 +259,7 @@ function DashBody(props: Props) {
       )}
 
       {!archive && conflicts.length > 0 && (
-        <div className="dm-sec">
+        <div className="dm-sec sec-conflicts">
           <div className="sec-t">{t('⚡ 撞档提醒')}</div>
           {conflicts.map((c) => (
             <div key={`${c.day}:${c.minutes}`} className="conflict-group">
@@ -286,7 +286,7 @@ function DashBody(props: Props) {
       )}
 
       {mutual.length > 0 && (
-        <div className="dm-sec">
+        <div className="dm-sec sec-span">
           <div className="sec-t">{t('共同在追')}</div>
           {mutual.map(([user, list]) => (
             <div key={user} className="mutual-row">
@@ -308,7 +308,7 @@ function DashBody(props: Props) {
       )}
 
       {friendFeed.length > 0 && (
-        <div className="dm-sec">
+        <div className="dm-sec sec-span">
           <div className="sec-t">{t('好友动态')}</div>
           {friendFeed.map((f) => (
             <div key={`${f.user}-${f.show.id}`} className="dash-row">
@@ -389,7 +389,7 @@ function MiniCal({ shows, tracking, settings, now, tz, view, dayCursor, onJumpDa
   while (cells.length % 7 !== 0) cells.push(null)
 
   return (
-    <div className="dm-sec">
+    <div className="dm-sec sec-minical">
       <div className="sec-t">
         {monthTitle(p.y, p.mo)} {t('· 点日期看当天')}
       </div>

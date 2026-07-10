@@ -220,7 +220,7 @@ button { font: inherit; cursor: pointer; }
 .side-panel .close:hover { color: var(--pink-strong); }
 .side-panel .dm-head .cover { width: 84px; height: 118px; }
 
-/* 面板够宽时(日视图)速览排成两列网格:区块成对同排、行首对齐;窄时单栏。
+/* 面板够宽时(日视图)速览排成两列网格;窄时单栏。
    minmax(0,1fr) 是硬约束:轨道宽度与内容 min-content 解耦,长番名交给
    行内省略号,列永远严格对半(裸 1fr 的隐含 auto 下限会被内容撑爆)。 */
 @container panel (min-width: 560px) {
@@ -232,6 +232,31 @@ button { font: inherit; cursor: pointer; }
   }
   .side-panel .dash > * { min-width: 0; }
   .side-panel .dash > .dash-hint { grid-column: 1 / -1; }
+
+  /* 追番速览四宫格:撞档|月历 第二排按自然高度,补番|日程 第一排吃掉
+     全部剩余高度(只在清单内部滚动)——四块一屏全见,不留死空间。 */
+  .side-panel .dash.quad {
+    height: 100%;
+    grid-template-rows: minmax(150px, 1fr) auto;
+    row-gap: 14px;
+    align-items: stretch;
+  }
+  .dash.quad > .dm-sec { margin-top: 0; }
+  .dash.quad > .sec-backlog { grid-area: 1 / 1; }
+  .dash.quad > .sec-sched { grid-area: 1 / 2; }
+  .dash.quad > .sec-conflicts { grid-area: 2 / 1; }
+  .dash.quad > .sec-minical { grid-area: 2 / 2; }
+  /* 某块缺席时相邻清单自动补位,不留空洞 */
+  .dash.quad:not(:has(> .sec-conflicts)) > .sec-backlog { grid-row: 1 / 3; } /* 无撞档:补番纵跨到底 */
+  .dash.quad:not(:has(> .sec-minical)) > .sec-sched { grid-row: 1 / 3; } /* 无月历(归档):日程纵跨 */
+  .dash.quad:not(:has(> .sec-sched)) > .sec-backlog { grid-column: 1 / 3; } /* 无日程:补番横跨整行 */
+  /* 共同在追/好友动态等追加区块:排到四宫格下方,占整行(面板可滚到) */
+  .dash.quad > .sec-span { grid-column: 1 / -1; grid-row: auto; }
+  .dash.quad > .dm-sec.cap { display: flex; flex-direction: column; min-height: 0; }
+  .dash.quad > .dm-sec.cap .sec-t { flex: 0 0 auto; }
+  .dash.quad > .dm-sec.cap .sec-body { flex: 1 1 0; min-height: 0; max-height: none; }
+  /* 清单已自动填满可用高,展开按钮在此形态没有意义 */
+  .dash.quad .sec-x { display: none; }
 }
 
 .dash-hint { color: var(--text-soft); line-height: 1.9; }
