@@ -92,7 +92,11 @@ def main() -> None:
     entries = enh.get("entries") or {}
     regions: dict[str, str] = enh.get("regions") or {}
 
-    cal = api_get("/calendar")
+    try:
+        cal = api_get("/calendar")
+    except Exception as e:  # bgm 偶发吐 HTML 错误页/超时:当天跳过,别拖垮整个每日任务
+        print(f"::warning::bgm /calendar 拉取失败,本日跳过产地标注:{type(e).__name__}: {e}", file=sys.stderr)
+        return
     cal_items = [(it["id"], it.get("name_cn") or it.get("name") or "") for day in cal for it in (day.get("items") or [])]
 
     # 待查:放送表上 bangumi-data 与 yuc/wiki 都不认识,且没查过或上次是暂定 ja?

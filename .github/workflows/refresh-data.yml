@@ -12,7 +12,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   sync:
@@ -54,16 +53,41 @@ jobs:
           assert air_manual >= 3, '人工校正疑似被覆盖!'
           EOF
 
-      - name: 开 PR(有变更才开)
-        uses: peter-evans/create-pull-request@v8
-        with:
-          branch: data/bgmwiki-sync
-          title: 'data: bgm.wiki 每日同步(每集精确时刻)'
-          commit-message: 'data: bgm.wiki 每日同步'
-          body: |
-            自动同步 bgm.wiki 每集精确放送时刻(epDates)。
+      # 校验已把关(条目数量 + 人工校正保留),直接进 main。
+      # 曾经的开 PR 流程没人每天点合并,数据积压在分支上永远到不了站点。
+      - name: 提交数据到 main
+        id: commit
+        run: |
+          if git diff --quiet public/data/enhance.json; then
+            echo "数据无变化,跳过提交"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/enhance.json
+          git commit -m "data: bgm.wiki 每日同步"
+          git pull --rebase origin main
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
 
-            人工维护的 advanceEps/anchor/note/source 已由校验步骤确认保留。
-            数据来源:https://bgm.wiki(番組維基)
-          add-paths: public/data/enhance.json
-          delete-branch: true
+      # GITHUB_TOKEN 的推送不会触发 on:push 的 deploy-cloudflare,
+      # 所以数据变更后在这里自己部署;缺 secret 时警告跳过(等用户手动 deploy 捎带)。
+      - uses: actions/setup-node@v6
+        if: steps.commit.outputs.changed == 'true'
+        with:
+          node-version: 22
+          cache: npm
+      - name: 部署到 Cloudflare Workers(缺 secret 跳过)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::warning::缺 CLOUDFLARE_API_TOKEN:数据已进 main,但站点要等下次手动 npm run deploy 才更新"
+            exit 0
+          fi
+          npm ci
+          npm run build
+          npx wrangler deploy
