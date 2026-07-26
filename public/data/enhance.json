@@ -1798,9 +1798,17 @@
     },
     "source": "https://bgm.wiki"
    }
+  },
+  "619052": {
+   "air": {
+    "epDates": {
+     "3": "2026-07-20T09:00:00Z"
+    },
+    "source": "https://bgm.wiki"
+   }
   }
  },
- "bgmwiki_synced_at": "2026-07-25T23:15:52.666347Z",
+ "bgmwiki_synced_at": "2026-07-26T23:14:57.335986Z",
  "regions": {
   "449354": "cn",
   "481295": "us",
