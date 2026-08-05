@@ -11,6 +11,15 @@ interface LogEntry {
 
 const CHANGELOG: LogEntry[] = [
   {
+    d: '2026-08-05',
+    x: {
+      'zh-Hans': '修复:办过提前先行首映的新番(盗掘王)课表格位被首映时刻带偏,现按近五周实播定位;www.bgmtimetable.com 跳转主域名;GitHub Pages 镜像随每日数据自动更新',
+      'zh-Hant': '修復:辦過提前先行首映的新番(盜掘王)課表格位被首映時刻帶偏,現按近五週實播定位;www.bgmtimetable.com 跳轉主域名;GitHub Pages 鏡像隨每日資料自動更新',
+      ja: '修正:先行ワールドプレミア実施作(盗掘王)の時間割枠がプレミア時刻に引っ張られる問題。直近5週の実放送で判定。www は主ドメインへリダイレクト、Pages ミラーも毎日自動更新に',
+      en: 'Fix: shows with early premiere events (Tomb Raider King) no longer sit in the premiere slot — placement now follows the last 5 weeks of actual airings; www now redirects to the apex domain; GitHub Pages mirror auto-updates daily',
+    },
+  },
+  {
     d: '2026-07-10',
     x: {
       'zh-Hans': '筛选新增「产地」:日本/中国/其他地区/未知 四类(拿不准的诚实标未知、每日复查,不误删);筛选选择跨会话记住;侧栏补番清单/更新日程限高滚动、可展开,不再截断条数',

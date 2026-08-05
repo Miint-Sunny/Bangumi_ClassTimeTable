@@ -96,7 +96,7 @@ export function DetailBody(props: Props) {
   const score = show.score ?? info?.score
   const votes = show.ratingTotal ?? info?.ratingTotal
 
-  const slot = slotFor(show, settings)
+  const slot = slotFor(show, settings, now)
   const tz = displayTz(settings)
   const nx = nextEpisode(show, now)
 

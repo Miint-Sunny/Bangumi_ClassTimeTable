@@ -57,7 +57,7 @@ export default function WeekView({
     let nowEff = nowP.hh * 60 + nowP.mm
     if (nowP.hh < settings.lateNightCutoff) nowEff += 1440
 
-    const slots = shows.map((s) => slotFor(s, settings))
+    const slots = shows.map((s) => slotFor(s, settings, archive ? undefined : now))
     const rowSet = new Set<number>()
     // cell key `${day}:${minutes}` → slots
     const cells = new Map<string, ReturnType<typeof mkCell>[]>()

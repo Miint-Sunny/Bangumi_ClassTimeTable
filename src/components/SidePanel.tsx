@@ -107,7 +107,7 @@ function DashBody(props: Props) {
   const conflicts = (() => {
     const map = new Map<string, Show[]>()
     for (const s of tracked) {
-      const slot = slotFor(s, settings)
+      const slot = slotFor(s, settings, archive ? undefined : now)
       if (!slot.known) continue
       const k = `${slot.day}:${slot.minutes}`
       const list = map.get(k) ?? []

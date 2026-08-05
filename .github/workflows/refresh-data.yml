@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  actions: write # 数据提交后派发 deploy-cloudflare / deploy-pages
 
 jobs:
   sync:
@@ -71,23 +72,14 @@ jobs:
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      # GITHUB_TOKEN 的推送不会触发 on:push 的 deploy-cloudflare,
-      # 所以数据变更后在这里自己部署;缺 secret 时警告跳过(等用户手动 deploy 捎带)。
-      - uses: actions/setup-node@v6
-        if: steps.commit.outputs.changed == 'true'
-        with:
-          node-version: 22
-          cache: npm
-      - name: 部署到 Cloudflare Workers(缺 secret 跳过)
+      # GITHUB_TOKEN 的推送不会触发 on:push 工作流,主站和 Pages 镜像都会停在旧版。
+      # 改为显式派发两个部署(workflow_dispatch 经 API 由 GITHUB_TOKEN 触发是允许的,
+      # run 检出派发时刻的 main 最新提交 = 刚推上去的数据)。部署逻辑只留一份,
+      # 缺 CLOUDFLARE secret 时 deploy-cloudflare 自己会警告跳过。
+      - name: 派发部署(Cloudflare 主站 + Pages 镜像)
         if: steps.commit.outputs.changed == 'true'
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            echo "::warning::缺 CLOUDFLARE_API_TOKEN:数据已进 main,但站点要等下次手动 npm run deploy 才更新"
-            exit 0
-          fi
-          npm ci
-          npm run build
-          npx wrangler deploy
+          gh workflow run deploy-cloudflare.yml --ref main
+          gh workflow run deploy.yml --ref main

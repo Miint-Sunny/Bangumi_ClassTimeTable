@@ -66,7 +66,7 @@ export const lateNightRef = (now: number, settings: Settings) => now - settings.
  * bangumi-data 的 begin 时刻可能是占位值(如光美 01:00 JST,真实 08:30),
  * 有逐集实播记录时应以实播为准;取众数防一次性特番时刻带偏,平手取最新。
  */
-function recentEpSlotBase(show: Show): number | undefined {
+function recentEpSlotBase(show: Show, ref?: number): number | undefined {
   const m = show.airFix?.epDates
   if (!m) return undefined
   const ts = Object.keys(m)
@@ -76,6 +76,11 @@ function recentEpSlotBase(show: Show): number | undefined {
     .slice(-3)
     .map((ep) => Date.parse(m[String(ep)]))
     .filter((t) => !Number.isNaN(t))
+    // 时效窗:季初的世界首映/先行特映(如盗掘王 6/13 提前 3.5 周)不该在
+    // 正式周更开始后仍决定格位;只信参考时刻前 35 天(5 个周周期,容得下
+    // 维基漏记)到后 14 天(已公布的未来场次是最新鲜的相位信号)内的实播。
+    // 归档季不传 ref:静态数据的末三集相位就是终局相位。
+    .filter((t) => ref === undefined || (t >= ref - 35 * DAY_MS && t <= ref + 14 * DAY_MS))
   if (!ts.length) return undefined
   const week = 7 * DAY_MS
   const phase = (t: number) => ((t % week) + week) % week
@@ -91,12 +96,13 @@ function recentEpSlotBase(show: Show): number | undefined {
   return best
 }
 
-/** 计算某番在展示时区下的课表格位置(近期实播 > 锚点校正 > broadcast 锚点 > begin) */
-export function slotFor(show: Show, settings: Settings): AirSlot {
+/** 计算某番在展示时区下的课表格位置(近期实播 > 锚点校正 > broadcast 锚点 > begin)。
+ *  ref = 时效参考时刻(通常传 now),过滤掉过期的先行记录;归档季不传。 */
+export function slotFor(show: Show, settings: Settings, ref?: number): AirSlot {
   const tz = displayTz(settings)
   const anchorT = show.airFix?.anchorAt ? Date.parse(show.airFix.anchorAt) : NaN
   const slotBase =
-    recentEpSlotBase(show) ?? (Number.isNaN(anchorT) ? (show.broadcastAt ?? show.begin) : anchorT)
+    recentEpSlotBase(show, ref) ?? (Number.isNaN(anchorT) ? (show.broadcastAt ?? show.begin) : anchorT)
   if (slotBase && show.periodDays === 7) {
     const p = partsInZone(slotBase, tz)
     let day = p.wd

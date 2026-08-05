@@ -1,9 +1,11 @@
 # Cloudflare 部署:bgmtimetable.com(站点 + OAuth 一键登录)
 
 **整个网站**和 **bgm.tv OAuth 令牌代理**部署在同一个域名
-[bgmtimetable.com](https://bgmtimetable.com) 下:静态资源直出,`/oauth/*` 落到
-[worker.js](worker.js) —— 同源,无 CORS,一条命令发布。域名绑定写在根目录
-`wrangler.toml` 里(`custom_domain = true`),deploy 时自动创建,不用去仪表盘点。
+[bgmtimetable.com](https://bgmtimetable.com) 下:`www` 入口 301 回裸域,
+`/oauth/*` 落到 [worker.js](worker.js),其余原样落回静态资源(`run_worker_first`,
+同源无 CORS),一条命令发布。裸域与 www 的域名绑定都写在根目录
+`wrangler.toml` 里(`custom_domain = true`),deploy 时自动创建 DNS 与证书,
+不用去仪表盘点。
 
 为什么需要代理:bgm.tv 的授权码流程**强制 client_secret 且不支持 PKCE**,
 secret 不能进纯静态前端。代理只做"补上 secret 转发",不存储、不记录任何令牌。

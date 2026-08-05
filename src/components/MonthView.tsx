@@ -93,7 +93,7 @@ export default function MonthView({ shows, tracking, settings, now, archive, cur
     const hi = Date.UTC(last.y, last.mo - 1, last.d, 12) + 36 * 3600_000
     const buckets = new Map<string, Entry[]>()
     for (const s of shows) {
-      const minutes = slotFor(s, settings).minutes
+      const minutes = slotFor(s, settings, archive ? undefined : now).minutes
       for (const o of occurrencesBetween(s, lo, hi)) {
         const p = partsInZone(o.t, tz)
         const key = `${p.y}-${p.mo}-${p.d}`

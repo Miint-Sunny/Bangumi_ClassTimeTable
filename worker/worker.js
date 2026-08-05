@@ -11,13 +11,17 @@
  * ALLOWED_ORIGINS 仅在需要放行额外来源时填写。
  *
  * 路由:
+ *   *(www.bgmtimetable.com)                   → 301 回裸域,唯一正规入口
  *   POST /oauth/token    { code, redirect_uri }          → 授权码换令牌
  *   POST /oauth/refresh  { refresh_token, redirect_uri } → 续期
+ *   其余                                       → 静态资源(ASSETS)
  *
  * 配置(见 README.md):
  *   secret  BGM_CLIENT_ID / BGM_CLIENT_SECRET  ← bgm.tv/dev/app 注册所得
  *   var     ALLOWED_ORIGINS                    ← 额外允许的来源,逗号分隔,可空
  */
+
+const CANONICAL_HOST = 'bgmtimetable.com'
 
 const BGM_TOKEN_URL = 'https://bgm.tv/oauth/access_token'
 const UA = 'Miint-Sunny/Bangumi_ClassTimeTable (oauth-proxy; https://github.com/Miint-Sunny/Bangumi_ClassTimeTable)'
@@ -25,6 +29,17 @@ const UA = 'Miint-Sunny/Bangumi_ClassTimeTable (oauth-proxy; https://github.com/
 export default {
   async fetch(req, env) {
     const url = new URL(req.url)
+
+    // www → 裸域 301(保留路径与查询串)。本地 dev / workers.dev 预览不受影响。
+    if (url.hostname === `www.${CANONICAL_HOST}`) {
+      url.hostname = CANONICAL_HOST
+      return Response.redirect(url.toString(), 301)
+    }
+    // 非 OAuth 请求原样落回静态资源(run_worker_first 下所有请求都先到这里)
+    if (!url.pathname.startsWith('/oauth/')) {
+      return env.ASSETS.fetch(req)
+    }
+
     const origin = req.headers.get('Origin') ?? ''
     const allowed = (env.ALLOWED_ORIGINS ?? '')
       .split(',')
