@@ -18,9 +18,9 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.12'
 
@@ -31,12 +31,15 @@ jobs:
       - name: 同步 bgm.wiki 每集精确时刻
         env:
           BGM_WIKI_TOKEN: ${{ secrets.BGM_WIKI_TOKEN }}
+          # 表达式不直接插进 shell(scanner 会报 run-shell-injection;boolean 输入
+          # 本无注入面,走 env 是零成本的规范写法)
+          BACKFILL_FLAG: ${{ inputs.backfill && '--backfill' || '' }}
         run: |
           if [ -z "$BGM_WIKI_TOKEN" ]; then
             echo "::warning::缺 BGM_WIKI_TOKEN secret,跳过同步"
             exit 0
           fi
-          python3 scripts/bgmwiki_sync.py ${{ inputs.backfill && '--backfill' || '' }} | tee sync.log
+          python3 scripts/bgmwiki_sync.py $BACKFILL_FLAG | tee sync.log
 
       - name: 产地标注(识别放送表里的国创/欧美条目)
         run: python3 scripts/mark_region.py
