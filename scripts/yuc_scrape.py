@@ -354,6 +354,26 @@ def parse_shows(html: str, season_start_month: int = 1) -> tuple[list[dict], dic
                         show["official_url"] = card["official_url"]
                 shows.append(show)
 
+    # 周表尚未发布(季前一两周 yuc 只挂介绍卡片):直接由卡片出条目。
+    # 标签/PV/改编来源照常可用;时段/首播日留空,等周表发布后重跑自动补齐。
+    if not shows and cards:
+        for c in cards:
+            if not c.get("title_cn"):
+                continue
+            show = _base_show(None)
+            show.update({
+                "title": c["title_cn"],
+                "title_jp": c.get("title_jp"),
+                "source_type": c.get("source_type"),
+                "tags": c.get("tags") or [],
+                "pv_url": c.get("pv_url"),
+                "official_url": c.get("official_url"),
+                "broadcast_text": c.get("broadcast_text"),
+                "cover_url": c.get("cover_url_large"),
+            })
+            matched_cards.add(id(c))
+            shows.append(show)
+
     stats = {
         "timetable_shows": len(shows),
         "detail_cards": len(cards),

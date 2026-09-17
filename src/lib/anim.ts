@@ -20,7 +20,9 @@ export function withViewTransition(update: () => void) {
   }
   active = true
   const t = doc.startViewTransition(() => flushSync(update))
-  t.finished.finally(() => {
-    active = false
-  })
+  t.finished
+    .catch(() => {}) // 页面不可见或连续触发时过渡会被中止(InvalidStateError),DOM 已更新,不是错误
+    .finally(() => {
+      active = false
+    })
 }

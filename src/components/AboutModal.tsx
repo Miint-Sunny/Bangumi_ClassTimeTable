@@ -11,6 +11,15 @@ interface LogEntry {
 
 const CHANGELOG: LogEntry[] = [
   {
+    d: '2026-09-18',
+    x: {
+      'zh-Hans': '归档扩展到 2014 年起共 51 季(2014~2024 由 bangumi-data + bgm 官方数据烘焙,季度选择器按年份分组);10 月新番增强数据就位(65 部对齐 bgm 条目,标签/PV/改编来源),课表时段待 yuc 周表与 bangumi-data 更新后自动跟进',
+      'zh-Hant': '歸檔擴展到 2014 年起共 51 季(2014~2024 由 bangumi-data + bgm 官方資料烘焙,季度選擇器按年份分組);10 月新番增強資料就位(65 部對齊 bgm 條目,標籤/PV/改編來源),課表時段待 yuc 週表與 bangumi-data 更新後自動跟進',
+      ja: 'アーカイブを2014年まで拡張し計51シーズンに(2014〜2024はbangumi-data+bgm公式データから生成、シーズン選択は年ごとにグループ化)。10月新作の補助データを準備(65作品をbgmに紐付け、タグ/PV/原作種別)。時間割の枠はyucの週表とbangumi-data更新後に自動反映',
+      en: 'Archives now reach back to 2014 (51 seasons; 2014–2024 baked from bangumi-data + official bgm data, season picker grouped by year). October lineup enhancements ready (65 shows matched to bgm, tags/PV/source); timetable slots will follow once yuc and bangumi-data publish theirs',
+    },
+  },
+  {
     d: '2026-08-05',
     x: {
       'zh-Hans': '修复:办过提前先行首映的新番(盗掘王)课表格位被首映时刻带偏,现按近五周实播定位;www.bgmtimetable.com 跳转主域名;GitHub Pages 镜像随每日数据自动更新',

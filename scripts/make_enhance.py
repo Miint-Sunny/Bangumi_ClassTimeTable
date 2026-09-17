@@ -34,18 +34,18 @@ def main() -> None:
 
     data = json.loads(args.aligned_json.read_text(encoding="utf-8"))
 
-    # 重跑时保留旧文件里人工维护的 air 校正
-    old_air: dict[str, dict] = {}
+    # 增量合并:旧文件整体保留(上季续播番的 tags/epDates、人工 air 校正、顶层
+    # regions 产地判定等都不能因为换季重跑而丢),本季 yuc 条目覆盖同 id 的 yuc 字段。
+    old: dict = {}
     if args.out.is_file():
         try:
             old = json.loads(args.out.read_text(encoding="utf-8"))
-            for k, v in (old.get("entries") or {}).items():
-                if v.get("air"):
-                    old_air[k] = v["air"]
         except (json.JSONDecodeError, OSError):
-            pass
+            old = {}
+    old_entries: dict[str, dict] = dict(old.get("entries") or {})
+    old_air: dict[str, dict] = {k: v["air"] for k, v in old_entries.items() if v.get("air")}
 
-    entries: dict[str, dict] = {}
+    entries: dict[str, dict] = old_entries
     skipped = 0
     for show in data.get("shows", []):
         bgm = show.get("bangumi")
@@ -72,9 +72,10 @@ def main() -> None:
     kept_air = sum(1 for e in entries.values() if e.get("air"))
 
     out = {
+        **{k: v for k, v in old.items() if k not in ("season", "generated_at", "entries")},
         "season": data.get("season"),
         "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-        "entries": entries,
+        "entries": dict(sorted(entries.items(), key=lambda kv: int(kv[0]))),
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")

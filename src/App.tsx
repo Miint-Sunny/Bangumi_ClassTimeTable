@@ -711,12 +711,23 @@ export default function App() {
               {season.label}
               {t('(当季)')}
             </option>
-            {seasonList
-              .filter((s) => s !== season.yyyymm)
-              .map((s) => (
-                <option key={s} value={s}>
-                  {fmtSeason(s)}
-                </option>
+            {Object.entries(
+              seasonList
+                .filter((s) => s !== season.yyyymm)
+                .reduce<Record<string, string[]>>((acc, s) => {
+                  ;(acc[s.slice(0, 4)] ??= []).push(s)
+                  return acc
+                }, {}),
+            )
+              .sort(([a], [b]) => b.localeCompare(a)) // 年份键会被对象按数值升序排,这里按新→旧
+              .map(([year, list]) => (
+                <optgroup key={year} label={year}>
+                  {list.map((s) => (
+                    <option key={s} value={s}>
+                      {fmtSeason(s)}
+                    </option>
+                  ))}
+                </optgroup>
               ))}
           </select>
         </h1>
