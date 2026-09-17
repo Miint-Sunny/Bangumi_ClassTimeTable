@@ -86,6 +86,9 @@ def yuc_begin(start_date: str | None, time_str: str | None, ss: datetime) -> dat
     return dt if known else None  # 时间未知就不给 begin,让前端归"未定"行
 
 
+SLEEP = float(__import__("os").environ.get("BAKE_SLEEP", "0.35"))
+
+
 def fetch_subject(sid: int) -> dict:
     CACHE_SUBJ.mkdir(parents=True, exist_ok=True)
     f = CACHE_SUBJ / f"{sid}.json"
@@ -95,25 +98,41 @@ def fetch_subject(sid: int) -> dict:
         f"https://api.bgm.tv/v0/subjects/{sid}", headers={"User-Agent": UA}
     )
     trimmed: dict = {}
-    try:
-        with urllib.request.urlopen(req, timeout=20) as resp:
-            raw = json.loads(resp.read())
-        trimmed = {
-            "name": raw.get("name"),
-            "name_cn": raw.get("name_cn"),
-            "eps": raw.get("total_episodes") or raw.get("eps") or None,
-            "score": (raw.get("rating") or {}).get("score") or None,
-            "rank": (raw.get("rating") or {}).get("rank") or None,
-            "ratingTotal": (raw.get("rating") or {}).get("total") or None,
-            "image": (raw.get("images") or {}).get("common") or None,
-            "date": raw.get("date"),
-        }
-    except urllib.error.HTTPError as e:
-        print(f"  !! subject {sid}: HTTP {e.code}")
-    except Exception as e:  # noqa: BLE001
-        print(f"  !! subject {sid}: {e}")
-    f.write_text(json.dumps(trimmed, ensure_ascii=False), encoding="utf-8")
-    time.sleep(0.35)
+    cacheable = False  # 只缓存确定结果(成功 / 404 条目不存在);限速、超时等瞬时错误下次重试
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                raw = json.loads(resp.read())
+            trimmed = {
+                "name": raw.get("name"),
+                "name_cn": raw.get("name_cn"),
+                "eps": raw.get("total_episodes") or raw.get("eps") or None,
+                "score": (raw.get("rating") or {}).get("score") or None,
+                "rank": (raw.get("rating") or {}).get("rank") or None,
+                "ratingTotal": (raw.get("rating") or {}).get("total") or None,
+                "image": (raw.get("images") or {}).get("common") or None,
+                "date": raw.get("date"),
+            }
+            cacheable = True
+            break
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                print(f"  !! subject {sid}: HTTP 404(条目不存在/受限)")
+                cacheable = True
+                break
+            print(f"  !! subject {sid}: HTTP {e.code}(第 {attempt + 1} 次)")
+            if e.code in (429, 500, 502, 503, 504) and attempt < 2:
+                time.sleep(5 * (attempt + 1))
+                continue
+            break
+        except Exception as e:  # noqa: BLE001
+            print(f"  !! subject {sid}: {e}(第 {attempt + 1} 次)")
+            if attempt < 2:
+                time.sleep(3)
+                continue
+    if cacheable:
+        f.write_text(json.dumps(trimmed, ensure_ascii=False), encoding="utf-8")
+    time.sleep(SLEEP)
     return trimmed
 
 
