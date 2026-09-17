@@ -108,7 +108,9 @@ def parse_detail_cards(html: str) -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
     cards: list[dict] = []
 
-    for tag_td in soup.select("td.type_tag_r"):
+    # 两代布局:2024 前后 class 带 _r 后缀(type_tag_r / link_a_r / broadcast_r),
+    # 2022~2023 的老页面没有后缀且封面放在 td.link_b 里;统一用前缀通配吞进来。
+    for tag_td in soup.select('td[class^="type_tag"]'):
         table = tag_td.find_parent("table")
         if table is None:
             continue
@@ -118,13 +120,13 @@ def parse_detail_cards(html: str) -> list[dict]:
         title_cn = title_cn_p.get_text(" ", strip=True) if title_cn_p else ""
         title_jp = title_jp_p.get_text(" ", strip=True) if title_jp_p else None
 
-        # source_type：td[class^="type_"] 里排除 type_tag_r
+        # source_type：td[class^="type_"] 里排除标签格 type_tag*
         source_type = None
         for td in table.select('td[class^="type_"]'):
             classes = td.get("class") or []
-            if any(c == "type_tag_r" for c in classes):
+            if any(c.startswith("type_tag") for c in classes):
                 continue
-            source_type = td.get_text(strip=True)
+            source_type = td.get_text(" ", strip=True)
             break
 
         tags_raw = tag_td.get_text(strip=True)
@@ -133,7 +135,7 @@ def parse_detail_cards(html: str) -> list[dict]:
         # 链接区：按 <a> 文案分 official / pv
         official_url = None
         pv_url = None
-        for a in table.select("td.link_a_r a[href]"):
+        for a in table.select('td[class^="link_a"] a[href]'):
             text = a.get_text(strip=True)
             href = a["href"]
             if "PV" in text or "pv" in text:
@@ -143,15 +145,25 @@ def parse_detail_cards(html: str) -> list[dict]:
             else:
                 official_url = official_url or href
 
-        broadcast_p = table.select_one("p.broadcast_r")
+        broadcast_p = table.select_one('p[class^="broadcast"]')
         broadcast_text = broadcast_p.get_text(" ", strip=True) if broadcast_p else None
+        broadcast_ex = table.select_one("p.broadcast_ex")
+        if broadcast_ex is not None:
+            extra = broadcast_ex.get_text(" ", strip=True).strip("()（）").strip()
+            if extra:
+                broadcast_text = f"{broadcast_text} ({extra})" if broadcast_text else extra
 
-        # 封面是卡片 table 前一个兄弟 div 里的 <img width=180px>
+        # 封面:新布局在卡片 table 前一个兄弟 div 里的 <img width=180px>,
+        # 老布局在 td.link_b 的 <img data-src>
         cover_url = None
         prev_div = table.find_previous("div", style=lambda s: s and "float:left" in s.replace(" ", ""))
         if prev_div:
             img = prev_div.find("img")
             cover_url = _img_url(img)
+        if not cover_url:
+            img = table.select_one('td[class^="link_b"] img')
+            if img is not None:
+                cover_url = img.get("data-src") or img.get("src")
 
         cards.append({
             "title_cn": title_cn,
@@ -357,10 +369,20 @@ def parse_shows(html: str, season_start_month: int = 1) -> tuple[list[dict], dic
     # 周表尚未发布(季前一两周 yuc 只挂介绍卡片):直接由卡片出条目。
     # 标签/PV/改编来源照常可用;时段/首播日留空,等周表发布后重跑自动补齐。
     if not shows and cards:
+        cn_wd = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "日": 7, "天": 7}
         for c in cards:
             if not c.get("title_cn"):
                 continue
             show = _base_show(None)
+            bt = c.get("broadcast_text") or ""
+            # 老布局卡片自带 "1/5周三深夜" / "3/1先行配信" / "4/8网络配信" 之类文案:
+            # 抠出首播日与星期(时段只有"深夜/晚间"粗粒度,不当精确时刻用)
+            m = re.match(r"^(\d{1,2}/\d{1,2})", bt)
+            if m:
+                show["start_date"] = m.group(1)
+            wd = re.search(r"周([一二三四五六日天])", bt)
+            if wd:
+                show["day_of_week"] = cn_wd[wd.group(1)]
             show.update({
                 "title": c["title_cn"],
                 "title_jp": c.get("title_jp"),
@@ -368,8 +390,9 @@ def parse_shows(html: str, season_start_month: int = 1) -> tuple[list[dict], dic
                 "tags": c.get("tags") or [],
                 "pv_url": c.get("pv_url"),
                 "official_url": c.get("official_url"),
-                "broadcast_text": c.get("broadcast_text"),
+                "broadcast_text": bt or None,
                 "cover_url": c.get("cover_url_large"),
+                "span_type": "streaming" if ("配信" in bt and not wd) else "seasonal",
             })
             matched_cards.add(id(c))
             shows.append(show)
