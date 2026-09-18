@@ -32,6 +32,20 @@ export function detectLang(): Lang {
 // value = [繁中, 日本語, EN]
 const DICT: Record<string, [string, string, string]> = {
   // ── 追番统计页 ──
+  平均分: ['平均分', '平均点', 'Avg score'],
+  时间胶囊: ['時間膠囊', 'タイムカプセル', 'Time capsule'],
+  收藏: ['收藏', '収蔵', 'Collected'],
+  完成率: ['完成率', '完了率', 'Finish rate'],
+  标准差: ['標準差', '標準偏差', 'Std dev'],
+  评分数: ['評分數', '評価数', 'Rated'],
+  完成了: ['完成了', '完了', 'Finished'],
+  '{a} of {b} 话': ['{a} of {b} 話', '{a} / {b} 話', '{a} of {b} eps'],
+  '看过第 {n} 话': ['看過第 {n} 話', '第 {n} 話を視聴', 'Watched ep {n}'],
+  更多: ['更多', 'もっと見る', 'More'],
+  没有更多了: ['沒有更多了', 'これ以上ありません', 'No more'],
+  '时间胶囊需要登录 bgm;镜像站点无此功能': ['時間膠囊需要登入 bgm;鏡像站點無此功能', 'タイムカプセルは bgm ログインが必要です(ミラーでは利用不可)', 'Time capsule needs bgm sign-in and is unavailable on the mirror'],
+  '（{n} 分）': ['（{n} 分）', '({n} 点)', '({n})'],
+  还没有记录: ['還沒有記錄', 'まだ記録がありません', 'Nothing yet'],
   '📊 统计': ['📊 統計', '📊 統計', '📊 Stats'],
   追番统计: ['追番統計', '視聴統計', 'Watch stats'],
   搁置: ['擱置', '保留', 'On hold'],

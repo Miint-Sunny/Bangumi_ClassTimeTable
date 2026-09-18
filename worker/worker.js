@@ -14,6 +14,7 @@
  *   *(www.bgmtimetable.com)                   → 301 回裸域,唯一正规入口
  *   POST /oauth/token    { code, redirect_uri }          → 授权码换令牌
  *   POST /oauth/refresh  { refresh_token, redirect_uri } → 续期
+ *   GET  /api/timeline?user=&limit=&until=    → 转发 bgm 新版 p1 公开时间线(未开 CORS,统计页"时间胶囊"用)
  *   其余                                       → 静态资源(ASSETS)
  *
  * 配置(见 README.md):
@@ -35,6 +36,7 @@ export default {
       url.hostname = CANONICAL_HOST
       return Response.redirect(url.toString(), 301)
     }
+    if (url.pathname === '/api/timeline') return timelineProxy(url)
     // 非 OAuth 请求原样落回静态资源(run_worker_first 下所有请求都先到这里)
     if (!url.pathname.startsWith('/oauth/')) {
       return env.ASSETS.fetch(req)
@@ -86,4 +88,20 @@ export default {
     const text = await resp.text()
     return new Response(text, { status: resp.status, headers: { ...cors, 'Content-Type': 'application/json' } })
   },
+}
+
+/** bgm 新版 p1 的公开时间线没开 CORS,同源转一手;参数白名单校验,边缘缓存 2 分钟。 */
+async function timelineProxy(url) {
+  const user = url.searchParams.get('user') ?? ''
+  const until = url.searchParams.get('until') ?? ''
+  const limit = Math.min(30, Math.max(1, Number(url.searchParams.get('limit')) || 20))
+  const bad = (msg) => new Response(JSON.stringify({ error: msg }), { status: 400, headers: { 'Content-Type': 'application/json' } })
+  if (!/^[A-Za-z0-9_-]{1,32}$/.test(user)) return bad('bad user')
+  if (until && !/^\d{1,12}$/.test(until)) return bad('bad until')
+  const upstream = `https://next.bgm.tv/p1/users/${user}/timeline?limit=${limit}${until ? `&until=${until}` : ''}`
+  const resp = await fetch(upstream, { headers: { 'User-Agent': UA, Accept: 'application/json' }, cf: { cacheTtl: 120, cacheEverything: true } })
+  return new Response(resp.body, {
+    status: resp.status,
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=120' },
+  })
 }

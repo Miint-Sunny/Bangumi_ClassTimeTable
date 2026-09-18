@@ -843,6 +843,13 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
   --st-wish: #d47f2a;
   --st-hold: #7b6fc2;
   --st-drop: #2a9d8f;
+  /* 六色块(bgm 主页收藏统计同款):装饰色,白色大字压得住即可 */
+  --box-pink: #c96674;
+  --box-green: #6a9f4a;
+  --box-blue: #3b82c4;
+  --box-orange: #cc7f3e;
+  --box-purple: #8158c2;
+  --box-sky: #3f8fd0;
 }
 :root[data-theme='dark'], :root[data-theme='bgm-dark'], :root[data-theme='contrast'] {
   --st-wish: #c96f22; /* 深底上橙色压暗一档,亮度带才过检 */
@@ -914,7 +921,8 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
 /* 评分分布:十根粉柱,顶端直接标数 */
 .st-histwrap { padding-top: 14px; }
 .st-hist { display: flex; align-items: flex-end; gap: 4px; height: 120px; border-bottom: 1px solid var(--border); }
-.st-hist .b { flex: 1 1 0; min-height: 2px; background: var(--pink); border-radius: 3px 3px 0 0; position: relative; }
+.st-hist .b { flex: 1 1 0; min-height: 2px; background: var(--text-subtle); opacity: 0.55; border-radius: 3px 3px 0 0; position: relative; transition: opacity var(--dur-fast), background var(--dur-fast); }
+.st-hist .b:hover { background: var(--pink); opacity: 1; }
 .st-hist .b .v { position: absolute; top: -15px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--text-soft); }
 .st-hist-x { display: flex; gap: 4px; margin-top: 3px; font-size: 10px; color: var(--text-subtle); }
 .st-hist-x span { flex: 1 1 0; text-align: center; }
@@ -943,3 +951,32 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
 .st-pick:hover { border-color: var(--pink); color: var(--pink-strong); }
 .st-pick b { font-weight: normal; color: var(--pink-strong); margin-left: 5px; }
 .st-note { font-size: 11px; color: var(--text-subtle); margin-top: 16px; }
+
+/* 状态胶囊行 + 六色块面板 + 时间胶囊(bgm 新版主页同款) */
+.st-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 4px 0 12px; }
+.st-chip {
+  border: 1px solid var(--c); color: var(--c); border-radius: 12px; padding: 1px 10px;
+  font-size: 12px; line-height: 1.6; white-space: nowrap;
+}
+.st-chip b { font-weight: normal; margin-left: 5px; font-variant-numeric: tabular-nums; }
+.st-chip-note { color: var(--text-subtle); font-size: 11px; margin-left: 4px; }
+.st-panel { border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: var(--card); }
+.st-six { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.st-box { border-radius: 7px; padding: 9px 12px 8px; background: var(--box); color: #fff; min-width: 0; }
+.st-box .n { font-size: 23px; font-weight: 600; line-height: 1.1; letter-spacing: 0.2px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st-box .l { font-size: 11px; opacity: 0.92; margin-top: 3px; }
+.st-panel .st-histwrap { padding-top: 22px; }
+.st-panel .st-hist { height: 96px; border-bottom: none; }
+.st-cap { position: relative; padding-left: 16px; max-height: 440px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.st-cap::before { content: ''; position: absolute; left: 4px; top: 8px; bottom: 30px; width: 2px; background: var(--border); }
+.st-cap .ev { position: relative; font-size: 12px; line-height: 1.55; padding: 3px 0 3px 6px; color: var(--text); }
+.st-cap .ev::before {
+  content: ''; position: absolute; left: -16px; top: 9px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--pink); box-shadow: 0 0 0 2px var(--card);
+}
+.st-cap .ev .verb { color: var(--text-soft); margin-right: 2px; }
+.st-cap .ev a { color: var(--link); text-decoration: none; }
+.st-cap .ev a:hover { color: var(--link-hover); }
+.st-cap .ev .prog { color: var(--text); }
+.st-cap .ev .when { color: var(--text-subtle); font-size: 11px; margin-left: 6px; white-space: nowrap; }
+.st-cap .more { margin-top: 8px; padding-left: 6px; }

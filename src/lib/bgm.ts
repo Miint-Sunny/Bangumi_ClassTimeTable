@@ -343,3 +343,67 @@ export async function pullLibrary(acc: BgmAccount, force = false): Promise<Libra
 export function clearLibraryCache(username: string) {
   clearCacheKey(`bgm:lib:${username}`)
 }
+
+// ── 统计页:时间胶囊(bgm 新版 p1 公开时间线,经同源 /api/timeline 转发) ────
+
+export type CapsuleKind = 'wish' | 'done' | 'watching' | 'hold' | 'drop' | 'progress' | 'ep'
+export interface CapsuleEvent {
+  id: number
+  at: number // ms
+  kind: CapsuleKind
+  subject: { id: number; name: string; nameCn: string }
+  ep?: number // ep:看过第几话;progress:看到第几话
+  epsTotal?: number
+  rate?: number
+  comment?: string
+}
+
+// p1 时间线 cat=3(收藏)的 type → 动作;cat=4(进度)type 0 = 批量进度,2 = 单集
+const CAP_KIND: Record<number, CapsuleKind> = { 2: 'wish', 6: 'done', 10: 'watching', 13: 'hold', 14: 'drop' }
+
+/** 最近的动画相关动作;until = 上一页最后一条的 id(翻页)。GitHub Pages 镜像没有代理,会抛错,调用方静默。 */
+export async function fetchTimeline(username: string, until?: number): Promise<{ events: CapsuleEvent[]; lastId: number | null }> {
+  const q = new URLSearchParams({ user: username, limit: '20' })
+  if (until) q.set('until', String(until))
+  const resp = await fetch(`${import.meta.env.BASE_URL}api/timeline?${q}`, { headers: { Accept: 'application/json' } })
+  if (!resp.ok) throw new Error(`timeline HTTP ${resp.status}`)
+  const rows: any[] = await resp.json()
+  if (!Array.isArray(rows)) throw new Error('timeline: bad payload')
+  const events: CapsuleEvent[] = []
+  for (const r of rows) {
+    const at = (r.createdAt ?? 0) * 1000
+    const memo = r.memo ?? {}
+    if (r.cat === 3 && Array.isArray(memo.subject)) {
+      const kind = CAP_KIND[r.type]
+      for (const m of memo.subject) {
+        const s = m.subject ?? {}
+        if (!kind || s.type !== 2) continue
+        events.push({
+          id: r.id, at, kind,
+          subject: { id: s.id, name: s.name ?? '', nameCn: s.nameCN || s.name || '' },
+          rate: m.rate || undefined,
+          comment: m.comment || undefined,
+        })
+      }
+    } else if (r.cat === 4 && memo.progress) {
+      const p = memo.progress
+      if (p.batch?.subject?.type === 2) {
+        const s = p.batch.subject
+        events.push({
+          id: r.id, at, kind: 'progress',
+          subject: { id: s.id, name: s.name ?? '', nameCn: s.nameCN || s.name || '' },
+          ep: Number(p.batch.epsUpdate) || undefined,
+          epsTotal: Number(p.batch.epsTotal) || undefined,
+        })
+      } else if (p.single?.subject?.type === 2) {
+        const s = p.single.subject
+        events.push({
+          id: r.id, at, kind: 'ep',
+          subject: { id: s.id, name: s.name ?? '', nameCn: s.nameCN || s.name || '' },
+          ep: Number(p.single.episode?.sort) || undefined,
+        })
+      }
+    }
+  }
+  return { events, lastId: rows.length ? rows[rows.length - 1].id : null }
+}

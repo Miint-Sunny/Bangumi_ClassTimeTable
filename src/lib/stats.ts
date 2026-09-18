@@ -36,6 +36,7 @@ export interface Stats {
   firstYear: number | null
   rated: number
   myMean: number | null
+  myStd: number | null // 打分标准差(总体)
   siteMean: number | null
   hist: number[] // 下标 1..10
   timeline: Bucket[]
@@ -149,6 +150,9 @@ export function computeStats(items: LibItem[]): Stats {
     .sort((a, b) => b.rate - a.rate || b.score - a.score || (b.date ?? '').localeCompare(a.date ?? ''))
     .slice(0, 12)
 
+  const myMean = rated ? rateSum / rated : null
+  let sq = 0
+  if (myMean !== null) for (const it of items) if (it.rate > 0) sq += (it.rate - myMean) ** 2
   const fin = counts[2] + counts[5]
   return {
     total: items.length,
@@ -156,7 +160,8 @@ export function computeStats(items: LibItem[]): Stats {
     epsWatched,
     firstYear,
     rated,
-    myMean: rated ? rateSum / rated : null,
+    myMean,
+    myStd: rated ? Math.sqrt(sq / rated) : null,
     siteMean: scored ? scoreSum / scored : null,
     hist,
     timeline,

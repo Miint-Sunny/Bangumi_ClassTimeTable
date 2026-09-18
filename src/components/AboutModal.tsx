@@ -11,6 +11,15 @@ interface LogEntry {
 
 const CHANGELOG: LogEntry[] = [
   {
+    d: '2026-09-19',
+    x: {
+      'zh-Hans': '追番统计页按 bgm 新版主页重做:状态胶囊行、收藏/看过/完成率/平均分/标准差/评分数六色块、10→1 评分直方图,新增「时间胶囊」(想看/在看/完成了第几话的真实动作流,可翻页)',
+      'zh-Hant': '追番統計頁按 bgm 新版主頁重做:狀態膠囊行、收藏/看過/完成率/平均分/標準差/評分數六色塊、10→1 評分直方圖,新增「時間膠囊」(想看/在看/完成了第幾話的真實動作流,可翻頁)',
+      ja: '視聴統計を bgm 新版プロフィールに合わせて刷新:状態チップ、収蔵/見た/完了率/平均/標準偏差/評価数の6ブロック、10→1 の評価分布。「タイムカプセル」(視聴履歴の実アクション、ページ送り可)を追加',
+      en: 'Stats page restyled after the new bgm profile: status chips, six stat blocks (collected / done / finish rate / avg / std dev / rated), 10→1 rating histogram, plus a “Time capsule” feed of your real actions (paginated)',
+    },
+  },
+  {
     d: '2026-09-18',
     x: {
       'zh-Hans': '新增「追番统计」页(顶栏 📊):看过/在看/想看/搁置/抛弃总览、每季追番柱图(点柱子跳归档)、换季对比、评分分布、题材偏好、年度足迹、9 分神作;登录 bgm 后统计全部历史收藏',

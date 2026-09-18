@@ -1,21 +1,14 @@
 /**
- * 追番统计页(bgm.tv「收藏统计」风格):五种收藏状态的总览、每季/每年追番柱图、
- * 换季对比、评分分布、题材偏好、年度足迹、9 分神作。
+ * 追番统计页,按 bgm.tv 新版个人主页的「收藏统计」与「时间胶囊」重做:
+ *   状态胶囊行 → 六色块(收藏/看过/完成率/平均分/标准差/评分数)+ 10→1 评分直方图
+ *   → 时间胶囊(p1 时间线,经同源代理)| 换季对比 → 每季追番柱图 → 题材偏好 | 年度足迹 → 9 分神作
  * 数据:登录 bgm 时拉全量收藏(pullLibrary,缓存 24h);未登录退回本机当季 tracking。
  */
 
 import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import type { BgmAccount, Show, Tracking, WatchStatus } from '../types'
-import { pullLibrary, type LibItem, type Library } from '../lib/bgm'
-import {
-  computeStats,
-  prevSeasonKey,
-  TYPE_LABEL,
-  TYPE_ORDER,
-  TYPE_VAR,
-  type Bucket,
-  type CollType,
-} from '../lib/stats'
+import { fetchTimeline, pullLibrary, type CapsuleEvent, type LibItem, type Library } from '../lib/bgm'
+import { computeStats, prevSeasonKey, TYPE_LABEL, TYPE_ORDER, TYPE_VAR, type Bucket, type CollType } from '../lib/stats'
 import { fmtSeason } from '../lib/seasons'
 import { currentSeason } from '../lib/time'
 import { t } from '../lib/i18n'
@@ -53,7 +46,14 @@ function localLibrary(tracking: Tracking, shows: Show[] | null): LibItem[] {
 }
 
 const fmt1 = (n: number | null) => (n === null ? '–' : n.toFixed(1))
-const pct = (n: number | null) => (n === null ? '–' : `${Math.round(n * 100)}%`)
+const fmt2 = (n: number | null) => (n === null ? '–' : n.toFixed(2))
+const pct = (n: number | null) => (n === null ? '–' : `${(n * 100).toFixed(1)}%`)
+const pad = (n: number) => String(n).padStart(2, '0')
+/** 2026-8-31 22:37 —— 与 bgm 主页的时间胶囊同款写法 */
+const fmtWhen = (ms: number) => {
+  const d = new Date(ms)
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
 
 export default function StatsModal({ account, tracking, shows, seasonList, onOpenSeason, onClose }: Props) {
   const [lib, setLib] = useState<Library | null>(null)
@@ -86,8 +86,7 @@ export default function StatsModal({ account, tracking, shows, seasonList, onOpe
   const st = useMemo(() => computeStats(items), [items])
   const cur = currentSeason(Date.now()).yyyymm
   const prev = prevSeasonKey(cur)
-  const curB = st.bySeason[cur]
-  const prevB = st.bySeason[prev]
+  const finishRate = st.counts[2] + st.counts[5] ? st.counts[2] / (st.counts[2] + st.counts[5]) : null
 
   return (
     <div className="overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -114,35 +113,84 @@ export default function StatsModal({ account, tracking, shows, seasonList, onOpe
         {error && <div className="set-note st-notice">{t('拉取失败:{e}', { e: error })}</div>}
         {loading && !lib && <div className="st-empty">{t('正在拉取全部收藏…')}</div>}
 
-        {items.length === 0 && !loading ? (
+        {items.length === 0 && !loading && !live ? ( // 登录态即使收藏为空也照常渲染(时间胶囊不依赖收藏)
           <div className="st-empty">{t('暂无数据')}</div>
         ) : (
           <>
-            {/* ── 总览 ── */}
-            <div className="st-tiles">
-              {TYPE_ORDER.map((ty) => (
-                <div key={ty} className="st-tile" style={{ '--tile-c': TYPE_VAR[ty] } as CSSProperties}>
-                  <div className="n">{st.counts[ty].toLocaleString()}</div>
-                  <div className="l">{t(TYPE_LABEL[ty])}</div>
-                </div>
+            {/* ── 状态胶囊行(bgm 主页「动画 [在看 38] [看过 90]…」)── */}
+            <div className="st-chips">
+              {TYPE_ORDER.filter((ty) => st.counts[ty] > 0).map((ty) => (
+                <span key={ty} className="st-chip" style={{ '--c': TYPE_VAR[ty] } as CSSProperties}>
+                  {t(TYPE_LABEL[ty])}
+                  <b>{st.counts[ty].toLocaleString()}</b>
+                </span>
               ))}
-              <div className="st-tile">
-                <div className="n">{st.epsWatched.toLocaleString()}</div>
-                <div className="l">{t('总集数')}</div>
+              <span className="st-chip-note">
+                {t('总集数')} {t('约 {n} 集', { n: st.epsWatched.toLocaleString() })}
+                {st.firstYear ? ` · ${t('自 {y} 年起', { y: st.firstYear })}` : ''}
+              </span>
+            </div>
+
+            {/* ── 六色块 + 评分直方图(bgm 主页「收藏统计」)── */}
+            <div className="st-panel">
+              <div className="st-six">
+                <Box c="var(--box-pink)" n={st.total.toLocaleString()} l={t('收藏')} />
+                <Box c="var(--box-green)" n={st.counts[2].toLocaleString()} l={t('看过')} />
+                <Box c="var(--box-blue)" n={pct(finishRate)} l={t('完成率')} title={t('完成率 = 看过 ÷ (看过 + 抛弃)')} />
+                <Box c="var(--box-orange)" n={fmt2(st.myMean)} l={t('平均分')} title={st.siteMean !== null ? t('站均 {s}', { s: fmt2(st.siteMean) }) : undefined} />
+                <Box c="var(--box-purple)" n={fmt2(st.myStd)} l={t('标准差')} />
+                <Box c="var(--box-sky)" n={st.rated.toLocaleString()} l={t('评分数')} />
               </div>
-              <div className="st-tile">
-                <div className="n">{st.firstYear ? new Date().getFullYear() - st.firstYear + 1 : '–'}</div>
-                <div className="l">
-                  {t('追番年数')}
-                  {st.firstYear ? <span className="s"> · {t('自 {y} 年起', { y: st.firstYear })}</span> : null}
-                </div>
+              {st.rated > 0 && <Histogram hist={st.hist} />}
+            </div>
+
+            <div className="st-two">
+              {/* ── 时间胶囊 ── */}
+              <div className="st-sec">
+                <div className="st-sec-t">{t('时间胶囊')}</div>
+                {account?.username ? ( // 时间线是公开数据,令牌过期也照样能看
+                  <Capsule username={account.username} />
+                ) : (
+                  <div className="st-empty">{t('时间胶囊需要登录 bgm;镜像站点无此功能')}</div>
+                )}
               </div>
-              <div className="st-tile">
-                <div className="n">{fmt1(st.myMean)}</div>
-                <div className="l">
-                  {t('平均打分')}
-                  {st.siteMean !== null ? <span className="s"> · {t('站均 {s}', { s: fmt1(st.siteMean) })}</span> : null}
+
+              {/* ── 换季对比 ── */}
+              <div className="st-sec">
+                <div className="st-sec-t">{t('换季对比')}</div>
+                <div className="st-cmp">
+                  {(
+                    [
+                      [t('本季'), cur, st.bySeason[cur]],
+                      [t('上季'), prev, st.bySeason[prev]],
+                    ] as [string, string, Bucket | undefined][]
+                  ).map(([label, key, b]) => {
+                    const done = b?.counts[2] ?? 0
+                    const drop = b?.counts[5] ?? 0
+                    return (
+                      <div key={key} className="col">
+                        <h4>
+                          {label} · {fmtSeason(key)}
+                        </h4>
+                        {(
+                          [
+                            [t('在看'), b?.counts[3] ?? 0],
+                            [t('看过'), done],
+                            [t('抛弃'), drop],
+                            [t('想看'), b?.counts[1] ?? 0],
+                            [t('完走率'), pct(done + drop ? done / (done + drop) : null)],
+                          ] as [string, number | string][]
+                        ).map(([k, v]) => (
+                          <div key={k} className="kv">
+                            <span>{k}</span>
+                            <b>{v}</b>
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  })}
                 </div>
+                <div className="st-note">{t('完走率 = 看过 ÷ (看过 + 抛弃)')}</div>
               </div>
             </div>
 
@@ -157,62 +205,6 @@ export default function StatsModal({ account, tracking, shows, seasonList, onOpe
               ) : (
                 <div className="st-empty">{t('暂无数据')}</div>
               )}
-            </div>
-
-            <div className="st-two">
-              {/* ── 换季对比 ── */}
-              <div className="st-sec">
-                <div className="st-sec-t">
-                  {t('换季对比')}
-                  <span className="hint">{t('完走率 = 看过 ÷ (看过 + 抛弃)')}</span>
-                </div>
-                <div className="st-cmp">
-                  {[
-                    [t('本季'), cur, curB],
-                    [t('上季'), prev, prevB],
-                  ].map(([label, key, b]) => {
-                    const bk = b as Bucket | undefined
-                    const done = bk?.counts[2] ?? 0
-                    const drop = bk?.counts[5] ?? 0
-                    return (
-                      <div key={key as string} className="col">
-                        <h4>
-                          {label as string} · {fmtSeason(key as string)}
-                        </h4>
-                        <div className="kv">
-                          <span>{t('在看')}</span>
-                          <b>{bk?.counts[3] ?? 0}</b>
-                        </div>
-                        <div className="kv">
-                          <span>{t('看过')}</span>
-                          <b>{done}</b>
-                        </div>
-                        <div className="kv">
-                          <span>{t('抛弃')}</span>
-                          <b>{drop}</b>
-                        </div>
-                        <div className="kv">
-                          <span>{t('想看')}</span>
-                          <b>{bk?.counts[1] ?? 0}</b>
-                        </div>
-                        <div className="kv">
-                          <span>{t('完走率')}</span>
-                          <b>{pct(done + drop ? done / (done + drop) : null)}</b>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* ── 评分分布 ── */}
-              <div className="st-sec">
-                <div className="st-sec-t">
-                  {t('评分分布')}
-                  <span className="hint">{t('打过分 {n} 部', { n: st.rated })}</span>
-                </div>
-                {st.rated ? <Histogram hist={st.hist} /> : <div className="st-empty">{t('暂无数据')}</div>}
-              </div>
             </div>
 
             <div className="st-two">
@@ -295,6 +287,76 @@ export default function StatsModal({ account, tracking, shows, seasonList, onOpe
               {lib?.partial ? ` · ${t('收藏太多,超出 4000 部的部分未计入')}` : null}
             </div>
           </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function Box({ c, n, l, title }: { c: string; n: string; l: string; title?: string }) {
+  return (
+    <div className="st-box" style={{ '--box': c } as CSSProperties} title={title}>
+      <div className="n">{n}</div>
+      <div className="l">{l}</div>
+    </div>
+  )
+}
+
+// ── 时间胶囊:动作流,翻页用上一页最后一条 id ──────────────────────────
+
+const VERB: Record<CapsuleEvent['kind'], string> = {
+  wish: '想看',
+  done: '看过',
+  watching: '在看',
+  hold: '搁置',
+  drop: '抛弃',
+  progress: '完成了',
+  ep: '看过',
+}
+
+function Capsule({ username }: { username: string }) {
+  const [events, setEvents] = useState<CapsuleEvent[]>([])
+  const [lastId, setLastId] = useState<number | null>(null)
+  const [state, setState] = useState<'idle' | 'loading' | 'end' | 'error'>('idle')
+
+  const load = (until?: number) => {
+    setState('loading')
+    fetchTimeline(username, until)
+      .then(({ events: ev, lastId: id }) => {
+        setEvents((old) => (until ? [...old, ...ev] : ev))
+        setLastId(id)
+        setState(id === null || ev.length === 0 ? 'end' : 'idle')
+      })
+      .catch(() => setState('error'))
+  }
+  useEffect(() => {
+    load()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username])
+
+  if (state === 'error' && events.length === 0) return <div className="st-empty">{t('时间胶囊需要登录 bgm;镜像站点无此功能')}</div>
+  if (state !== 'loading' && events.length === 0) return <div className="st-empty">{t('还没有记录')}</div>
+  return (
+    <div className="st-cap">
+      {events.map((e) => (
+        <div key={`${e.id}-${e.subject.id}`} className="ev">
+          <span className="verb">{t(VERB[e.kind])}</span>{' '}
+          <a href={`https://bgm.tv/subject/${e.subject.id}`} target="_blank" rel="noreferrer">
+            {e.subject.nameCn || e.subject.name}
+          </a>
+          {e.kind === 'progress' && e.ep ? <span className="prog"> {t('{a} of {b} 话', { a: e.ep, b: e.epsTotal ?? '?' })}</span> : null}
+          {e.kind === 'ep' && e.ep ? <span className="prog"> {t('看过第 {n} 话', { n: e.ep })}</span> : null}
+          {e.rate ? <span className="prog">{t('（{n} 分）', { n: e.rate })}</span> : null}
+          <span className="when">{fmtWhen(e.at)}</span>
+        </div>
+      ))}
+      <div className="more">
+        {state === 'end' ? (
+          <span className="st-note">{t('没有更多了')}</span>
+        ) : (
+          <button className="iconbtn" disabled={state === 'loading'} onClick={() => lastId && load(lastId)}>
+            {state === 'loading' ? '…' : t('更多')}
+          </button>
         )}
       </div>
     </div>
@@ -397,20 +459,22 @@ function Timeline({
   )
 }
 
+/** 评分直方图:10 → 1 倒序(与 bgm 主页一致),灰柱、顶端直接标数 */
 function Histogram({ hist }: { hist: number[] }) {
   const max = Math.max(1, ...hist.slice(1))
+  const order = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
   return (
     <div className="st-histwrap">
       <div className="st-hist">
-        {hist.slice(1).map((n, i) => (
-          <div key={i} className="b" style={{ height: `${(n / max) * 100}%` }} title={`${i + 1} · ${n}`}>
-            {n > 0 && <span className="v">{n}</span>}
+        {order.map((s) => (
+          <div key={s} className="b" style={{ height: `${(hist[s] / max) * 100}%` }} title={`${s} · ${hist[s]}`}>
+            {hist[s] > 0 && <span className="v">{hist[s]}</span>}
           </div>
         ))}
       </div>
       <div className="st-hist-x">
-        {hist.slice(1).map((_, i) => (
-          <span key={i}>{i + 1}</span>
+        {order.map((s) => (
+          <span key={s}>{s}</span>
         ))}
       </div>
     </div>
