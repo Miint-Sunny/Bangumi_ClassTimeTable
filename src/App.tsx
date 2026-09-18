@@ -19,6 +19,7 @@ import { beginOauthLogin, completeOauthLogin, fetchOauthConf, refreshIfNeeded, t
 import { withViewTransition } from './lib/anim'
 import { LANGS, setLang, t, type Lang } from './lib/i18n'
 import AboutModal from './components/AboutModal'
+import StatsModal from './components/StatsModal'
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
 import { behindCount, continuity, type Continuity } from './lib/progress'
@@ -120,6 +121,7 @@ export default function App() {
   const [monthCursor, setMonthCursor] = useState<MonthCursor | null>(null) // null = 默认月
   const [showSettings, setShowSettings] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
+  const [showStats, setShowStats] = useState(false)
   const [friendsMap, setFriendsMap] = useState<FriendsMap>(new Map())
   const [friendErrors, setFriendErrors] = useState<Record<string, string>>({})
   const [now, setNow] = useState(() => Date.now())
@@ -775,6 +777,9 @@ export default function App() {
             </option>
           ))}
         </select>
+        <button className="iconbtn" onClick={() => setShowStats(true)}>
+          {t('📊 统计')}
+        </button>
         <button className="iconbtn" onClick={() => setShowAbout(true)}>
           ⓘ {t('关于')}
         </button>
@@ -1042,6 +1047,19 @@ export default function App() {
       )}
 
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
+      {showStats && (
+        <StatsModal
+          account={account}
+          tracking={tracking}
+          shows={shows}
+          seasonList={seasonList}
+          onOpenSeason={(s) => {
+            setShowStats(false)
+            withViewTransition(() => setSeasonSel(s))
+          }}
+          onClose={() => setShowStats(false)}
+        />
+      )}
 
       {showSettings && (
         <SettingsPanel

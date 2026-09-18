@@ -834,3 +834,112 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── 追番统计页(bgm.tv 收藏统计风:白卡细边框、小灰标题、粉柱)──────── */
+:root {
+  /* 五种收藏状态的固定配色(看过/在看/想看/搁置/抛弃),经色盲与对比校验;顺序永不轮换 */
+  --st-done: #e26470;
+  --st-watching: #0084b4;
+  --st-wish: #d47f2a;
+  --st-hold: #7b6fc2;
+  --st-drop: #2a9d8f;
+}
+:root[data-theme='dark'], :root[data-theme='bgm-dark'], :root[data-theme='contrast'] {
+  --st-wish: #c96f22; /* 深底上橙色压暗一档,亮度带才过检 */
+}
+.modal.stats { max-width: 980px; }
+.st-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.st-head h2 { margin: 0; font-weight: normal; font-size: 20px; color: var(--pink-strong); }
+.st-head .sub { color: var(--text-soft); font-size: 12px; }
+.st-head .st-refresh { margin-left: auto; }
+.st-notice { margin-bottom: 10px; }
+.st-empty { color: var(--text-soft); font-size: 12px; padding: 22px 0; text-align: center; }
+.st-sec { margin-top: 18px; min-width: 0; }
+.st-sec-t {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-soft);
+  border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-bottom: 10px;
+}
+.st-sec-t::before { content: ''; width: 3px; height: 12px; background: var(--pink); border-radius: 1px; }
+.st-sec-t .hint { margin-left: auto; color: var(--text-subtle); font-size: 11px; font-weight: normal; }
+.st-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 8px; }
+.st-tile {
+  border: 1px solid var(--border); border-top: 3px solid var(--tile-c, var(--border));
+  border-radius: 5px; padding: 8px 10px; background: var(--card); min-width: 0;
+}
+.st-tile .n { font-size: 22px; line-height: 1.1; color: var(--text); font-variant-numeric: tabular-nums; }
+.st-tile .l { font-size: 11px; color: var(--text-soft); margin-top: 4px; line-height: 1.35; }
+.st-tile .s { color: var(--text-subtle); }
+.st-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 720px) { .st-two { grid-template-columns: minmax(0, 1fr); } }
+
+/* 堆叠柱:列倒序堆叠,段间 2px 表面色分隔,顶端 3px 圆角 */
+.st-chart { position: relative; }
+.st-bars {
+  display: flex; align-items: flex-end; gap: 2px; height: 170px; position: relative;
+  border-bottom: 1px solid var(--border); padding: 14px 0 0 30px;
+}
+.st-grid {
+  position: absolute; left: 0; right: 0; border-top: 1px dashed var(--border-soft);
+  font-size: 10px; color: var(--text-subtle); line-height: 1; padding-top: 1px; pointer-events: none;
+}
+.st-bar {
+  flex: 1 1 0; min-width: 3px; max-width: 48px; height: 100%;
+  display: flex; flex-direction: column-reverse; justify-content: flex-start;
+  position: relative;
+}
+.st-bar.link { cursor: pointer; }
+.st-bar.hov .st-seg { filter: brightness(0.88); }
+.st-seg { width: 100%; border-top: 2px solid var(--card); box-sizing: border-box; min-height: 3px; }
+.st-seg:last-child { border-radius: 3px 3px 0 0; }
+.st-xaxis { display: flex; gap: 2px; padding-left: 30px; margin-top: 4px; font-size: 10px; color: var(--text-subtle); }
+.st-xaxis span { flex: 1 1 0; min-width: 0; max-width: 48px; text-align: center; white-space: nowrap; overflow: visible; }
+.st-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; font-size: 11px; color: var(--text-soft); }
+.st-legend i, .st-tip i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.st-tip {
+  position: absolute; top: 4px; z-index: 5; pointer-events: none; white-space: nowrap;
+  background: var(--card); border: 1px solid var(--border); border-radius: 4px;
+  padding: 6px 9px; font-size: 11px; color: var(--text-soft); line-height: 1.6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+.st-tip .tt { color: var(--text); }
+
+/* 换季对比 */
+.st-cmp { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.st-cmp .col { border: 1px solid var(--border); border-radius: 5px; padding: 8px 10px; background: var(--card); }
+.st-cmp h4 { margin: 0 0 6px; font-weight: normal; font-size: 12px; color: var(--pink-strong); }
+.st-cmp .kv { display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0; color: var(--text-soft); }
+.st-cmp .kv b { font-weight: normal; color: var(--text); font-variant-numeric: tabular-nums; }
+
+/* 评分分布:十根粉柱,顶端直接标数 */
+.st-histwrap { padding-top: 14px; }
+.st-hist { display: flex; align-items: flex-end; gap: 4px; height: 120px; border-bottom: 1px solid var(--border); }
+.st-hist .b { flex: 1 1 0; min-height: 2px; background: var(--pink); border-radius: 3px 3px 0 0; position: relative; }
+.st-hist .b .v { position: absolute; top: -15px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--text-soft); }
+.st-hist-x { display: flex; gap: 4px; margin-top: 3px; font-size: 10px; color: var(--text-subtle); }
+.st-hist-x span { flex: 1 1 0; text-align: center; }
+
+/* 题材偏好:横向粉条 */
+.st-tags .row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 30px; align-items: center; gap: 8px; margin: 5px 0; font-size: 12px; }
+.st-tags .name { color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st-tags .track { display: block; height: 10px; background: var(--border-soft); border-radius: 3px; overflow: hidden; }
+.st-tags .bar { display: block; height: 100%; background: var(--pink); border-radius: 0 3px 3px 0; }
+.st-tags .n { color: var(--text-soft); font-size: 11px; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* 年度足迹 */
+.st-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.st-table th { text-align: left; font-weight: normal; color: var(--text-soft); font-size: 11px; padding: 3px 6px; border-bottom: 1px solid var(--border); }
+.st-table td { padding: 5px 6px; border-bottom: 1px solid var(--border-soft); color: var(--text); }
+.st-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.st-table .best { max-width: 0; width: 55%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st-table .best b { font-weight: normal; color: var(--pink-strong); margin-left: 6px; }
+
+/* 9 分神作 */
+.st-best { display: flex; flex-wrap: wrap; gap: 6px; }
+.st-pick {
+  border: 1px solid var(--border); border-radius: 12px; padding: 2px 9px;
+  font-size: 12px; background: var(--chip-bg); color: var(--text); text-decoration: none;
+}
+.st-pick:hover { border-color: var(--pink); color: var(--pink-strong); }
+.st-pick b { font-weight: normal; color: var(--pink-strong); margin-left: 5px; }
+.st-note { font-size: 11px; color: var(--text-subtle); margin-top: 16px; }

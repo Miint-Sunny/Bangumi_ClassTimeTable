@@ -262,3 +262,84 @@ export function mergeRemote(
   }
   return { tracking: { status, watched, rates, memos }, pushes }
 }
+
+// ── 统计页:全量收藏(五种状态、全历史,缓存 24h) ─────────────────────
+
+export interface LibItem {
+  id: number
+  type: 1 | 2 | 3 | 4 | 5 // bgm 收藏类型:1 想看 2 看过 3 在看 4 搁置 5 抛弃
+  rate: number // 0 = 未评分
+  ep: number // 看到第几集
+  at: string // 收藏更新日 YYYY-MM-DD
+  name: string
+  nameCn: string
+  date: string | null // 首播日
+  eps: number
+  score: number // 站均分
+  tags: string[] // 条目热门标签(已剔除年份/形态等噪音)
+}
+export interface Library {
+  items: LibItem[]
+  fetchedAt: number
+  partial: boolean // 收藏太多,触到分页上限被截断
+}
+
+const TAG_NOISE = new Set([
+  'TV', 'TVA', 'WEB', 'OVA', 'OAD', '动画', '日本', '日本动画', 'anime', 'Anime', '原创', '漫改',
+  '漫画改', '漫画改编', '轻改', '轻小说改', '轻小说改编', '小说改', '小说改编', '游戏改', '游戏改编',
+  '续作', '第二季', '第三季', '第四季', '剧场版', '电影', '新番', '完结', '连载中',
+])
+
+export async function pullLibrary(acc: BgmAccount, force = false): Promise<Library> {
+  const key = `bgm:lib:${acc.username}`
+  if (!force) {
+    const hit = readCache<Library>(key, 86400_000)
+    if (hit) return hit
+  }
+  const items: LibItem[] = []
+  let partial = false
+  for (const type of [2, 3, 1, 4, 5] as const) {
+    let offset = 0
+    for (let page = 0; ; page++) {
+      if (page >= 80) {
+        partial = true // 4000 部封顶,再多就不是统计而是清单了
+        break
+      }
+      const resp = await authed(
+        acc.token,
+        `/v0/users/${encodeURIComponent(acc.username)}/collections?subject_type=2&type=${type}&limit=50&offset=${offset}`,
+      )
+      if (!resp.ok) throw new Error(`拉取收藏(type=${type}): HTTP ${resp.status}`)
+      const data = await resp.json()
+      const rows: any[] = data.data ?? []
+      for (const c of rows) {
+        const s = c.subject ?? {}
+        items.push({
+          id: c.subject_id,
+          type,
+          rate: c.rate ?? 0,
+          ep: c.ep_status ?? 0,
+          at: String(c.updated_at ?? '').slice(0, 10),
+          name: s.name ?? '',
+          nameCn: s.name_cn || s.name || '',
+          date: s.date ?? null,
+          eps: s.eps ?? 0,
+          score: s.score ?? 0,
+          tags: (Array.isArray(s.tags) ? s.tags : [])
+            .map((t: any) => String(t?.name ?? ''))
+            .filter((n: string) => n && !/^\d{4}$/.test(n) && !TAG_NOISE.has(n))
+            .slice(0, 6),
+        })
+      }
+      offset += 50
+      if (rows.length === 0 || offset >= (data.total ?? 0)) break
+    }
+  }
+  const lib: Library = { items, fetchedAt: Date.now(), partial }
+  writeCache(key, lib)
+  return lib
+}
+
+export function clearLibraryCache(username: string) {
+  clearCacheKey(`bgm:lib:${username}`)
+}
