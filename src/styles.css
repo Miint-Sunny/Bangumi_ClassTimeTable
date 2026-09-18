@@ -517,11 +517,15 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
 .month-nav {
   display: flex; align-items: center; gap: 10px;
   position: sticky; top: 0; left: 0; z-index: 15;
-  background: var(--bg); padding: 2px 0 10px;
+  background: var(--bg); padding: 0 0 8px;
+  /* 高度锁死为 --nav-h:按钮高度随字体/缩放带小数,若靠内容撑高,表头的
+     吸附位置就会和它对不齐,滚动时露出一条缝 */
+  height: var(--nav-h); box-sizing: border-box;
 }
+/* 表头往上多藏 1px 压在翻页条底下(翻页条 z-index 更高、背景不透明),吃掉亚像素误差 */
 .month-nav ~ .week-grid .wg-corner,
-.month-nav ~ .week-grid .wg-dayhead { top: var(--nav-h); }
-.month-nav ~ .month-grid .mg-head { top: var(--nav-h); }
+.month-nav ~ .week-grid .wg-dayhead { top: calc(var(--nav-h) - 1px); }
+.month-nav ~ .month-grid .mg-head { top: calc(var(--nav-h) - 1px); }
 .month-nav .iconbtn { flex-shrink: 0; }
 /* 翻页键统一宽度,跨日/周/月视图对齐("前一天"比"上周"宽) */
 .month-nav > .iconbtn { min-width: 68px; }

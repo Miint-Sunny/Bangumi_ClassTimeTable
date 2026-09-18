@@ -1,0 +1,62 @@
+name: season-archive
+
+# 换季归档:每季首月 2 日重烘刚结束的那一季(无视 subject 缓存,拿终局评分/集数,
+# 并把当季 enhance.json 里的人工 air 校正、yuc 对齐数据一并烘进静态包),
+# 直接进 main 并派发部署。也可手动指定季度重烘。
+on:
+  schedule:
+    - cron: '0 22 1 1,4,7,10 *' # 每季首月 1 日 22:00 UTC ≈ 2 日 06:00 北京
+  workflow_dispatch:
+    inputs:
+      season:
+        description: '要重烘的季度 YYYYMM(留空 = 刚结束的上一季)'
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  bake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.12'
+
+      - name: 拉取 bangumi-data 数据集(jsDelivr CDN)
+        run: python3 -c "import sys; sys.path.insert(0,'scripts'); from bgm_dataset import fetch_dataset; fetch_dataset()"
+
+      - name: 确定季度并重烘
+        env:
+          SEASON_INPUT: ${{ inputs.season }}
+        run: |
+          SEASON="$SEASON_INPUT"
+          if [ -z "$SEASON" ]; then
+            SEASON=$(python3 -c "
+          from datetime import datetime, timedelta, timezone
+          now = datetime.now(timezone(timedelta(hours=9)))
+          q = (now.month - 1) // 3 * 3 + 1            # 本季首月
+          y, m = (now.year, q - 3) if q > 1 else (now.year - 1, 10)
+          print(f'{y}{m:02d}')")
+          fi
+          echo "重烘季度: $SEASON"
+          python3 scripts/bake_season.py --refresh-subjects "$SEASON" | tee bake.log
+
+      - name: 提交并派发部署
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet public/data; then
+            echo "归档包无变化"; exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data
+          git commit -m "data: 换季重烘归档包 $(grep -o '重烘季度: [0-9]*' bake.log | cut -d' ' -f2)"
+          git pull --rebase origin main
+          git push
+          gh workflow run deploy-cloudflare.yml --ref main
+          gh workflow run deploy.yml --ref main

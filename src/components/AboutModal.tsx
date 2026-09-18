@@ -13,6 +13,15 @@ const CHANGELOG: LogEntry[] = [
   {
     d: '2026-09-18',
     x: {
+      'zh-Hans': '修复:滚动时周表/月表的星期表头上方露出一条缝(翻页条高度随字体带小数,表头吸附位置对不齐);2022~2024 归档补齐 yuc 标签/PV;换季时自动重烘上季归档、刷新终局评分',
+      'zh-Hant': '修復:滾動時週表/月表的星期表頭上方露出一條縫(翻頁條高度隨字體帶小數,表頭吸附位置對不齊);2022~2024 歸檔補齊 yuc 標籤/PV;換季時自動重烘上季歸檔、刷新終局評分',
+      ja: '修正:スクロール時に曜日ヘッダーの上に隙間が出る問題(ナビバーの高さが小数になりヘッダーの固定位置とずれていた)。2022〜2024アーカイブにyucのタグ/PVを追加。シーズン切替時に前シーズンのアーカイブを自動再生成し最終評価を反映',
+      en: 'Fix: a thin gap above the weekday header while scrolling (nav bar height was fractional, so the sticky header misaligned); 2022–2024 archives now carry yuc tags/PV; the previous season is re-baked automatically at season change with final ratings',
+    },
+  },
+  {
+    d: '2026-09-18',
+    x: {
       'zh-Hans': '归档扩展到 2014 年起共 51 季(2014~2024 由 bangumi-data + bgm 官方数据烘焙,季度选择器按年份分组);10 月新番增强数据就位(65 部对齐 bgm 条目,标签/PV/改编来源),课表时段待 yuc 周表与 bangumi-data 更新后自动跟进',
       'zh-Hant': '歸檔擴展到 2014 年起共 51 季(2014~2024 由 bangumi-data + bgm 官方資料烘焙,季度選擇器按年份分組);10 月新番增強資料就位(65 部對齊 bgm 條目,標籤/PV/改編來源),課表時段待 yuc 週表與 bangumi-data 更新後自動跟進',
       ja: 'アーカイブを2014年まで拡張し計51シーズンに(2014〜2024はbangumi-data+bgm公式データから生成、シーズン選択は年ごとにグループ化)。10月新作の補助データを準備(65作品をbgmに紐付け、タグ/PV/原作種別)。時間割の枠はyucの週表とbangumi-data更新後に自動反映',

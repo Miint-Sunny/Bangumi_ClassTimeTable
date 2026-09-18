@@ -87,12 +87,13 @@ def yuc_begin(start_date: str | None, time_str: str | None, ss: datetime) -> dat
 
 
 SLEEP = float(__import__("os").environ.get("BAKE_SLEEP", "0.35"))
+REFRESH_SUBJECTS = False  # --refresh-subjects:无视磁盘缓存重拉(季末重烘取终局评分/集数)
 
 
 def fetch_subject(sid: int) -> dict:
     CACHE_SUBJ.mkdir(parents=True, exist_ok=True)
     f = CACHE_SUBJ / f"{sid}.json"
-    if f.is_file():
+    if f.is_file() and not REFRESH_SUBJECTS:
         return json.loads(f.read_text(encoding="utf-8"))
     req = urllib.request.Request(
         f"https://api.bgm.tv/v0/subjects/{sid}", headers={"User-Agent": UA}
@@ -258,7 +259,11 @@ def bake(yyyymm: str, bd_items: list[dict], enhance_air: dict[str, dict]) -> Non
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.strip().splitlines()[0])
     parser.add_argument("seasons", nargs="+", help="YYYYMM …")
+    parser.add_argument("--refresh-subjects", action="store_true",
+                        help="无视 subject 缓存重拉封面/评分/集数(季末重烘用)")
     args = parser.parse_args()
+    global REFRESH_SUBJECTS
+    REFRESH_SUBJECTS = args.refresh_subjects
 
     if not BD_CACHE.is_file():
         parser.error(f"缺 bangumi-data 缓存: {BD_CACHE}(先跑一次 align.py)")
