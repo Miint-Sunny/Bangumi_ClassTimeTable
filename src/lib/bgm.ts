@@ -13,7 +13,10 @@
  *  - bgm 的"搁置"课表不建模:按未追显示,本地进度保留
  */
 import type { BgmAccount, CollectMemo, Tracking, WatchStatus } from '../types'
-import { bgmFetch, clearCacheKey, readCache, writeCache } from './api'
+import { clearCacheKey, readCache, writeCache } from './api'
+import { BgmAuthError, isoDate, JSON_HDR, p1, v0, withP1Fallback } from './p1'
+
+export { BgmAuthError } from './p1'
 
 const ACC_KEY = 'btt:bgm'
 const QUEUE_KEY = 'btt:bgm:queue'
@@ -38,52 +41,23 @@ export function saveAccount(a: BgmAccount | null) {
   } catch {}
 }
 
-/** 401/403:令牌无效或已吊销,上层据此置 invalid 而非无限重试 */
-export class BgmAuthError extends Error {}
-
-async function authed(token: string, path: string, init?: RequestInit): Promise<Response> {
-  const resp = await bgmFetch(path, {
-    ...init,
-    headers: { Authorization: `Bearer ${token}`, ...(init?.headers ?? {}) },
-  })
-  if (resp.status === 401 || resp.status === 403) throw new BgmAuthError(`HTTP ${resp.status}`)
-  return resp
-}
 
 type Identity = Pick<BgmAccount, 'username' | 'nickname' | 'avatar'>
 const toIdentity = (u: any): Identity => ({ username: u.username, nickname: u.nickname || u.username, avatar: u.avatar?.small })
 
 /**
- * 校验令牌并取回身份:GET /v0/me;v0 挂了(5xx / 网络层失败)就改问 next.bgm.tv 的 p1 /me
- * (同一套个人令牌,p1 没开 CORS,经本站同源转发;镜像站没有转发则维持原错误)。
- * 401/403 在两条路上都直接判令牌无效。
+ * 校验令牌并取回身份:GET /v0/me;v0 不可用就问 p1 /me(同一套个人令牌)。
+ * 401/403 两条路都判令牌无效;镜像站没有 p1 转发时维持 v0 的原始错误(5xx → 设置页提示接口不可用)。
  */
 export async function verifyToken(token: string): Promise<Identity> {
-  let status = 0
-  try {
-    const resp = await authed(token, '/v0/me')
-    if (resp.ok) return toIdentity(await resp.json())
-    status = resp.status
-  } catch (e) {
-    if (e instanceof BgmAuthError) throw e
+  const ask = async (resp: Response) => {
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
+    return toIdentity(await resp.json())
   }
-  const viaP1 = await p1Me(token)
-  if (viaP1) return viaP1
-  throw new Error(`HTTP ${status}`)
-}
-
-async function p1Me(token: string): Promise<Identity | null> {
-  let resp: Response
-  try {
-    resp = await fetch(`${import.meta.env.BASE_URL}api/p1/me`, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } })
-  } catch {
-    return null
-  }
-  if (!resp.headers.get('X-Bgm-Proxy')) return null // 不是我们的转发在回话(镜像站)
-  if (resp.status === 401 || resp.status === 403) throw new BgmAuthError(`HTTP ${resp.status}`)
-  if (!resp.ok) return null
-  const u = await resp.json()
-  return u?.username ? toIdentity(u) : null
+  return withP1Fallback(
+    async () => ask(await v0(token, '/v0/me')),
+    async () => ask(await p1(token, '/me')),
+  )
 }
 
 export interface RemotePull {
@@ -94,40 +68,81 @@ export interface RemotePull {
   onHold: number[]
 }
 
-/** 拉取自己的动画收藏(带 Authorization 可含私有条目),缓存 1 小时 */
+/** 拉取自己的动画收藏(带 Authorization 可含私有条目),缓存 1 小时;v0 不可用时改走 p1 */
 export async function pullCollections(acc: BgmAccount, force = false): Promise<RemotePull> {
   const key = `bgm:pull:${acc.username}`
   if (!force) {
     const hit = readCache<RemotePull>(key, 3600_000)
     if (hit) return hit
   }
+  const u = encodeURIComponent(acc.username)
+  const out = await withP1Fallback(
+    () => collectRemote((type, offset) => v0(acc.token, `/v0/users/${u}/collections?subject_type=2&type=${type}&limit=50&offset=${offset}`), 50, rowV0),
+    () => collectRemote((type, offset) => p1(acc.token, `/collections/subjects?subjectType=2&type=${type}&limit=100&offset=${offset}`), 100, rowP1),
+  )
+  writeCache(key, out)
+  return out
+}
+
+/** 一条收藏记录的统一视图(v0 与 p1 字段名不同,p1 的进度/私有在 interest 里) */
+interface RemoteRow {
+  id: number
+  ep: number
+  rate: number
+  tags: string[]
+  comment: string
+  private: boolean
+  at: string
+}
+const rowV0 = (c: any): RemoteRow => ({
+  id: c.subject_id,
+  ep: c.ep_status ?? 0,
+  rate: c.rate ?? 0,
+  tags: Array.isArray(c.tags) ? c.tags : [],
+  comment: c.comment ?? '',
+  private: !!c.private,
+  at: String(c.updated_at ?? ''),
+})
+const rowP1 = (s: any): RemoteRow => {
+  const c = s.interest ?? {}
+  return {
+    id: s.id,
+    ep: c.epStatus ?? 0,
+    rate: c.rate ?? 0,
+    tags: Array.isArray(c.tags) ? c.tags : [],
+    comment: c.comment ?? '',
+    private: !!c.private,
+    at: isoDate(c.updatedAt),
+  }
+}
+
+type Pager = (type: number, offset: number) => Promise<Response>
+
+async function collectRemote(page: Pager, size: number, row: (raw: any) => RemoteRow): Promise<RemotePull> {
   const out: RemotePull = { status: {}, watched: {}, rates: {}, memos: {}, onHold: [] }
   for (const type of [3, 1, 4, 5, 2]) {
-    const maxPages = type === 2 ? 20 : 10
-    for (let page = 0, offset = 0; page < maxPages; page++, offset += 50) {
-      const resp = await authed(
-        acc.token,
-        `/v0/users/${encodeURIComponent(acc.username)}/collections?subject_type=2&type=${type}&limit=50&offset=${offset}`,
-      )
+    const maxRows = type === 2 ? 1000 : 500
+    for (let offset = 0; offset < maxRows; offset += size) {
+      const resp = await page(type, offset)
       if (!resp.ok) throw new Error(`拉取收藏(type=${type}): HTTP ${resp.status}`)
       const data = await resp.json()
       let pastCutoff = false
-      for (const c of data.data ?? []) {
-        if (type === 4) out.onHold.push(c.subject_id)
-        else out.status[c.subject_id] = TYPE_TO_STATUS[type]
-        if (c.ep_status > 0) out.watched[c.subject_id] = c.ep_status
-        if (c.rate > 0) out.rates[c.subject_id] = c.rate
+      for (const raw of data.data ?? []) {
+        const c = row(raw)
+        if (type === 4) out.onHold.push(c.id)
+        else out.status[c.id] = TYPE_TO_STATUS[type]
+        if (c.ep > 0) out.watched[c.id] = c.ep
+        if (c.rate > 0) out.rates[c.id] = c.rate
         const memo: CollectMemo = {}
-        if (Array.isArray(c.tags) && c.tags.length > 0) memo.tags = c.tags
+        if (c.tags.length > 0) memo.tags = c.tags
         if (c.comment) memo.comment = c.comment
         if (c.private) memo.private = true
-        if (Object.keys(memo).length > 0) out.memos[c.subject_id] = memo
-        if (type === 2 && (c.updated_at ?? '9999') < DONE_CUTOFF) pastCutoff = true
+        if (Object.keys(memo).length > 0) out.memos[c.id] = memo
+        if (type === 2 && (c.at || '9999') < DONE_CUTOFF) pastCutoff = true
       }
-      if (offset + 50 >= (data.total ?? 0) || pastCutoff) break
+      if (offset + size >= (data.total ?? 0) || pastCutoff) break
     }
   }
-  writeCache(key, out)
   return out
 }
 
@@ -179,6 +194,20 @@ export function clearQueue() {
 
 let draining = false
 
+/** p1 写回:PUT 状态/评分/标签/吐槽/私有;进度是另一条 PATCH(p1 把两者分开)。p1 不收带空格的标签,按空白拆开。 */
+async function pushViaP1(token: string, id: string, patch: PushPatch): Promise<boolean> {
+  const body: Record<string, unknown> = { type: patch.type }
+  if (patch.rate !== undefined) body.rate = patch.rate
+  if (patch.tags !== undefined) body.tags = patch.tags.flatMap((t) => t.split(/\s+/)).filter(Boolean)
+  if (patch.comment !== undefined) body.comment = patch.comment
+  if (patch.private !== undefined) body.private = patch.private
+  const r1 = await p1(token, `/collections/subjects/${id}`, { method: 'PUT', headers: JSON_HDR, body: JSON.stringify(body) })
+  if (!r1.ok) return false
+  if (patch.ep === undefined) return true
+  const r2 = await p1(token, `/collections/subjects/${id}`, { method: 'PATCH', headers: JSON_HDR, body: JSON.stringify({ epStatus: patch.ep }) })
+  return r2.ok
+}
+
 /** 逐条 POST /v0/users/-/collections/{id}(新增或修改)。遇 401/403 抛 BgmAuthError 停止。 */
 export async function drainQueue(acc: BgmAccount): Promise<void> {
   if (draining) return
@@ -196,15 +225,13 @@ export async function drainQueue(acc: BgmAccount): Promise<void> {
       if (patch.private !== undefined) body.private = patch.private
       let ok = false
       try {
-        const resp = await authed(acc.token, `/v0/users/-/collections/${id}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-        })
-        ok = resp.ok
+        ok = await withP1Fallback(
+          async () => (await v0(acc.token, `/v0/users/-/collections/${id}`, { method: 'POST', headers: JSON_HDR, body: JSON.stringify(body) })).ok,
+          () => pushViaP1(acc.token, id, patch),
+        )
       } catch (e) {
         if (e instanceof BgmAuthError) throw e
-        // 网络错误:留在队列,下次再试
+        // 网络错误 / 两条路都不通:留在队列,下次再试
       }
       const q = loadQueue() // 期间可能有新入队,重读后再改
       if (ok) delete q[id]
@@ -325,50 +352,75 @@ export async function pullLibrary(acc: BgmAccount, force = false): Promise<Libra
     const hit = readCache<Library>(key, 86400_000)
     if (hit) return hit
   }
+  const u = encodeURIComponent(acc.username)
+  const lib = await withP1Fallback(
+    () => collectLibrary((type, offset) => v0(acc.token, `/v0/users/${u}/collections?subject_type=2&type=${type}&limit=50&offset=${offset}`), 50, libV0),
+    () => collectLibrary((type, offset) => p1(acc.token, `/collections/subjects?subjectType=2&type=${type}&limit=100&offset=${offset}`), 100, libP1),
+  )
+  writeCache(key, lib)
+  return lib
+}
+
+const cleanTags = (names: string[]) => names.filter((n) => n && !/^\d{4}$/.test(n) && !TAG_NOISE.has(n)).slice(0, 6)
+const tagNames = (tags: unknown) => (Array.isArray(tags) ? tags : []).map((t: any) => String(t?.name ?? ''))
+
+const libV0 = (c: any, type: LibItem['type']): LibItem => {
+  const s = c.subject ?? {}
+  return {
+    id: c.subject_id,
+    type,
+    rate: c.rate ?? 0,
+    ep: c.ep_status ?? 0,
+    at: String(c.updated_at ?? '').slice(0, 10),
+    name: s.name ?? '',
+    nameCn: s.name_cn || s.name || '',
+    date: s.date ?? null,
+    eps: s.eps ?? 0,
+    score: s.score ?? 0,
+    total: s.collection_total ?? 0,
+    image: s.images?.medium ?? s.images?.common ?? '',
+    tags: cleanTags(tagNames(s.tags)),
+  }
+}
+/** p1 的完整 Subject:首播在 airtime.date,收藏人数要把 collection 的五档加起来 */
+const libP1 = (s: any, type: LibItem['type']): LibItem => {
+  const c = s.interest ?? {}
+  const col: Record<string, unknown> = s.collection ?? {}
+  return {
+    id: s.id,
+    type,
+    rate: c.rate ?? 0,
+    ep: c.epStatus ?? 0,
+    at: isoDate(c.updatedAt),
+    name: s.name ?? '',
+    nameCn: s.nameCN || s.name || '',
+    date: s.airtime?.date || null,
+    eps: s.eps ?? 0,
+    score: s.rating?.score ?? 0,
+    total: Object.values(col).reduce<number>((a, b) => a + (Number(b) || 0), 0),
+    image: s.images?.medium ?? s.images?.common ?? '',
+    tags: cleanTags(tagNames(s.tags)),
+  }
+}
+
+async function collectLibrary(page: Pager, size: number, row: (raw: any, type: LibItem['type']) => LibItem): Promise<Library> {
   const items: LibItem[] = []
   let partial = false
   for (const type of [2, 3, 1, 4, 5] as const) {
-    let offset = 0
-    for (let page = 0; ; page++) {
-      if (page >= 80) {
+    for (let offset = 0; ; offset += size) {
+      if (offset >= 4000) {
         partial = true // 4000 部封顶,再多就不是统计而是清单了
         break
       }
-      const resp = await authed(
-        acc.token,
-        `/v0/users/${encodeURIComponent(acc.username)}/collections?subject_type=2&type=${type}&limit=50&offset=${offset}`,
-      )
+      const resp = await page(type, offset)
       if (!resp.ok) throw new Error(`拉取收藏(type=${type}): HTTP ${resp.status}`)
       const data = await resp.json()
       const rows: any[] = data.data ?? []
-      for (const c of rows) {
-        const s = c.subject ?? {}
-        items.push({
-          id: c.subject_id,
-          type,
-          rate: c.rate ?? 0,
-          ep: c.ep_status ?? 0,
-          at: String(c.updated_at ?? '').slice(0, 10),
-          name: s.name ?? '',
-          nameCn: s.name_cn || s.name || '',
-          date: s.date ?? null,
-          eps: s.eps ?? 0,
-          score: s.score ?? 0,
-          total: s.collection_total ?? 0,
-          image: s.images?.medium ?? s.images?.common ?? '',
-          tags: (Array.isArray(s.tags) ? s.tags : [])
-            .map((t: any) => String(t?.name ?? ''))
-            .filter((n: string) => n && !/^\d{4}$/.test(n) && !TAG_NOISE.has(n))
-            .slice(0, 6),
-        })
-      }
-      offset += 50
-      if (rows.length === 0 || offset >= (data.total ?? 0)) break
+      for (const raw of rows) items.push(row(raw, type))
+      if (rows.length === 0 || offset + size >= (data.total ?? 0)) break
     }
   }
-  const lib: Library = { items, fetchedAt: Date.now(), partial }
-  writeCache(key, lib)
-  return lib
+  return { items, fetchedAt: Date.now(), partial }
 }
 
 export function clearLibraryCache(username: string) {

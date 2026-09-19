@@ -1,9 +1,11 @@
 /**
  * 好友重合度:拉好友的公开收藏(全量,只留 id/状态/评分),算共同看过数与评分相关系数。
+ * v0 不可用时改走 p1 的公开收藏接口(经同源转发)。
  */
 
-import { bgmFetch, readCache, writeCache } from './api'
+import { readCache, writeCache } from './api'
 import type { LibItem } from './bgm'
+import { p1, v0, withP1Fallback } from './p1'
 import { pearson } from './stats'
 
 export interface FriendLib {
@@ -11,29 +13,41 @@ export interface FriendLib {
   fetchedAt: number
 }
 
+type Pager = (type: number, offset: number) => Promise<Response>
+
 export async function fetchFriendLibrary(username: string): Promise<FriendLib> {
   const key = `friendlib:${username}`
   const hit = readCache<FriendLib>(key, 86400_000)
   if (hit) return hit
+  const u = encodeURIComponent(username)
+  const items = await withP1Fallback(
+    () => collect((type, offset) => v0(null, `/v0/users/${u}/collections?subject_type=2&type=${type}&limit=50&offset=${offset}`), 50, (c) => [c.subject_id, c.rate ?? 0]),
+    () => collect((type, offset) => p1(null, `/users/${u}/collections/subjects?subjectType=2&type=${type}&limit=100&offset=${offset}`), 100, (s) => [s.id, s.interest?.rate ?? 0]),
+  )
+  const lib = { items, fetchedAt: Date.now() }
+  writeCache(key, lib)
+  return lib
+}
+
+async function collect(page: Pager, size: number, row: (raw: any) => [number, number]): Promise<FriendLib['items']> {
   const items: FriendLib['items'] = []
   for (const type of [2, 3, 5, 4, 1]) {
-    let offset = 0
-    for (let p = 0; p < 20; p++) {
-      const r = await bgmFetch(`/v0/users/${encodeURIComponent(username)}/collections?subject_type=2&type=${type}&limit=50&offset=${offset}`)
+    for (let offset = 0; offset < 1000; offset += size) {
+      const r = await page(type, offset)
       if (!r.ok) {
-        if (r.status === 404 || r.status === 403) break
+        if (r.status === 404 || r.status === 403) break // 用户不存在 / 收藏不公开
         throw new Error(`HTTP ${r.status}`)
       }
       const d = await r.json()
       const rows: any[] = d.data ?? []
-      for (const c of rows) items.push({ id: c.subject_id, type, rate: c.rate ?? 0 })
-      offset += 50
-      if (!rows.length || offset >= (d.total ?? 0)) break
+      for (const raw of rows) {
+        const [id, rate] = row(raw)
+        items.push({ id, type, rate })
+      }
+      if (!rows.length || offset + size >= (d.total ?? 0)) break
     }
   }
-  const lib = { items, fetchedAt: Date.now() }
-  writeCache(key, lib)
-  return lib
+  return items
 }
 
 export interface Overlap {
