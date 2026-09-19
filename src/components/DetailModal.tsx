@@ -360,6 +360,13 @@ export function DetailBody(props: Props) {
                   {t('官网')}
                 </a>
               )}
+              {/* B 站按中文名搜:番剧区是正版引进,全站搜索能找到 PV/解说/剪辑等 */}
+              <a href={`https://search.bilibili.com/bangumi?keyword=${encodeURIComponent(show.nameCn)}`} target="_blank" rel="noreferrer" title={t('在 B 站番剧区搜索(正版引进)')}>
+                {t('B站番剧')}
+              </a>
+              <a href={`https://search.bilibili.com/all?keyword=${encodeURIComponent(show.nameCn)}`} target="_blank" rel="noreferrer" title={t('在 B 站全站搜索')}>
+                {t('B站搜索')}
+              </a>
               {show.sites.map((s, i) => (
                 <a key={`${i}-${s.url}`} href={s.url} target="_blank" rel="noreferrer">
                   {s.site}

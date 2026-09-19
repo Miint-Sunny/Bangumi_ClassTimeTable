@@ -27,6 +27,16 @@ run_worker_first = true
 # 额外允许调用 /oauth/* 的前端来源(同源请求始终放行,通常留空即可)
 ALLOWED_ORIGINS = ""
 
+# 讨论会房间(/api/room/*):每个房间一个 Durable Object(SQLite 存储,免费计划可用),
+# 24 小时无活动自动销毁;不存任何账号信息,只有昵称与投票。deploy 时自动创建,不用手动建命名空间。
+[[durable_objects.bindings]]
+name = "ROOM"
+class_name = "Room"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Room"]
+
 # 机密不写在这里,用 wrangler secret 注入:
 #   npx wrangler secret put BGM_CLIENT_ID
 #   npx wrangler secret put BGM_CLIENT_SECRET

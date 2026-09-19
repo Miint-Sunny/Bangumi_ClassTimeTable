@@ -33,6 +33,11 @@ export default defineConfig({
         rewrite: (p: string) => p.replace(/^\/api\/bgm/, ''),
         configure: relay,
       },
+      '/api/room': {
+        target: 'https://bgmtimetable.com',
+        changeOrigin: true,
+        configure: relay,
+      },
       '/api/p1': {
         target: 'https://next.bgm.tv',
         changeOrigin: true,
