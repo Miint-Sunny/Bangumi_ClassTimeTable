@@ -20,6 +20,7 @@ import { withViewTransition } from './lib/anim'
 import { LANGS, setLang, t, type Lang } from './lib/i18n'
 import AboutModal from './components/AboutModal'
 import StatsPage from './components/StatsPage'
+import DiscussPage from './components/DiscussPage'
 import Dropdown from './components/Dropdown'
 import { appendLog, diffTracking } from './lib/log'
 import { fetchBangumiData } from './lib/bangumiData'
@@ -95,9 +96,9 @@ const THEMES: [Settings['theme'], string][] = [
   ['light', '白色'],
 ]
 
-type Page = 'timetable' | 'stats'
-const PAGE_HASH: Record<Page, string> = { timetable: '', stats: '#stats' }
-const pageOfHash = (): Page => (location.hash === '#stats' ? 'stats' : 'timetable')
+type Page = 'timetable' | 'stats' | 'discuss'
+const PAGE_HASH: Record<Page, string> = { timetable: '', stats: '#stats', discuss: '#discuss' }
+const pageOfHash = (): Page => (location.hash === '#stats' ? 'stats' : location.hash === '#discuss' ? 'discuss' : 'timetable')
 
 export default function App() {
   const init = useRef(loadPersisted())
@@ -461,7 +462,7 @@ export default function App() {
   // 下季新番的封面 / 想看人数:进到那一季才逐条懒拉(7 天缓存)
   const enrichedUp = useRef(new Set<number>())
   useEffect(() => {
-    if (!upcomingSel) return
+    if (!upcomingSel && page !== 'discuss') return
     const targets = previewShows.filter((s) => (!s.image || s.wish === undefined) && !enrichedUp.current.has(s.id))
     if (targets.length === 0) return
     let alive = true
@@ -479,7 +480,7 @@ export default function App() {
     return () => {
       alive = false
     }
-  }, [upcomingSel, previewShows.length, applySubjectInfo])
+  }, [upcomingSel, page, previewShows.length, applySubjectInfo])
 
   const effShows = useMemo(
     () => (baseShows ? baseShows.map((s) => (overrides[s.id] ? { ...s, airFix: overrides[s.id] } : s)) : null),
@@ -850,6 +851,11 @@ export default function App() {
             {t('🔭 前瞻')}
           </button>
         )}
+        {hasUpcoming && upcoming && (
+          <button className={'iconbtn' + (page === 'discuss' ? ' accent' : '')} onClick={() => gotoPage(page === 'discuss' ? 'timetable' : 'discuss')}>
+            {t('🗣 讨论会')}
+          </button>
+        )}
         <button className={'iconbtn' + (page === 'stats' ? ' accent' : '')} onClick={() => gotoPage(page === 'stats' ? 'timetable' : 'stats')}>
           {t('📊 统计')}
         </button>
@@ -1028,6 +1034,22 @@ export default function App() {
                 gotoPage('timetable')
                 withViewTransition(() => setSeasonSel(s))
               }}
+              onClose={() => gotoPage('timetable')}
+            />
+          </div>
+        </div>
+      ) : page === 'discuss' && upcoming ? (
+        <div className="content-row">
+          <div className="view-area">
+            <DiscussPage
+              upcoming={upcoming}
+              shows={previewShows}
+              tracking={tracking}
+              settings={settings}
+              friends={settings.friends}
+              now={now}
+              onSetStatus={setStatus}
+              onSubjectInfo={applySubjectInfo}
               onClose={() => gotoPage('timetable')}
             />
           </div>

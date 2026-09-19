@@ -49,6 +49,15 @@ const CHANGELOG: LogEntry[] = [
   {
     d: '2026-09-19',
     x: {
+      'zh-Hans': '新番讨论会(🗣 按钮):几个人一起过下季新番用的页面。左侧议程列表(标题 + 每个人的态度点,当前行高亮,← → 翻页),右侧一次聚焦一部:封面、首播、来源、制作/导演/系列构成/人物设定、声优、标签、完整简介与 PV/官网/bgm/B站 外链;底部我的想看/观望/跳过(想看同步到 bgm),"大家"一栏显示好友 bgm 公开收藏里的想看。详情面板链接区也加了 B站番剧 / B站搜索',
+      'zh-Hant': '新番討論會(🗣 按鈕):幾個人一起過下季新番用的頁面。左側議程列表(標題 + 每個人的態度點,當前行高亮,← → 翻頁),右側一次聚焦一部:封面、首播、來源、製作/導演/系列構成/人物設定、聲優、標籤、完整簡介與 PV/官網/bgm/B站 外鏈;底部我的想看/觀望/跳過(想看同步到 bgm),「大家」一欄顯示好友 bgm 公開收藏裡的想看。詳情面板連結區也加了 B站番劇 / B站搜尋',
+      ja: '新作座談会(🗣 ボタン):次期の新作を仲間と一本ずつ見ていくページ。左に議題リスト(タイトル+各人の態度の点、現在行をハイライト、← → で移動)、右は一作に集中:表紙・初回・原作・制作/監督/シリーズ構成/キャラデザ・声優・タグ・あらすじ全文・PV/公式/bgm/bilibili の外部リンク。下部に自分の 見たい/保留/スキップ(見たいは bgm に同期)、「みんな」欄にフレンドの bgm 公開収蔵の「見たい」。詳細パネルにも bilibili 検索リンクを追加',
+      en: 'Season discussion (🗣 button): a page for going through next season together. Agenda list on the left (titles + everyone\'s dots, current row highlighted, ← → to page); one show in focus on the right: cover, premiere, source, studio/director/series composition/character design, cast, tags, full synopsis and PV/official/bgm/bilibili links. Bottom bar: my wish/maybe/skip (wish syncs to bgm) and "Everyone" showing friends\' wishes from their public bgm collections. Detail panel also gains bilibili search links',
+    },
+  },
+  {
+    d: '2026-09-19',
+    x: {
       'zh-Hans': '下季前瞻:季度选择里多了"2026年10月(下季)",顶栏也有 🔭 前瞻 按钮。10 月新番按 yuc 新番表的放送星期排进周表(时刻待 bangumi-data 收录后自动补上),卡片显示首播日与 bgm 想看人数,点开即可看首播信息、简介、PV 并直接标想看;没有星期的作品列在"日期待定"',
       'zh-Hant': '下季前瞻:季度選擇裡多了「2026年10月(下季)」,頂欄也有 🔭 前瞻 按鈕。10 月新番按 yuc 新番表的放送星期排進週表(時刻待 bangumi-data 收錄後自動補上),卡片顯示首播日與 bgm 想看人數,點開即可看首播資訊、簡介、PV 並直接標想看;沒有星期的作品列在「日期待定」',
       ja: '次期プレビュー:シーズン選択に「2026年10月(次期)」を追加、ヘッダーにも 🔭 ボタン。10月新作を yuc の新作表の放送曜日で週間表に配置(時刻は bangumi-data 収録後に自動反映)。カードに初回放送日と bgm の「見たい」数を表示、開けば初回情報・あらすじ・PV を確認しそのまま「見たい」に登録可。曜日未定の作品は「日程未定」に',

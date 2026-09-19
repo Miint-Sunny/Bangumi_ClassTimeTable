@@ -10,6 +10,8 @@ import type { LibItem } from './bgm'
 export interface StaffInfo {
   studio: string[]
   director: string[]
+  series: string[] // 系列构成
+  chara: string[] // 人物设定 / 角色设计
   actors: { id: number; name: string }[]
 }
 
@@ -25,7 +27,7 @@ function pickInfo(infobox: any[], key: string): string[] {
 }
 
 export async function fetchStaff(id: number): Promise<StaffInfo> {
-  const key = `staff:${id}`
+  const key = `staff2:${id}` // staff2:加了系列构成/人物设定,旧缓存作废
   const hit = readCache<StaffInfo>(key, 30 * 86400_000)
   if (hit) return hit
   // 两代接口统一成 { infobox, chars: [{ main, actors }] } 再抽取;v0 不可用时走 p1
@@ -69,7 +71,13 @@ export async function fetchStaff(id: number): Promise<StaffInfo> {
       }
     }
   }
-  const info: StaffInfo = { studio: pickInfo(infobox, '动画制作'), director: pickInfo(infobox, '导演'), actors: actors.slice(0, 24) }
+  const info: StaffInfo = {
+    studio: pickInfo(infobox, '动画制作'),
+    director: pickInfo(infobox, '导演'),
+    series: pickInfo(infobox, '系列构成'),
+    chara: [...pickInfo(infobox, '人物设定'), ...pickInfo(infobox, '角色设计')],
+    actors: actors.slice(0, 24),
+  }
   writeCache(key, info)
   return info
 }
