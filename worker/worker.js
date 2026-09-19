@@ -16,6 +16,7 @@
  *   POST /oauth/refresh  { refresh_token, redirect_uri } → 续期
  *   GET  /api/timeline?user=&limit=&until=    → 转发 bgm 新版 p1 公开时间线(未开 CORS,统计页"时间胶囊"用)
  *   GET/POST /api/bgm/<v0 路径|calendar>       → 转发 api.bgm.tv(前端直连失败时的同源兜底,透传 Authorization,不缓存私有请求)
+ *   GET  /api/p1/me                           → 转发 next.bgm.tv/p1/me(v0 故障时用同一套令牌确认身份;p1 未开 CORS)
  *   其余                                       → 静态资源(ASSETS)
  *
  * 配置(见 README.md):
@@ -39,6 +40,7 @@ export default {
     }
     if (url.pathname === '/api/timeline') return timelineProxy(url)
     if (url.pathname.startsWith('/api/bgm/')) return bgmProxy(req, url)
+    if (url.pathname === '/api/p1/me') return p1MeProxy(req, url)
     // 非 OAuth 请求原样落回静态资源(run_worker_first 下所有请求都先到这里)
     if (!url.pathname.startsWith('/oauth/')) {
       return env.ASSETS.fetch(req)
@@ -99,13 +101,18 @@ export default {
  * Authorization 原样透传、绝不缓存;公开 GET 边缘缓存 5 分钟。不落日志、不存令牌,进出都只在内存里。
  * 回包统一带 X-Bgm-Proxy: 1,前端据此区分"代理在回话"与"镜像站的静态 404 页"。
  */
+/** 只服务本站页面:浏览器跨站请求必带 Sec-Fetch-Site: cross-site 或异源 Origin */
+function isSameOrigin(req, url) {
+  const site = req.headers.get('Sec-Fetch-Site')
+  const origin = req.headers.get('Origin')
+  return !(site && site !== 'same-origin' && site !== 'none') && !(origin && origin !== url.origin)
+}
+
 async function bgmProxy(req, url) {
   const tag = { 'X-Bgm-Proxy': '1' }
   const json = (obj, status) =>
     new Response(JSON.stringify(obj), { status, headers: { ...tag, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } })
-  const site = req.headers.get('Sec-Fetch-Site')
-  const origin = req.headers.get('Origin')
-  if ((site && site !== 'same-origin' && site !== 'none') || (origin && origin !== url.origin)) return json({ error: 'same-origin only' }, 403)
+  if (!isSameOrigin(req, url)) return json({ error: 'same-origin only' }, 403)
   if (req.method !== 'GET' && req.method !== 'POST') return json({ error: 'GET/POST only' }, 405)
   const path = url.pathname.slice('/api/bgm'.length)
   if (!/^\/(v0\/[\w\-.%~]+(\/[\w\-.%~]+)*|calendar)$/.test(path) || path.includes('..')) return json({ error: 'bad path' }, 400)
@@ -125,6 +132,26 @@ async function bgmProxy(req, url) {
   const upstreamCt = resp.headers.get('Content-Type') ?? ''
   if (!upstreamCt.includes('json')) return json({ error: 'upstream', status: resp.status }, resp.status >= 400 ? resp.status : 502)
   return new Response(resp.body, { status: resp.status, headers: { ...tag, 'Content-Type': 'application/json', 'Cache-Control': cacheHdr } })
+}
+
+/**
+ * next.bgm.tv/p1/me 同源转发:api.bgm.tv v0 故障期间用它确认令牌身份(p1 接受同一套 Bearer 令牌,但没开 CORS)。
+ * 只放 GET、只这一条路径;同源校验;Authorization 透传,不缓存、不落日志。
+ */
+async function p1MeProxy(req, url) {
+  const tag = { 'X-Bgm-Proxy': '1', 'Cache-Control': 'no-store' }
+  const json = (obj, status) => new Response(JSON.stringify(obj), { status, headers: { ...tag, 'Content-Type': 'application/json' } })
+  if (!isSameOrigin(req, url)) return json({ error: 'same-origin only' }, 403)
+  if (req.method !== 'GET') return json({ error: 'GET only' }, 405)
+  const auth = req.headers.get('Authorization')
+  if (!auth) return json({ error: 'missing Authorization' }, 401)
+  const resp = await fetch('https://next.bgm.tv/p1/me', {
+    headers: { 'User-Agent': UA, Accept: 'application/json', Authorization: auth },
+    cache: 'no-store',
+  })
+  const ct = resp.headers.get('Content-Type') ?? ''
+  if (!ct.includes('json')) return json({ error: 'upstream', status: resp.status }, resp.status >= 400 ? resp.status : 502)
+  return new Response(resp.body, { status: resp.status, headers: { ...tag, 'Content-Type': 'application/json' } })
 }
 
 /** bgm 新版 p1 的公开时间线没开 CORS,同源转一手;参数白名单校验,边缘缓存 2 分钟。 */

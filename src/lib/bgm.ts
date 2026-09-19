@@ -50,12 +50,40 @@ async function authed(token: string, path: string, init?: RequestInit): Promise<
   return resp
 }
 
-/** 校验令牌并取回身份(GET /v0/me) */
-export async function verifyToken(token: string): Promise<Pick<BgmAccount, 'username' | 'nickname' | 'avatar'>> {
-  const resp = await authed(token, '/v0/me')
-  if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
+type Identity = Pick<BgmAccount, 'username' | 'nickname' | 'avatar'>
+const toIdentity = (u: any): Identity => ({ username: u.username, nickname: u.nickname || u.username, avatar: u.avatar?.small })
+
+/**
+ * 校验令牌并取回身份:GET /v0/me;v0 挂了(5xx / 网络层失败)就改问 next.bgm.tv 的 p1 /me
+ * (同一套个人令牌,p1 没开 CORS,经本站同源转发;镜像站没有转发则维持原错误)。
+ * 401/403 在两条路上都直接判令牌无效。
+ */
+export async function verifyToken(token: string): Promise<Identity> {
+  let status = 0
+  try {
+    const resp = await authed(token, '/v0/me')
+    if (resp.ok) return toIdentity(await resp.json())
+    status = resp.status
+  } catch (e) {
+    if (e instanceof BgmAuthError) throw e
+  }
+  const viaP1 = await p1Me(token)
+  if (viaP1) return viaP1
+  throw new Error(`HTTP ${status}`)
+}
+
+async function p1Me(token: string): Promise<Identity | null> {
+  let resp: Response
+  try {
+    resp = await fetch(`${import.meta.env.BASE_URL}api/p1/me`, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } })
+  } catch {
+    return null
+  }
+  if (!resp.headers.get('X-Bgm-Proxy')) return null // 不是我们的转发在回话(镜像站)
+  if (resp.status === 401 || resp.status === 403) throw new BgmAuthError(`HTTP ${resp.status}`)
+  if (!resp.ok) return null
   const u = await resp.json()
-  return { username: u.username, nickname: u.nickname || u.username, avatar: u.avatar?.small }
+  return u?.username ? toIdentity(u) : null
 }
 
 export interface RemotePull {
