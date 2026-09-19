@@ -36,6 +36,15 @@ export default function ShowCard({
   const behind = behindCount(show, tracking, now)
   const friendCount = friendsMap.get(show.id)?.size ?? 0
   const cont = continuity(show, seasonStart) // 跨季分级:新番 / 上季续播 / 长期放送
+  // 下季前瞻:没有集数进度,副标改成首播日(网络放送单独标)+ bgm 想看人数
+  const upOcc = show.upcoming
+    ? show.firstAirDate
+      ? `${+show.firstAirDate.slice(5, 7)}/${+show.firstAirDate.slice(8, 10)} ${t(show.web ? '网络放送' : '首播')}`
+      : show.web
+        ? t('网络放送')
+        : undefined
+    : undefined
+  const wishText = show.upcoming && show.wish !== undefined ? (show.wish >= 1000 ? `${(show.wish / 1000).toFixed(1)}k` : String(show.wish)) : null
 
   const cls = [
     'show-card',
@@ -57,7 +66,12 @@ export default function ShowCard({
         <span className="title">{displayName(show)}</span>
         {wide && subName(show) ? <span className="jp">{subName(show)}</span> : null}
         <span className="meta">
-          {occText ? <span className="occ">{occText}</span> : null}
+          {occText ?? upOcc ? <span className="occ">{occText ?? upOcc}</span> : null}
+          {wishText !== null ? (
+            <span className="score" title={t('bgm 想看人数')}>
+              ♡{wishText}
+            </span>
+          ) : null}
           {show.score ? (
             show.ratingTotal !== undefined && show.ratingTotal < MIN_VOTES ? (
               <span className="score few" title={t('仅 {n} 人评分,分数仅供参考', { n: show.ratingTotal })}>
@@ -93,7 +107,7 @@ export default function ShowCard({
               {t('先行{n}', { n: show.airFix.advanceEps })}
             </span>
           ) : null}
-          {!show.fromCalendar && cont === 'new' ? <span className="streamtag">{t('流媒体')}</span> : null}
+          {!show.fromCalendar && !show.upcoming && cont === 'new' ? <span className="streamtag">{t('流媒体')}</span> : null}
           {offWeek ? <span>{t('本周无')}</span> : null}
         </span>
       </span>

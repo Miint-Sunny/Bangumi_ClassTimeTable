@@ -51,6 +51,12 @@ export interface Show {
   pvUrl?: string
   sourceType?: string
   airFix?: AirFix // 放送校正(enhance.json 默认,本机 overrides 优先)
+  // 前瞻页(下季新番:yuc 新番表骨架 + bgm 条目富化)
+  upcoming?: boolean
+  firstAirDate?: string // 首播日 YYYY-MM-DD(JST 日历日;没有精确时刻时用)
+  airHint?: string // yuc 的放送文字原文,如 "10/3周六深夜"
+  web?: boolean // 网络放送(无固定电视档)
+  wish?: number // bgm 想看人数(期待度)
 }
 
 /** 课表格子:某番在展示时区下的放送位置 */

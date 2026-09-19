@@ -44,7 +44,7 @@
   "688623": "us"
  },
  "season": "202610",
- "generated_at": "2026-09-19T12:45:34.498294Z",
+ "generated_at": "2026-09-19T13:16:46.214179Z",
  "entries": {
   "255209": {
    "tags": [
@@ -3006,5 +3006,1310 @@
     "broadcast_text": "10/1周四深夜"
    }
   }
+ },
+ "upcoming": {
+  "season": "202610",
+  "source": "yuc.wiki",
+  "sourceUrl": null,
+  "scrapedAt": "2026-09-19T12:43:24.694299Z",
+  "shows": [
+   {
+    "id": 639938,
+    "title": "JOJO奇妙冒险 飙马野郎 2nd&3rd STAGE",
+    "titleJp": "スティール・ボール・ラン ジョジョの奇妙な冒険",
+    "startDate": "2026-09-25",
+    "dayOfWeek": null,
+    "time": null,
+    "broadcast": "9/25网络放送",
+    "web": true,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "战斗",
+     "冒险",
+     "赛马"
+    ],
+    "pv": "https://www.bilibili.com/video/BV16GTs6dEPU/",
+    "official": "https://jojo-portal-anime.com/sbr/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/2208e1e48e5b967c05767b3b3faaee7d512995925.jpg"
+   },
+   {
+    "id": 530104,
+    "title": "转生贵族靠着鉴定技能 一飞冲天 第3期",
+    "titleJp": "転生貴族、鑑定スキルで成り上がる 第3期",
+    "startDate": "2026-09-27",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "9/27周日深夜",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "转生",
+     "奇幻",
+     "伯乐"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1azti68E2p/",
+    "official": "https://kanteiskill.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/fbb1160bd6f8da4af418104d7407af5d512995925.jpg"
+   },
+   {
+    "id": 586941,
+    "title": "新 网球王子 U-17世界杯决赛成员决定战",
+    "titleJp": "新テニスの王子様 U-17 WORLD CUP 決勝メンバー決定戦",
+    "startDate": "2026-09-30",
+    "dayOfWeek": 3,
+    "time": null,
+    "broadcast": "9/30周三深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "运动",
+     "网球",
+     "异能"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1SUgK6FEmq/",
+    "official": "https://tenipuri.jp/u17/selection-match/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/2f9699d368ef47beba31c1cdf2f1ab2f512995925.jpg"
+   },
+   {
+    "id": 622288,
+    "title": "FX战士久留美",
+    "titleJp": "FX戦士くるみちゃん",
+    "startDate": "2026-10-01",
+    "dayOfWeek": 4,
+    "time": null,
+    "broadcast": "10/1周四晚间",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "金融",
+     "投资",
+     "反差"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1JGt869Ej3/",
+    "official": "https://fxkurumi-info.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/243206d715caefc5526e1b7c8fb1716e512995925.jpg"
+   },
+   {
+    "id": 665390,
+    "title": "冰之城墙 第2期",
+    "titleJp": "氷の城壁 第2期",
+    "startDate": "2026-10-01",
+    "dayOfWeek": 4,
+    "time": null,
+    "broadcast": "10/1周四深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "校园",
+     "恋爱",
+     "反差"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1LxYk6wE1s/",
+    "official": "https://korinojoheki-pr.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/61bfaddf5079566021f9065f97f4ed87512995925.jpg"
+   },
+   {
+    "id": 499474,
+    "title": "东京复仇者 第4期 三天战争篇",
+    "titleJp": "東京リベンジャーズ 三天戦争編",
+    "startDate": "2026-10-02",
+    "dayOfWeek": 5,
+    "time": null,
+    "broadcast": "10/2周五深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "穿越",
+     "不良",
+     "战斗热血",
+     "复仇",
+     "成长"
+    ],
+    "pv": "https://www.bilibili.com/video/BV11T8v6JEyZ/",
+    "official": "https://tokyo-revengers-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/f6f2437b7c1fcb311472ee339b8ee7f2512995925.jpg"
+   },
+   {
+    "id": 568244,
+    "title": "药屋少女的呢喃 第3期",
+    "titleJp": "薬屋のひとりごと 第3期",
+    "startDate": "2026-10-02",
+    "dayOfWeek": 5,
+    "time": null,
+    "broadcast": "10/2周五深夜",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "中华风",
+     "宫廷药理",
+     "轻推理"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1nMb16iEbp/",
+    "official": "https://kusuriyanohitorigoto.jp/season3/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/f94ec7be865654e1e96e7a80cdc099aa512995925.jpg"
+   },
+   {
+    "id": 657656,
+    "title": "装备我最强",
+    "titleJp": "テムパル～アイテムの力～",
+    "startDate": "2026-10-02",
+    "dayOfWeek": 5,
+    "time": null,
+    "broadcast": "10/2周五深夜",
+    "web": false,
+    "sourceType": "韩漫改编动画",
+    "tags": [
+     "网游",
+     "战斗",
+     "逆袭"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1z4Yv67EJn/",
+    "official": "https://tempal-anime.net/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/2d75b7eb12cf00ecef0cc83289fdf62c512995925.jpg"
+   },
+   {
+    "id": 657084,
+    "title": "七叶树王国的七名骑士",
+    "titleJp": "マロニエ王国の七人の騎士",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六下午",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "奇幻",
+     "群像",
+     "恋爱"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1vkbA6GEUu/",
+    "official": "https://www.nhk-character.com/chara/marronnier/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/cd478e564d11dcf389f08a5a490c9fdc512995925.jpg"
+   },
+   {
+    "id": 606716,
+    "title": "借出去的魔力 要用【分期还款】强制收回",
+    "titleJp": "貸した魔力は【リボ払い】で強制徴収",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "奇幻",
+     "冒险",
+     "喜剧"
+    ],
+    "pv": "https://www.bilibili.com/video/BV16wYs69Eox/",
+    "official": "https://revo-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/8483416669c204c3c9e1f07d52e39519512995925.jpg"
+   },
+   {
+    "id": 586255,
+    "title": "僵尸搜寻中",
+    "titleJp": "#ゾンビさがしてます",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "冒险",
+     "反差",
+     "喜剧"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1yEYq6hEfP/",
+    "official": "https://zommasu.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/e0f93767aa7444921b819438b8548900512995925.jpg"
+   },
+   {
+    "id": 617273,
+    "title": "新 Keroro军曹",
+    "titleJp": "ケロロ軍曹☆",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六早间",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "科幻",
+     "喜剧",
+     "无厘头奇妙日常",
+     "重制"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1GYYk64EEt/",
+    "official": "https://www.bn-pictures.co.jp/keroro-anime/tv/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/0d5dd1a78e625dfa6f178295a1b46f25512995925.jpg"
+   },
+   {
+    "id": 637802,
+    "title": "新 乱马1/2 第3期",
+    "titleJp": "らんま1/2 第3期",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "性转",
+     "喜剧",
+     "格斗"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1UxY16ZErk/",
+    "official": "https://ranma-pr.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/6a94f07b7bc3e5523d59d9aa8a205f0f512995925.jpg"
+   },
+   {
+    "id": 637206,
+    "title": "海豹小白",
+    "titleJp": "しろたん",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六下午",
+    "web": false,
+    "sourceType": "吉祥物形象 衍生动画",
+    "tags": [
+     "奇妙日常",
+     "治愈"
+    ],
+    "pv": null,
+    "official": "https://www.tv-asahi.co.jp/sirotan/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/a20cf94e440376f5a690cf2b60af76c9512995925.jpg"
+   },
+   {
+    "id": 511936,
+    "title": "罗梅莉亚战记",
+    "titleJp": "ロメリア戦記",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六晚间",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "奇幻",
+     "战争",
+     "军事"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1x6Y76yE6L/",
+    "official": "https://romelia-senki.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/3d662c05b18ef1f1fdf33fdcc55f5bc3512995925.jpg"
+   },
+   {
+    "id": 554779,
+    "title": "脑洞学生会",
+    "titleJp": "生徒会にも穴はある！",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "校园",
+     "喜剧",
+     "涩涩"
+    ],
+    "pv": "https://www.bilibili.com/video/BV19u816ZEx8/",
+    "official": "https://nama-anaru.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/a883eb732ac2da652209a7d60fc3f6ab512995925.jpg"
+   },
+   {
+    "id": 542007,
+    "title": "转生了的大圣女 拼死隐瞒自己身为圣女",
+    "titleJp": "転生した大聖女は、聖女であることをひた隠す",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六晚间",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "转世",
+     "奇幻",
+     "冒险喜剧",
+     "凤傲天"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1nqbN6sEnT/",
+    "official": "https://daiseijo-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/8d097058ac244c5c7f2e590158a99998512995925.jpg"
+   },
+   {
+    "id": 616808,
+    "title": "野生的最终BOSS出现了 第2期",
+    "titleJp": "野生のラスボスが現れた！第2期",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六晚间",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "奇幻",
+     "穿越",
+     "冒险战斗",
+     "凤傲天"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1JQuc6fE5G/",
+    "official": "https://lastboss-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/b6e9bd42d6d77fed7c4920875ba983e6512995925.jpg"
+   },
+   {
+    "id": 636512,
+    "title": "顶点武装",
+    "titleJp": "VERTEX FORCE",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六深夜",
+    "web": false,
+    "sourceType": "原创动画",
+    "tags": [
+     "科幻",
+     "机战",
+     "股"
+    ],
+    "pv": "https://www.bilibili.com/video/BV19SYX6sEti/",
+    "official": "https://vertexforce.jp/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/5b15f205dd5ba4d33110d12e3becd445512995925.jpg"
+   },
+   {
+    "id": 456078,
+    "title": "魔法★探险家 转生为成人游戏万年男二又怎样 我要活用游戏知识自由生活",
+    "titleJp": "マジカル★エクスプローラー エロゲの友人キャラに転生したけど、 ゲーム知識使って自由に生きる",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六深夜",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "转生",
+     "奇幻",
+     "恋爱喜剧",
+     "后宫",
+     "福利"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1SoXxB9EZv/",
+    "official": "https://majieku.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/54152063940708a701d3d1d6a039678b512995925.jpg"
+   },
+   {
+    "id": 567896,
+    "title": "黑色五叶草 第2期",
+    "titleJp": "ブラッククローバー 2nd Season",
+    "startDate": "2026-10-03",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/3周六深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "奇幻",
+     "热血",
+     "战斗"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1qrMu6yErm/",
+    "official": "https://bclover.jp/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/a274531d59837efd83bc8d238f08c5cf512995925.jpg"
+   },
+   {
+    "id": 548156,
+    "title": "青春之箱 第2期",
+    "titleJp": "アオのハコ",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 4,
+    "time": null,
+    "broadcast": "10/4周四下午",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "恋爱",
+     "运动",
+     "青春"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1t58X6BEdb/",
+    "official": "https://aonohako-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/fb24810950081a12961442135e6c14ec512995925.jpg"
+   },
+   {
+    "id": 536270,
+    "title": "一觉醒来坐拥神装和飞船 我决定以买一套独门独户的房子为目标作为佣兵自由地活下去",
+    "titleJp": "目覚めたら最強装備と宇宙船持ちだったので、 一戸建て目指して傭兵として自由に生きたい",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/4周日晚间",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "穿越",
+     "科幻",
+     "佣兵太空冒险",
+     "后宫"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1Ma496NE5o/",
+    "official": "https://saikyosoubi.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/6c3eda900f6b9cc8d577299d74710e5b512995925.jpg"
+   },
+   {
+    "id": 656083,
+    "title": "不擅交际的未亡人雪女与诅咒戒指",
+    "titleJp": "人付き合いが苦手な未亡人の雪女さんと呪いの指輪",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/4周日深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "奇幻",
+     "背德",
+     "涩涩"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1hnt26pE4S/",
+    "official": "https://anime-yukionna.af-original.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/eb45af7a2a2afcac75a5be04d96fdb29512995925.jpg"
+   },
+   {
+    "id": 605533,
+    "title": "大叔喜欢可爱小玩意",
+    "titleJp": "おじさんはカワイイものがお好き。",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/4周日晚间",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "日常",
+     "喜剧",
+     "治愈"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1uibP6KE1q/",
+    "official": "https://ojikawa.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/1f4999523334eb69a6396c8b5c70c784512995925.jpg"
+   },
+   {
+    "id": 647220,
+    "title": "女友的朋友",
+    "titleJp": "彼女の友達",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/4周日深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "三角",
+     "背德",
+     "涩涩"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1T3TQ6GELc/",
+    "official": "https://kanojo-no-tomodachi.deregula.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/0b356f930cbb3af09eafe46024f7b4ed512995925.jpg"
+   },
+   {
+    "id": 638081,
+    "title": "小狸猫与小狐狸",
+    "titleJp": "タヌキとキツネ",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/4周日早间",
+    "web": false,
+    "sourceType": "绘本改编动画",
+    "tags": [
+     "奇妙日常",
+     "治愈"
+    ],
+    "pv": null,
+    "official": "https://www.fwinc.co.jp/tanukitsu/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/db5078a5697ae5b6d8e34de19a37f998512995925.jpg"
+   },
+   {
+    "id": 596771,
+    "title": "弱气MAX的大小姐居然 接受了铁腕未婚夫的赌约",
+    "titleJp": "弱気MAX令嬢なのに、辣腕婚約者様の賭けに乗ってしまった",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/4周日深夜",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "转生",
+     "恋爱",
+     "甜水"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1Mwt162ECm/",
+    "official": "https://yowaki-max-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/8c99616973bd8d4c5a01b480c58a49a6512995925.jpg"
+   },
+   {
+    "id": 636023,
+    "title": "战车椅子",
+    "titleJp": "TANK CHAIR-戦車椅子-",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/4周日深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "异能",
+     "战斗",
+     "兄妹"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1bSuC6cE9N/",
+    "official": "https://www.tankchair-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/916ad7ebf086fc890907c07a50025f63512995925.jpg"
+   },
+   {
+    "id": 589775,
+    "title": "杀手旅店 第2期",
+    "titleJp": "HOTEL INHUMANS 第2期",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/4周日深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "杀手",
+     "奇妙旅馆"
+    ],
+    "pv": "https://www.bilibili.com/video/BV12Hb56xEJz/",
+    "official": "https://hotel-inhumans.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/f1b36ef274674c51bc81128c85b36e23512995925.jpg"
+   },
+   {
+    "id": 636058,
+    "title": "来自远方",
+    "titleJp": "彼方から",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/4周日深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "穿越",
+     "奇幻",
+     "恋爱"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1UZtJ6GEDa/",
+    "official": "https://kanatakara-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/b9aab25dd237af5fa75e6ae6f7f3feef512995925.jpg"
+   },
+   {
+    "id": 555605,
+    "title": "青之芦苇 第2期",
+    "titleJp": "アオアシ Season2",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/4周日下午",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "运动",
+     "足球",
+     "热血"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1WmtE6cE3M/",
+    "official": "https://aoashi-pr.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/a94063ea42637475007bb99e7690a6e9512995925.jpg"
+   },
+   {
+    "id": 634210,
+    "title": "魔法姐妹露露与莉莉 Part.2",
+    "titleJp": "魔法の姉妹ルルットリリィ 第2クール",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/4周日晚间",
+    "web": false,
+    "sourceType": "原创动画",
+    "tags": [
+     "魔法",
+     "变身",
+     "偶像"
+    ],
+    "pv": "https://www.bilibili.com/video/BV14CPQzSEpx/",
+    "official": "https://www.luluttolilly.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/f80b95e602653d8384719d5ee6799ad9512995925.jpg"
+   },
+   {
+    "id": 630160,
+    "title": "黑暗召唤师在地下恋爱中",
+    "titleJp": "ダークサモナーとデキている",
+    "startDate": "2026-10-04",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/4周日深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "奇幻",
+     "喜剧",
+     "涩涩"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1butB6ZEWt/",
+    "official": "https://darksummoner.deregula.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/807a20bf62fbfc5048fcec9ee31ff18d512995925.jpg"
+   },
+   {
+    "id": 614640,
+    "title": "PSYREN 决战游戏",
+    "titleJp": "PSYREN -サイレン-",
+    "startDate": "2026-10-05",
+    "dayOfWeek": 1,
+    "time": null,
+    "broadcast": "10/5周一深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "异能",
+     "战斗",
+     "悬疑"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1kDY66KEpC/",
+    "official": "https://psyren-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/ed859b3e48c0e81b465c70779c132c57512995925.jpg"
+   },
+   {
+    "id": 624923,
+    "title": "你好 我是受心上人所托 来做恋爱药的魔女",
+    "titleJp": "どうも、好きな人に惚れ薬を依頼された魔女です。",
+    "startDate": "2026-10-05",
+    "dayOfWeek": 1,
+    "time": null,
+    "broadcast": "10/5周一晚间",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "奇幻",
+     "恋爱",
+     "甜水"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1v3Y16ME82/",
+    "official": "https://horemajo-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/f6dcb675508431fef50c58e667e9ec98512995925.jpg"
+   },
+   {
+    "id": 634587,
+    "title": "转生成哥布林有什么问题吗",
+    "titleJp": "転生ゴブリンだけど質問ある？",
+    "startDate": "2026-10-05",
+    "dayOfWeek": 1,
+    "time": null,
+    "broadcast": "10/5周一晚间",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "魔物转生",
+     "喜剧"
+    ],
+    "pv": "https://www.bilibili.com/video/BV12fYt6GEJR/",
+    "official": "https://tengobu-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/6ec885213a549761b589d00ee2bbd70d512995925.jpg"
+   },
+   {
+    "id": 418229,
+    "title": "魔法少女育成计画restart",
+    "titleJp": "魔法少女育成計画restart",
+    "startDate": "2026-10-05",
+    "dayOfWeek": 1,
+    "time": null,
+    "broadcast": "10/5周一深夜",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "奇幻",
+     "战斗",
+     "悬疑"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1LhMy6uEPB/",
+    "official": "https://mahoiku.com/anime/restart",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/7483e2b03f01358f3553d8df1c9ebd5a512995925.jpg"
+   },
+   {
+    "id": 624085,
+    "title": "乱世千金 倪亚‧利斯顿 转生为娇弱千金的弑神武人华丽无双录",
+    "titleJp": "凶乱令嬢ニア・リストン 病弱令嬢に転生した神殺しの武人の華麗なる無双録",
+    "startDate": "2026-10-06",
+    "dayOfWeek": 2,
+    "time": null,
+    "broadcast": "10/6周二晚间",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "转生",
+     "奇幻",
+     "武痴反差",
+     "凤傲天"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1XsbV6eEXU/",
+    "official": "https://kyoranreijo-pr.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/1617c6ba4c019d5451fa6a1a19ce0d52512995925.jpg"
+   },
+   {
+    "id": 544378,
+    "title": "战斗之魂 [Re] 绝界之空",
+    "titleJp": "Battle Spirits [Re] 絶界の空",
+    "startDate": "2026-10-06",
+    "dayOfWeek": 2,
+    "time": null,
+    "broadcast": "10/6周二深夜",
+    "web": false,
+    "sourceType": "原创动画",
+    "tags": [
+     "TCG",
+     "武士",
+     "决斗"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1rChG6nEfi/",
+    "official": "https://www.bn-pictures.co.jp/battlespirits/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/ca90973c1a024a48a8a3bd5d1ecb7ba1512995925.jpg"
+   },
+   {
+    "id": 625799,
+    "title": "被流放的超能附魔师 讴歌随心所欲的第二人生",
+    "titleJp": "追放されたチート付与魔術師は気ままなセカンドライフを謳歌する。",
+    "startDate": "2026-10-06",
+    "dayOfWeek": 2,
+    "time": null,
+    "broadcast": "10/6周二深夜",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "奇幻",
+     "冒险",
+     "喜剧反差",
+     "退队流"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1GnYs6rEE3/",
+    "official": "https://sh-anime.shochiku.co.jp/chiifuyo-anime/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/68ce4161fc56cf963655e486cabb13b0512995925.jpg"
+   },
+   {
+    "id": 486456,
+    "title": "佐佐木与文鸟小哔 第2期",
+    "titleJp": "佐々木とピーちゃん Season2",
+    "startDate": "2026-10-07",
+    "dayOfWeek": 3,
+    "time": null,
+    "broadcast": "10/7周三晚间",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "穿越",
+     "魔法",
+     "异能后宫",
+     "要素过多"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1d4Y96FE6c/",
+    "official": "https://sasapi-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/1f289b09a580c16272cd62d5eb81d39f512995925.jpg"
+   },
+   {
+    "id": 393010,
+    "title": "侦探已死 第2期",
+    "titleJp": "探偵はもう、死んでいる。 Season2",
+    "startDate": "2026-10-07",
+    "dayOfWeek": 3,
+    "time": null,
+    "broadcast": "10/7周三晚间",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "侦探",
+     "悬疑",
+     "异能"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1z1t26KEU9/",
+    "official": "https://tanmoshi-anime.jp/Season2/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/22bddc205777b528f4514abbfcc40567512995925.jpg"
+   },
+   {
+    "id": 657778,
+    "title": "兽王武神丹帝拜恩",
+    "titleJp": "獣王武神ダンデヴァイン",
+    "startDate": "2026-10-07",
+    "dayOfWeek": 3,
+    "time": null,
+    "broadcast": "10/7周三深夜",
+    "web": false,
+    "sourceType": "原创动画",
+    "tags": [
+     "科幻",
+     "机战",
+     "合体"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1Zo7X6dExw/",
+    "official": "https://gattaishin.com/dandivine/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/cb92c54f4454875d55cec524d4bc6ba5512995925.jpg"
+   },
+   {
+    "id": 646154,
+    "title": "开始成为世界最强的魔女",
+    "titleJp": "世界最強の魔女、始めました",
+    "startDate": "2026-10-07",
+    "dayOfWeek": 3,
+    "time": null,
+    "broadcast": "10/7周三晚间",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "奇幻",
+     "冒险",
+     "喜剧搞笑",
+     "凤傲天"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1kfhF6QESr/",
+    "official": "https://sekamajo-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/b91ddef0c8cf599116be225f529b2fad512995925.jpg"
+   },
+   {
+    "id": 502123,
+    "title": "新 魔法骑士Rayearth",
+    "titleJp": "魔法騎士レイアース",
+    "startDate": "2026-10-07",
+    "dayOfWeek": 3,
+    "time": null,
+    "broadcast": "10/7周三深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "魔法",
+     "机战",
+     "穿越冒险",
+     "重制"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1zHMg67EgK/",
+    "official": "https://rayearth-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/6cdc11733c7388c0256ca139ea193393512995925.jpg"
+   },
+   {
+    "id": 412008,
+    "title": "转生成为魔剑 第2期",
+    "titleJp": "転生したら剣でしたⅡ",
+    "startDate": "2026-10-07",
+    "dayOfWeek": 3,
+    "time": null,
+    "broadcast": "10/7周三深夜",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "转生",
+     "奇幻",
+     "冒险成长",
+     "养女儿"
+    ],
+    "pv": "https://www.bilibili.com/video/BV16BbD6nE21/",
+    "official": "https://tenken-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/8524867c48e514771162eb44417d14ac512995925.jpg"
+   },
+   {
+    "id": 654294,
+    "title": "冰剑的魔术师将要统一世界 第2期",
+    "titleJp": "冰剣の魔術師が世界を統べるⅡ",
+    "startDate": "2026-10-08",
+    "dayOfWeek": 4,
+    "time": null,
+    "broadcast": "10/8周四深夜",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "奇幻",
+     "魔法",
+     "校园"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1t7YT6SET3/",
+    "official": "https://hyouken-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/20cdb3995b45484222280751131f076f512995925.jpg"
+   },
+   {
+    "id": 590553,
+    "title": "铁旅 邂逅铁道少女",
+    "titleJp": "てつりょー！meet with 鉄道むすめ",
+    "startDate": "2026-10-08",
+    "dayOfWeek": 4,
+    "time": null,
+    "broadcast": "10/8周四深夜",
+    "web": false,
+    "sourceType": "原创动画",
+    "tags": [
+     "铁路旅行",
+     "日常"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1VuN16aEQm/",
+    "official": "https://tetsuryo-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/a26cf535a73c3f5e5fb4e9e538de92d3512995925.jpg"
+   },
+   {
+    "id": 537738,
+    "title": "某暗部的少女共栖",
+    "titleJp": "とある暗部の少女共棲",
+    "startDate": "2026-10-09",
+    "dayOfWeek": 5,
+    "time": null,
+    "broadcast": "10/9周五晚间",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "外传",
+     "异能战斗"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1VGTt6WEjZ/",
+    "official": "https://toaru-project.com/item/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/2229261190b2ba37e47c479153242670512995925.jpg"
+   },
+   {
+    "id": 621108,
+    "title": "萤火虫的出嫁",
+    "titleJp": "ホタルの嫁入り",
+    "startDate": "2026-10-09",
+    "dayOfWeek": 5,
+    "time": null,
+    "broadcast": "10/9周五深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "杀手",
+     "狂爱",
+     "重力"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1Az3R6sEpN/",
+    "official": "https://hotaru-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/b8300c288a772d1c98940ae167dff18d512995925.jpg"
+   },
+   {
+    "id": 568525,
+    "title": "朱色假面",
+    "titleJp": "朱色の仮面",
+    "startDate": "2026-10-10",
+    "dayOfWeek": 6,
+    "time": null,
+    "broadcast": "10/10周六下午",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "异能",
+     "战斗",
+     "冒险"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1sPMb6kEGz/",
+    "official": "https://the-vermilion-mask.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/6b6537e0e76f1075ab17b7c416eedc97512995925.jpg"
+   },
+   {
+    "id": 621073,
+    "title": "和没有信徒的女神大人 一起攻略异世界",
+    "titleJp": "信者ゼロの女神サマと始める異世界攻略",
+    "startDate": "2026-10-11",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/11周日深夜",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "穿越",
+     "奇幻",
+     "逆袭"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1Shtz6aEeL/",
+    "official": "https://zero-believers-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/c78084f93e80738b81c3989752aadf96512995925.jpg"
+   },
+   {
+    "id": 664389,
+    "title": "夜樱家的大作战 第2期 Part.2",
+    "titleJp": "夜桜さんちの大作戦 第2期 第2クール",
+    "startDate": "2026-10-11",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/11周日下午",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "异能",
+     "动作",
+     "恋爱"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1FTtq63E3c/",
+    "official": "https://mission-yozakura-family.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/925ee19c79e5d775730a208eaecce622512995925.jpg"
+   },
+   {
+    "id": 664395,
+    "title": "钻石王牌 第4期 Part.2 (actⅡ 第2期 Part.2)",
+    "titleJp": "ダイヤのA actⅡ-SECOND SEASON- 第2クール",
+    "startDate": "2026-10-11",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/11周日下午",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "运动",
+     "棒球",
+     "热血"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1Exbk64EB3/",
+    "official": "https://diaace.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/616f78fdfdf61b51fa904a8913f953d9512995925.jpg"
+   },
+   {
+    "id": 623249,
+    "title": "龙珠超 比鲁斯",
+    "titleJp": "ドラゴンボール超 ビルス",
+    "startDate": "2026-10-11",
+    "dayOfWeek": 7,
+    "time": null,
+    "broadcast": "10/11周日深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "热血",
+     "战斗",
+     "加强版"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1xxt96AEG3/",
+    "official": "https://dragonball-super.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/b83e47df37cbb2874d40d1efd215860b512995925.jpg"
+   },
+   {
+    "id": 584847,
+    "title": "弹珠汽水瓶里的千岁同学 Part.2",
+    "titleJp": "千歳くんはラムネ瓶のなか 第2クール",
+    "startDate": "2026-10-13",
+    "dayOfWeek": 2,
+    "time": null,
+    "broadcast": "10/13周二深夜",
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "校园",
+     "恋爱",
+     "党争"
+    ],
+    "pv": "https://www.bilibili.com/video/BV17fY76YEYS/",
+    "official": "https://chiramune.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/5f221e221383a119d8107f7d96d3103f512995925.jpg"
+   },
+   {
+    "id": 505550,
+    "title": "黑暗机器",
+    "titleJp": "DARK MACHINE",
+    "startDate": "2026-10-13",
+    "dayOfWeek": 2,
+    "time": null,
+    "broadcast": "10/13周二深夜",
+    "web": false,
+    "sourceType": "原创动画",
+    "tags": [
+     "3v3电竞",
+     "机战"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1oD8L6EEzR/",
+    "official": "https://www.fujitv.co.jp/darkmachine_anime/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/d7ffb106ffd3e30be5617eb6aae5fac5512995925.jpg"
+   },
+   {
+    "id": 513878,
+    "title": "赛博朋克 边缘行者2",
+    "titleJp": "Cyberpunk：Edgerunners 2",
+    "startDate": "2026-10-20",
+    "dayOfWeek": null,
+    "time": null,
+    "broadcast": "10/20网络放送",
+    "web": true,
+    "sourceType": "游戏衍生动画",
+    "tags": [
+     "赛博朋克",
+     "复仇"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1K7KS6iEB7/",
+    "official": "https://www.cyberpunk.net/ja/edgerunners2",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/796ee4631e84dfedb905b47dce8b5013512995925.jpg"
+   },
+   {
+    "id": 612608,
+    "title": "恶魔纹章",
+    "titleJp": "デモンズ・クレスト",
+    "startDate": "2026-11-06",
+    "dayOfWeek": null,
+    "time": null,
+    "broadcast": "11/6网络放送",
+    "web": true,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "网游",
+     "冒险",
+     "求生"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1LrTy6BE2o/",
+    "official": "https://demonscrest-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/0ed80fe7ef7b9c2b22bf50b21e07fdf9512995925.jpg"
+   },
+   {
+    "id": 661692,
+    "title": "愚者之夜",
+    "titleJp": "フールナイト",
+    "startDate": "2026-11-26",
+    "dayOfWeek": null,
+    "time": null,
+    "broadcast": "11/26网络放送",
+    "web": true,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "科幻",
+     "悬疑",
+     "社会"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1pw8K6cEMA/",
+    "official": "https://www.foolnight.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/7b061051628505ffc38bb0e86f9639f0512995925.jpg"
+   },
+   {
+    "id": 593565,
+    "title": "超巡 超条前辈",
+    "titleJp": "超巡！超条先輩",
+    "startDate": null,
+    "dayOfWeek": 2,
+    "time": null,
+    "broadcast": "周二深夜",
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "异能",
+     "警察",
+     "喜剧"
+    ],
+    "pv": "https://www.bilibili.com/video/BV147jw64EYM/",
+    "official": "https://chojun-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/dbc0ce8a1498076de88e45c199067e86512995925.jpg"
+   },
+   {
+    "id": 634708,
+    "title": "冷淡的佐藤同学只对我撒娇",
+    "titleJp": "塩対応の佐藤さんが俺にだけ甘い",
+    "startDate": null,
+    "dayOfWeek": null,
+    "time": null,
+    "broadcast": null,
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "校园",
+     "恋爱喜剧"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1aTwiz3EiR/",
+    "official": "https://shioama-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/9064b6b530314bfbaf293bcb9a903923512995925.jpg"
+   },
+   {
+    "id": 541538,
+    "title": "幻想水浒传",
+    "titleJp": "幻想水滸伝",
+    "startDate": null,
+    "dayOfWeek": null,
+    "time": null,
+    "broadcast": null,
+    "web": false,
+    "sourceType": "游戏改编动画",
+    "tags": [
+     "奇幻",
+     "战争",
+     "群像"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1N5TQ6gE2y/",
+    "official": "https://www.suikoden-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/97392af3803781888607834ee42c5a54512995925.jpg"
+   },
+   {
+    "id": 471844,
+    "title": "归还者的魔法要特别 第2期",
+    "titleJp": "帰還者の魔法は特別です 第2期",
+    "startDate": null,
+    "dayOfWeek": null,
+    "time": null,
+    "broadcast": null,
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "奇幻",
+     "冒险",
+     "轮回"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1958m6AEti/",
+    "official": "https://returners-magic.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/04bd6b06da55b2187ed272ee50995c94512995925.jpg"
+   },
+   {
+    "id": 613256,
+    "title": "恐怖收集者",
+    "titleJp": "恐怖コレクター",
+    "startDate": null,
+    "dayOfWeek": null,
+    "time": null,
+    "broadcast": null,
+    "web": false,
+    "sourceType": "小说改编动画",
+    "tags": [
+     "冒险",
+     "悬疑",
+     "惊悚"
+    ],
+    "pv": null,
+    "official": "https://www.nhk-character.com/chara/kyoufucollector/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/399bc37a3e288adb89b99005d58d869c512995925.jpg"
+   },
+   {
+    "id": 617948,
+    "title": "桃源暗鬼 第2期",
+    "titleJp": "桃源暗鬼～日光・華厳の滝編～",
+    "startDate": null,
+    "dayOfWeek": null,
+    "time": null,
+    "broadcast": null,
+    "web": false,
+    "sourceType": "漫画改编动画",
+    "tags": [
+     "鬼",
+     "桃太郎",
+     "热血战斗",
+     "黑暗英雄"
+    ],
+    "pv": "https://www.bilibili.com/video/BV1uEBvBrEvz/",
+    "official": "https://tougenanki-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/54f65c1affbdc5f66f3242b0c2ac24a0512995925.jpg"
+   },
+   {
+    "id": 563508,
+    "title": "神秘面包小子",
+    "titleJp": "パンどろぼう",
+    "startDate": null,
+    "dayOfWeek": null,
+    "time": null,
+    "broadcast": null,
+    "web": false,
+    "sourceType": "绘本改编动画",
+    "tags": [
+     "奇妙日常",
+     "治愈"
+    ],
+    "pv": null,
+    "official": "https://pandorobo-anime.com/",
+    "cover": "https://i0.hdslb.com/bfs/new_dyn/58218744734a3ff6abfaf06dc478fd16512995925.jpg"
+   }
+  ]
  }
 }

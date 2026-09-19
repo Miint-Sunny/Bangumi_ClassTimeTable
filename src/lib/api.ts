@@ -5,6 +5,8 @@
  * 正常使用一天只会真正打到 API 几次,不给 bgm.tv 添负担。
  */
 
+import { p1, v0, withP1Fallback } from './p1'
+
 const API = 'https://api.bgm.tv'
 /** 同源转发前缀:生产由 worker.js 的 /api/bgm/* 承担,开发期由 vite proxy 承担;GitHub Pages 镜像没有 */
 const PROXY = `${import.meta.env.BASE_URL}api/bgm`
@@ -140,25 +142,61 @@ export interface SubjectInfo {
   rank?: number
   ratingTotal?: number
   hotTags?: string[] // 大家打得最多的标签,收藏面板的"常用标签"推荐
+  wish?: number // 想看人数(前瞻页"期待度")
+  doing?: number // 在看人数
 }
 
-export function fetchSubject(id: number): Promise<SubjectInfo> {
-  return cachedJson(`subject:${id}`, `/v0/subjects/${id}`, 7 * 86400_000, (raw: any) => ({
-    id: raw.id,
-    eps: raw.total_episodes || raw.eps || undefined,
-    summary: raw.summary || undefined,
-    image: raw.images?.common || raw.images?.medium,
-    score: raw.rating?.score || undefined,
-    rank: raw.rating?.rank || undefined,
-    ratingTotal: raw.rating?.total || undefined,
-    hotTags: Array.isArray(raw.tags)
-      ? raw.tags
-          .slice()
-          .sort((a: any, b: any) => (b.count ?? 0) - (a.count ?? 0))
-          .slice(0, 12)
-          .map((t: any) => t.name)
-      : undefined,
-  }))
+const topTags = (tags: unknown): string[] | undefined =>
+  Array.isArray(tags)
+    ? tags
+        .slice()
+        .sort((a: any, b: any) => (b.count ?? 0) - (a.count ?? 0))
+        .slice(0, 12)
+        .map((t: any) => t.name)
+    : undefined
+
+const trimSubjectV0 = (raw: any): SubjectInfo => ({
+  id: raw.id,
+  eps: raw.total_episodes || raw.eps || undefined,
+  summary: raw.summary || undefined,
+  image: raw.images?.common || raw.images?.medium,
+  score: raw.rating?.score || undefined,
+  rank: raw.rating?.rank || undefined,
+  ratingTotal: raw.rating?.total || undefined,
+  hotTags: topTags(raw.tags),
+  wish: raw.collection?.wish ?? undefined,
+  doing: raw.collection?.doing ?? undefined,
+})
+/** p1 的条目:collection 按收藏类型编号计数(1 想看 … 3 在看),其余字段名略有出入 */
+const trimSubjectP1 = (raw: any): SubjectInfo => ({
+  id: raw.id,
+  eps: raw.eps || undefined,
+  summary: raw.summary || undefined,
+  image: raw.images?.common || raw.images?.medium,
+  score: raw.rating?.score || undefined,
+  rank: raw.rating?.rank || undefined,
+  ratingTotal: raw.rating?.total || undefined,
+  hotTags: topTags(raw.tags),
+  wish: raw.collection?.['1'] ?? undefined,
+  doing: raw.collection?.['3'] ?? undefined,
+})
+
+const okJson = async (resp: Response) => {
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
+  return resp.json()
+}
+
+/** 条目详情:v0 不可用时改走 p1(同源转发)。缓存键 subject2:多了想看人数,旧缓存作废。 */
+export async function fetchSubject(id: number): Promise<SubjectInfo> {
+  const key = `subject2:${id}`
+  const hit = readCache<SubjectInfo>(key, 7 * 86400_000)
+  if (hit !== null) return hit
+  const info = await withP1Fallback(
+    async () => trimSubjectV0(await okJson(await v0(null, `/v0/subjects/${id}`))),
+    async () => trimSubjectP1(await okJson(await p1(null, `/subjects/${id}`))),
+  )
+  writeCache(key, info)
+  return info
 }
 
 // ── 好友公开收藏:在看(缓存 1 小时) ──────────────────────────────────

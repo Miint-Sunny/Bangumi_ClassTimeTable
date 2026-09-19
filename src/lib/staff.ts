@@ -3,7 +3,8 @@
  * 官方 API,每部两次请求,结果裁剪后缓存 30 天(再算零请求)。
  */
 
-import { bgmFetch, readCache, writeCache } from './api'
+import { readCache, writeCache } from './api'
+import { p1, v0, withP1Fallback } from './p1'
 import type { LibItem } from './bgm'
 
 export interface StaffInfo {
@@ -27,22 +28,47 @@ export async function fetchStaff(id: number): Promise<StaffInfo> {
   const key = `staff:${id}`
   const hit = readCache<StaffInfo>(key, 30 * 86400_000)
   if (hit) return hit
-  const [subj, chars] = await Promise.all([
-    bgmFetch(`/v0/subjects/${id}`).then((r) => (r.ok ? r.json() : null)),
-    bgmFetch(`/v0/subjects/${id}/characters`).then((r) => (r.ok ? r.json() : [])),
-  ])
+  // 两代接口统一成 { infobox, chars: [{ main, actors }] } 再抽取;v0 不可用时走 p1
+  const { infobox, chars } = await withP1Fallback(
+    async () => {
+      const [subj, raw] = await Promise.all([
+        v0(null, `/v0/subjects/${id}`).then((r) => (r.ok ? r.json() : null)),
+        v0(null, `/v0/subjects/${id}/characters`).then((r) => (r.ok ? r.json() : [])),
+      ])
+      return {
+        infobox: subj?.infobox ?? [],
+        chars: (Array.isArray(raw) ? raw : []).map((c: any) => ({
+          main: c.relation === '主角' || c.relation === '配角',
+          actors: (c.actors ?? []).map((a: any) => ({ id: a?.id, name: a?.name })),
+        })),
+      }
+    },
+    async () => {
+      const [subj, raw] = await Promise.all([
+        p1(null, `/subjects/${id}`).then((r) => (r.ok ? r.json() : null)),
+        p1(null, `/subjects/${id}/characters?limit=100`).then((r) => (r.ok ? r.json() : null)),
+      ])
+      return {
+        // p1 的 infobox 是 { key, values: [{ v }] },pickInfo 认 value 数组里的 v
+        infobox: (subj?.infobox ?? []).map((x: any) => ({ key: x.key, value: x.values })),
+        chars: (raw?.data ?? []).map((c: any) => ({
+          main: c.type === 1 || c.type === 2, // 1 主角 2 配角 3 客串
+          actors: (c.casts ?? []).map((k: any) => ({ id: k?.person?.id, name: k?.person?.name })),
+        })),
+      }
+    },
+  )
   const actors: StaffInfo['actors'] = []
   const seen = new Set<number>()
-  for (const c of Array.isArray(chars) ? chars : []) {
-    if (c.relation !== '主角' && c.relation !== '配角') continue
-    for (const a of c.actors ?? []) {
+  for (const c of chars) {
+    if (!c.main) continue
+    for (const a of c.actors) {
       if (a?.id && !seen.has(a.id)) {
         seen.add(a.id)
         actors.push({ id: a.id, name: a.name })
       }
     }
   }
-  const infobox = subj?.infobox ?? []
   const info: StaffInfo = { studio: pickInfo(infobox, '动画制作'), director: pickInfo(infobox, '导演'), actors: actors.slice(0, 24) }
   writeCache(key, info)
   return info

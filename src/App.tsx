@@ -23,7 +23,7 @@ import StatsPage from './components/StatsPage'
 import Dropdown from './components/Dropdown'
 import { appendLog, diffTracking } from './lib/log'
 import { fetchBangumiData } from './lib/bangumiData'
-import { buildShows, fetchEnhance } from './lib/merge'
+import { buildShows, buildUpcomingShows, fetchEnhance, type Upcoming } from './lib/merge'
 import { behindCount, continuity, type Continuity } from './lib/progress'
 import { weightedScore } from './lib/score'
 import { currentSeason, displayTz, partsInZone, seasonStartInstant } from './lib/time'
@@ -95,6 +95,10 @@ const THEMES: [Settings['theme'], string][] = [
   ['light', '白色'],
 ]
 
+type Page = 'timetable' | 'stats'
+const PAGE_HASH: Record<Page, string> = { timetable: '', stats: '#stats' }
+const pageOfHash = (): Page => (location.hash === '#stats' ? 'stats' : 'timetable')
+
 export default function App() {
   const init = useRef(loadPersisted())
   const [settings, setSettings] = useState<Settings>(init.current.settings)
@@ -123,8 +127,11 @@ export default function App() {
   const [monthCursor, setMonthCursor] = useState<MonthCursor | null>(null) // null = 默认月
   const [showSettings, setShowSettings] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
-  // 顶层页面:课表 / 统计(#stats,浏览器后退可回课表)
-  const [page, setPage] = useState<'timetable' | 'stats'>(() => (location.hash === '#stats' ? 'stats' : 'timetable'))
+  // 顶层页面:课表 / 统计(#stats),浏览器后退可回课表
+  const [page, setPage] = useState<Page>(() => pageOfHash())
+  // 下季新番(enhance.json 的 upcoming,yuc 新番表 + bgm 条目):作为季度选择里的"下季"一项走周表
+  const [upcoming, setUpcoming] = useState<Upcoming | null>(null)
+  const [previewShows, setPreviewShows] = useState<Show[]>([])
   const pageRef = useRef(page)
   const [friendsMap, setFriendsMap] = useState<FriendsMap>(new Map())
   const [friendErrors, setFriendErrors] = useState<Record<string, string>>({})
@@ -176,17 +183,17 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tracking])
 
-  // ── 页面切换(#stats):进入统计页 pushState,浏览器后退回课表 ──
-  const gotoPage = useCallback((p: 'timetable' | 'stats') => {
+  // ── 页面切换(#stats / #preview):进入子页 pushState,浏览器后退回课表 ──
+  const gotoPage = useCallback((p: Page) => {
     if (p === pageRef.current) return
     pageRef.current = p
     setPage(p)
-    if (p === 'stats') history.pushState(null, '', '#stats')
-    else if (location.hash === '#stats') history.pushState(null, '', location.pathname + location.search)
+    if (p !== 'timetable') history.pushState(null, '', PAGE_HASH[p])
+    else if (location.hash) history.pushState(null, '', location.pathname + location.search)
   }, [])
   useEffect(() => {
     const onPop = () => {
-      const p = location.hash === '#stats' ? 'stats' : 'timetable'
+      const p = pageOfHash()
       pageRef.current = p
       setPage(p)
     }
@@ -334,6 +341,8 @@ export default function App() {
         const [cal, bd, enh] = await Promise.all([fetchCalendar(), fetchBangumiData(), fetchEnhance()])
         if (!alive) return
         setShows(buildShows(cal, bd, enh, Date.now()))
+        setUpcoming(enh.upcoming ?? null)
+        setPreviewShows(buildUpcomingShows(enh))
       } catch (e) {
         if (alive) setLoadError(e instanceof Error ? e.message : String(e))
       }
@@ -346,7 +355,7 @@ export default function App() {
 
   // ── 归档季数据包(静态文件,按需加载) ────────────────────────────
   useEffect(() => {
-    if (seasonSel === 'live' || packs[seasonSel]) return
+    if (seasonSel === 'live' || packs[seasonSel] || seasonSel === upcoming?.season) return
     let alive = true
     fetchSeasonPack(seasonSel)
       .then((list) => alive && setPacks((p) => ({ ...p, [seasonSel]: list })))
@@ -354,7 +363,7 @@ export default function App() {
     return () => {
       alive = false
     }
-  }, [seasonSel, packs])
+  }, [seasonSel, packs, upcoming?.season])
 
   // ── 背景补全:在追的番 + 流媒体番,懒拉集数/封面(有 7 天缓存) ──
   const enriched = useRef(new Set<number>())
@@ -386,23 +395,22 @@ export default function App() {
   }, [shows === null, tracking.status])
 
   const applySubjectInfo = useCallback((info: SubjectInfo) => {
-    setShows((prev) =>
-      prev
-        ? prev.map((s) =>
-            s.id === info.id
-              ? {
-                  ...s,
-                  epsTotal: s.epsTotal ?? info.eps,
-                  image: s.image ?? info.image,
-                  score: s.score ?? info.score,
-                  rank: s.rank ?? info.rank,
-                  ratingTotal: s.ratingTotal ?? info.ratingTotal,
-                }
-              : s,
-          )
-        : prev,
-    )
+    const patch = (s: Show): Show =>
+      s.id === info.id
+        ? {
+            ...s,
+            epsTotal: s.epsTotal ?? info.eps,
+            image: s.image ?? info.image,
+            score: s.score ?? info.score,
+            rank: s.rank ?? info.rank,
+            ratingTotal: s.ratingTotal ?? info.ratingTotal,
+            wish: s.wish ?? info.wish,
+          }
+        : s
+    setShows((prev) => (prev ? prev.map(patch) : prev))
+    setPreviewShows((prev) => (prev.some((s) => s.id === info.id) ? prev.map(patch) : prev))
   }, [])
+
 
   // ── 好友进度 ───────────────────────────────────────────────────
   useEffect(() => {
@@ -441,10 +449,37 @@ export default function App() {
   }, [settings.friends])
 
   // ── 当季实时 / 归档数据包二选一,再叠加本机放送校正 ─────────────
-  const archive = seasonSel !== 'live'
   const season = currentSeason(now)
-  const seasonStart = archive ? seasonStartOf(seasonSel) : seasonStartInstant(now)
-  const baseShows = archive ? (packs[seasonSel] ?? null) : shows
+  // 下季前瞻:选中 upcoming 的季度 → 数据来自 yuc 新番表,不是归档包也不是实时 calendar
+  const upcomingSel = !!upcoming && seasonSel === upcoming.season
+  const hasUpcoming = !!upcoming && upcoming.season > season.yyyymm // 到了那一季就并入当季,不再单列
+  const archive = seasonSel !== 'live' && !upcomingSel
+  const seasonStart = seasonSel !== 'live' ? seasonStartOf(seasonSel) : seasonStartInstant(now)
+  const daysToSeason = Math.ceil((seasonStart - now) / 86400_000)
+  const baseShows = upcomingSel ? previewShows : archive ? (packs[seasonSel] ?? null) : shows
+
+  // 下季新番的封面 / 想看人数:进到那一季才逐条懒拉(7 天缓存)
+  const enrichedUp = useRef(new Set<number>())
+  useEffect(() => {
+    if (!upcomingSel) return
+    const targets = previewShows.filter((s) => (!s.image || s.wish === undefined) && !enrichedUp.current.has(s.id))
+    if (targets.length === 0) return
+    let alive = true
+    ;(async () => {
+      for (const s of targets) {
+        enrichedUp.current.add(s.id)
+        try {
+          const info = await fetchSubject(s.id)
+          if (!alive) return
+          applySubjectInfo(info)
+        } catch {}
+        await new Promise((r) => setTimeout(r, 120))
+      }
+    })()
+    return () => {
+      alive = false
+    }
+  }, [upcomingSel, previewShows.length, applySubjectInfo])
 
   const effShows = useMemo(
     () => (baseShows ? baseShows.map((s) => (overrides[s.id] ? { ...s, airFix: overrides[s.id] } : s)) : null),
@@ -638,7 +673,7 @@ export default function App() {
 
   const wide = useWideLayout()
   const openShow = openId !== null && effShows ? (effShows.find((s) => s.id === openId) ?? null) : null
-  const effView: View = archive && view === 'day' ? 'week' : view
+  const effView: View = upcomingSel ? 'week' : archive && view === 'day' ? 'week' : view // 下季只有星期没有日期,只做周表
 
   // 点卡片打开详情;侧栏收起时自动展开
   const openDetail = useCallback(
@@ -744,7 +779,12 @@ export default function App() {
             value={seasonSel}
             onChange={(v) => withViewTransition(() => setSeasonSel(v))}
             groups={[
-              { options: [{ value: 'live', label: `${season.label}${t('(当季)')}` }] },
+              {
+                options: [
+                  { value: 'live', label: `${season.label}${t('(当季)')}` },
+                  ...(hasUpcoming && upcoming ? [{ value: upcoming.season, label: `${fmtSeason(upcoming.season)}${t('(下季)')}` }] : []),
+                ],
+              },
               ...Object.entries(
                 seasonList
                   .filter((s) => s !== season.yyyymm)
@@ -763,7 +803,8 @@ export default function App() {
         </h1>
         {stats && (
           <span className="stats">
-            {t(archive ? '该季收录' : '本季在播')} <b>{stats.total}</b> {t('部')} · {t('在看')}{' '}
+            {t(upcomingSel ? '下季新番' : archive ? '该季收录' : '本季在播')} <b>{stats.total}</b> {t('部')}
+            {upcomingSel && daysToSeason > 0 ? ` · ${t('距开播 {n} 天', { n: daysToSeason })}` : ''} · {t('在看')}{' '}
             <b>{stats.watching}</b>
             {stats.behindTotal > 0 && (
               <>
@@ -797,6 +838,18 @@ export default function App() {
           onChange={(v) => patchSettings({ lang: v as Lang })}
           groups={[{ options: LANGS.map(([k, label]) => ({ value: k, label })) }]}
         />
+        {hasUpcoming && upcoming && (
+          <button
+            className={'iconbtn' + (upcomingSel ? ' accent' : '')}
+            title={fmtSeason(upcoming.season)}
+            onClick={() => {
+              gotoPage('timetable')
+              withViewTransition(() => setSeasonSel(upcomingSel ? 'live' : upcoming.season))
+            }}
+          >
+            {t('🔭 前瞻')}
+          </button>
+        )}
         <button className={'iconbtn' + (page === 'stats' ? ' accent' : '')} onClick={() => gotoPage(page === 'stats' ? 'timetable' : 'stats')}>
           {t('📊 统计')}
         </button>
@@ -1008,6 +1061,7 @@ export default function App() {
                 shows={visibleShows}
                 weekOffset={weekCursor}
                 onWeekOffset={pageWeek}
+                upcoming={upcomingSel}
                 {...viewProps}
               />
             )}

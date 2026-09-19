@@ -8,6 +8,13 @@ import { displayTz, pad, partsInZone, relTime, slotFor } from '../lib/time'
 import { continuity } from '../lib/progress'
 import { displayName, everyWd, fmtMDW, subName, t } from '../lib/i18n'
 
+/** YYYY-MM-DD → 本地化的"10月3日(周六)" */
+const fmtIsoDate = (iso: string): string => {
+  const [y, m, d] = iso.split('-').map(Number)
+  const wd = new Date(Date.UTC(y, m - 1, d)).getUTCDay()
+  return fmtMDW(m, d, wd === 0 ? 7 : wd)
+}
+
 interface Props {
   show: Show
   tracking: Tracking
@@ -135,6 +142,7 @@ export function DetailBody(props: Props) {
                 </>
               ) : null}
               {show.watchers ? <>{t('{n} 人在看', { n: show.watchers })} · </> : null}
+              {show.upcoming && show.wish ? <>{t('{n} 人想看', { n: show.wish })} · </> : null}
               {show.sourceType ?? ''}
               {continuity(show, seasonStart) === 'carry' ? (
                 <> · {t('上季续播')}</>
@@ -163,7 +171,21 @@ export function DetailBody(props: Props) {
         <div className="dm-sec">
           <div className="sec-t">{t('放送')}</div>
           <div className="dm-airinfo">
-            {slot.known ? (
+            {show.upcoming ? (
+              <>
+                {show.firstAirDate ? (
+                  <>
+                    {t('首播')} <b>{fmtIsoDate(show.firstAirDate)}</b>
+                    {show.airHint?.includes('深夜') ? ` · ${t('深夜')}` : ''}
+                  </>
+                ) : (
+                  t('日期待定')
+                )}
+                {show.web ? ` · ${t('网络放送')}` : ''}
+                <br />
+                <span className="soft">{t('放送时刻待 bangumi-data 收录后自动补上')}</span>
+              </>
+            ) : slot.known ? (
               <>
                 {everyWd(slot.day)} <b>{slot.label}</b>({t(settings.tzMode === 'jst' ? '日本时间' : '本地时间')})
               </>

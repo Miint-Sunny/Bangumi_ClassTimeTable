@@ -24,6 +24,7 @@ interface Props {
   now: number
   seasonStart: number
   archive?: boolean // 历史季度:纯课表,不标已播/本周无/时刻线
+  upcoming?: boolean // 下季前瞻:只有星期没有日期,不显示周导航/日期/今天;没有星期的作品单独列在表下
   friendsMap: FriendsMap
   weekOffset: number // 由 App 持有,键盘快捷键可翻页
   onWeekOffset: (o: number) => void
@@ -37,6 +38,7 @@ export default function WeekView({
   now,
   seasonStart,
   archive,
+  upcoming,
   friendsMap,
   weekOffset,
   onWeekOffset,
@@ -47,7 +49,7 @@ export default function WeekView({
   const isCurrentWeek = weekOffset === 0
   const relWeek = REL_WEEK[weekOffset] // 上周/本周/下周,超出为 undefined
 
-  const { rows, cells, unknownByDay, dayHeads, todayWd, nowEff } = useMemo(() => {
+  const { rows, cells, unknownByDay, noDay, dayHeads, todayWd, nowEff } = useMemo(() => {
     // "今天/本周"按深夜表记的参照时刻归属:凌晨 cutoff 前仍算前一天/上一周
     const ref = lateNightRef(now, settings)
     const weekStart = startOfWeekInstant(ref, tz, settings.weekStart) + weekOffset * 7 * DAY_MS
@@ -62,6 +64,7 @@ export default function WeekView({
     // cell key `${day}:${minutes}` → slots
     const cells = new Map<string, ReturnType<typeof mkCell>[]>()
     const unknownByDay = new Map<number, Show[]>()
+    const noDay: Show[] = [] // 连星期都没有(下季"日期待定")
 
     function mkCell(show: Show) {
       if (archive) return { show, airedMark: false, offWeek: false }
@@ -78,7 +81,7 @@ export default function WeekView({
           const list = unknownByDay.get(slot.day) ?? []
           list.push(slot.show)
           unknownByDay.set(slot.day, list)
-        }
+        } else if (upcoming) noDay.push(slot.show)
         continue
       }
       rowSet.add(slot.minutes)
@@ -96,8 +99,8 @@ export default function WeekView({
       return { wd, label: `${p.mo}/${p.d}` }
     })
 
-    return { rows, cells, unknownByDay, dayHeads, todayWd, nowEff }
-  }, [shows, settings, now, tz, days, archive, weekOffset])
+    return { rows, cells, unknownByDay, noDay, dayHeads, todayWd, nowEff }
+  }, [shows, settings, now, tz, days, archive, upcoming, weekOffset])
 
   const fmtRow = (m: number) =>
     `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
@@ -121,11 +124,11 @@ export default function WeekView({
     </>
   )
 
-  const showToday = !archive && isCurrentWeek
+  const showToday = !archive && !upcoming && isCurrentWeek
 
   return (
     <>
-      {!archive && (
+      {!archive && !upcoming && (
         <div className="month-nav">
           <button className="iconbtn" onClick={() => onWeekOffset(weekOffset - 1)}>
             ‹ {t('上周')}
@@ -153,7 +156,7 @@ export default function WeekView({
         return (
           <div key={h.wd} className={`wg-dayhead${isToday ? ' today' : ''}`}>
             <div className="d1">{wdFull(h.wd)}</div>
-            {!archive && (
+            {!archive && !upcoming && (
               <div className="d2">
                 {h.label}
                 {isToday && <span className="today-mark"> · {t('今天')}</span>}
@@ -189,8 +192,8 @@ export default function WeekView({
 
       {hasUnknown && (
         <>
-          <div className="wg-time" title={t('未提供精确时间')}>
-            {t('未定')}
+          <div className="wg-time" title={t(upcoming ? '放送时刻待 bangumi-data 收录后自动补上' : '未提供精确时间')}>
+            {t(upcoming ? '时刻未定' : '未定')}
           </div>
           {days.map((wd) => (
             <div key={wd} className={`wg-cell${showToday && wd === todayWd ? ' today' : ''}`}>
@@ -211,6 +214,16 @@ export default function WeekView({
         </>
       )}
       </div>
+      {upcoming && noDay.length > 0 && (
+        <div className="week-extra">
+          <div className="week-extra-t">{t('日期待定')}</div>
+          <div className="week-extra-list">
+            {noDay.map((s) => (
+              <ShowCard key={s.id} show={s} tracking={tracking} now={now} seasonStart={seasonStart} friendsMap={friendsMap} onOpen={onOpen} />
+            ))}
+          </div>
+        </div>
+      )}
     </>
   )
 }

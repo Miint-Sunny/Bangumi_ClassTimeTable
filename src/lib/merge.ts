@@ -14,10 +14,35 @@ export interface EnhanceEntry {
 
 export type EnhanceMap = Record<string, EnhanceEntry>
 
+/** 下季新番表的一条(scripts/make_enhance.py 从 yuc 对齐后的数据生成) */
+export interface UpcomingShow {
+  id: number
+  title: string
+  titleJp: string
+  startDate: string | null // YYYY-MM-DD
+  dayOfWeek: number | null // ISO 1..7,yuc 的"周六深夜"归周六
+  time: string | null // "24:00" 之类,yuc 未发布时为 null
+  broadcast: string | null // 原文,如 "10/3周六深夜"
+  web: boolean // 网络放送
+  sourceType: string | null
+  tags: string[]
+  pv: string | null
+  official: string | null
+  cover: string | null
+}
+export interface Upcoming {
+  season: string // yyyymm
+  source: string
+  sourceUrl?: string
+  scrapedAt?: string
+  shows: UpcomingShow[]
+}
+
 export interface EnhanceData {
   entries: EnhanceMap
   /** 产地判定(scripts/mark_region.py):非 ja 前缀 = 非日本作品(cn/us/xx…) */
   regions: Record<string, string>
+  upcoming?: Upcoming
 }
 
 export async function fetchEnhance(): Promise<EnhanceData> {
@@ -25,10 +50,53 @@ export async function fetchEnhance(): Promise<EnhanceData> {
     const resp = await fetch(`${import.meta.env.BASE_URL}data/enhance.json`)
     if (!resp.ok) return { entries: {}, regions: {} }
     const data = await resp.json()
-    return { entries: data.entries ?? {}, regions: data.regions ?? {} }
+    const up = data.upcoming
+    return {
+      entries: data.entries ?? {},
+      regions: data.regions ?? {},
+      upcoming: up && Array.isArray(up.shows) && up.shows.length ? up : undefined,
+    }
   } catch {
     return { entries: {}, regions: {} }
   }
+}
+
+const isoWeekdayOf = (iso: string): number => {
+  const [y, m, d] = iso.split('-').map(Number)
+  const wd = new Date(Date.UTC(y, m - 1, d)).getUTCDay()
+  return wd === 0 ? 7 : wd
+}
+
+/**
+ * 下季新番的条目:没有 begin(时刻未知,周表落在"时刻未定"行),星期来自 yuc 周表;
+ * 网络放送只有日期的按日期定星期;封面 / 想看人数由前端进到该季时懒拉 bgm 条目补上。
+ */
+export function buildUpcomingShows(enhData: EnhanceData): Show[] {
+  const up = enhData.upcoming
+  if (!up) return []
+  const enh = enhData.entries
+  return up.shows.map((u) => {
+    const e = enh[String(u.id)]
+    return {
+      id: u.id,
+      nameCn: u.title || u.titleJp,
+      nameJp: u.titleJp || u.title,
+      airWeekdayJst: u.dayOfWeek ?? (u.startDate ? isoWeekdayOf(u.startDate) : undefined),
+      periodDays: 7,
+      officialSite: u.official ?? undefined,
+      sites: [],
+      fromCalendar: false,
+      tags: u.tags.length ? u.tags : e?.tags,
+      pvUrl: u.pv ?? e?.pv,
+      sourceType: u.sourceType ?? e?.sourceType,
+      airFix: e?.air,
+      region: regionOf(undefined, enhData.regions[String(u.id)]),
+      upcoming: true,
+      firstAirDate: u.startDate ?? undefined,
+      airHint: u.broadcast ?? undefined,
+      web: u.web,
+    }
+  })
 }
 
 /**

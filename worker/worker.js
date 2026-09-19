@@ -108,6 +108,8 @@ const P1_ROUTES = [
   [/^\/collections\/subjects$/, ['GET']], // 自己的收藏(含私有、进度)
   [/^\/collections\/subjects\/\d{1,9}$/, ['PUT', 'PATCH']], // 写回:状态/评分/标签/吐槽 · 进度
   [/^\/users\/[A-Za-z0-9_-]{1,32}\/collections\/subjects$/, ['GET']], // 好友公开收藏
+  [/^\/subjects\/\d{1,9}$/, ['GET']], // 条目(封面/集数/想看人数/infobox)
+  [/^\/subjects\/\d{1,9}\/characters$/, ['GET']], // 角色与声优
 ]
 
 /** 只服务本站页面:浏览器跨站请求必带 Sec-Fetch-Site: cross-site 或异源 Origin */

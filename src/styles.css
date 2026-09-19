@@ -1104,3 +1104,10 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
   font-size: 12px; line-height: 1.35; margin-top: 5px; color: var(--text);
 }
 .st-cover:hover .t { color: var(--pink-strong); }
+
+
+/* 下季前瞻:没有星期的作品(日期待定)列在周表下面 */
+.week-extra { margin: 14px 2px 0; }
+.week-extra-t { font-size: 12px; color: var(--text-soft); margin-bottom: 6px; }
+.week-extra-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 6px; }
+.dm-airinfo .soft { color: var(--text-soft); font-size: 12px; }
