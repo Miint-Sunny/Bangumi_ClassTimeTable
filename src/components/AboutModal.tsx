@@ -13,6 +13,15 @@ const CHANGELOG: LogEntry[] = [
   {
     d: '2026-09-19',
     x: {
+      'zh-Hans': '统计改为独立页面(顶栏 📊 切换,地址栏 #stats,浏览器后退可回课表);季度/主题/语言/深夜档等下拉全部换成站内自绘菜单(分组、键盘操作、选中项自动定位),不再用浏览器默认样式',
+      'zh-Hant': '統計改為獨立頁面(頂欄 📊 切換,網址列 #stats,瀏覽器後退可回課表);季度/主題/語言/深夜檔等下拉全部換成站內自繪選單(分組、鍵盤操作、選中項自動定位),不再用瀏覽器預設樣式',
+      ja: '統計を独立ページに(上部 📊 で切替、URL #stats、ブラウザの戻るで時間割へ)。シーズン/テーマ/言語/深夜帯のプルダウンをサイト独自のメニューに刷新(グループ表示、キーボード操作、選択項目へ自動スクロール)',
+      en: 'Stats is now a full page (toggle via 📊, URL #stats, browser back returns to the timetable); season / theme / language / late-night dropdowns replaced with custom menus (grouped, keyboard-friendly, auto-scroll to the selected item) instead of browser defaults',
+    },
+  },
+  {
+    d: '2026-09-19',
+    x: {
       'zh-Hans': '追番统计页按 bgm 新版主页重做:状态胶囊行、收藏/看过/完成率/平均分/标准差/评分数六色块、10→1 评分直方图,新增「时间胶囊」(想看/在看/完成了第几话的真实动作流,可翻页)',
       'zh-Hant': '追番統計頁按 bgm 新版主頁重做:狀態膠囊行、收藏/看過/完成率/平均分/標準差/評分數六色塊、10→1 評分直方圖,新增「時間膠囊」(想看/在看/完成了第幾話的真實動作流,可翻頁)',
       ja: '視聴統計を bgm 新版プロフィールに合わせて刷新:状態チップ、収蔵/見た/完了率/平均/標準偏差/評価数の6ブロック、10→1 の評価分布。「タイムカプセル」(視聴履歴の実アクション、ページ送り可)を追加',

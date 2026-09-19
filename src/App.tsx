@@ -19,7 +19,8 @@ import { beginOauthLogin, completeOauthLogin, fetchOauthConf, refreshIfNeeded, t
 import { withViewTransition } from './lib/anim'
 import { LANGS, setLang, t, type Lang } from './lib/i18n'
 import AboutModal from './components/AboutModal'
-import StatsModal from './components/StatsModal'
+import StatsPage from './components/StatsPage'
+import Dropdown from './components/Dropdown'
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
 import { behindCount, continuity, type Continuity } from './lib/progress'
@@ -121,7 +122,9 @@ export default function App() {
   const [monthCursor, setMonthCursor] = useState<MonthCursor | null>(null) // null = 默认月
   const [showSettings, setShowSettings] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
-  const [showStats, setShowStats] = useState(false)
+  // 顶层页面:课表 / 统计(#stats,浏览器后退可回课表)
+  const [page, setPage] = useState<'timetable' | 'stats'>(() => (location.hash === '#stats' ? 'stats' : 'timetable'))
+  const pageRef = useRef(page)
   const [friendsMap, setFriendsMap] = useState<FriendsMap>(new Map())
   const [friendErrors, setFriendErrors] = useState<Record<string, string>>({})
   const [now, setNow] = useState(() => Date.now())
@@ -157,6 +160,24 @@ export default function App() {
       el.removeAttribute('data-theme-anim')
     }
   }, [settings.theme])
+
+  // ── 页面切换(#stats):进入统计页 pushState,浏览器后退回课表 ──
+  const gotoPage = useCallback((p: 'timetable' | 'stats') => {
+    if (p === pageRef.current) return
+    pageRef.current = p
+    setPage(p)
+    if (p === 'stats') history.pushState(null, '', '#stats')
+    else if (location.hash === '#stats') history.pushState(null, '', location.pathname + location.search)
+  }, [])
+  useEffect(() => {
+    const onPop = () => {
+      const p = location.hash === '#stats' ? 'stats' : 'timetable'
+      pageRef.current = p
+      setPage(p)
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
 
   // ── Bangumi 账号:令牌登录 + 双向同步 ───────────────────────────
   const accountRef = useRef(account)
@@ -700,38 +721,25 @@ export default function App() {
       <header className="site-header">
         <h1>
           {t('番组课表')}
-          <select
+          <Dropdown
             className="season-sel"
-            value={seasonSel}
-            onChange={(e) => {
-              const v = e.target.value
-              withViewTransition(() => setSeasonSel(v))
-            }}
             title={t('切换季度')}
-          >
-            <option value="live">
-              {season.label}
-              {t('(当季)')}
-            </option>
-            {Object.entries(
-              seasonList
-                .filter((s) => s !== season.yyyymm)
-                .reduce<Record<string, string[]>>((acc, s) => {
-                  ;(acc[s.slice(0, 4)] ??= []).push(s)
-                  return acc
-                }, {}),
-            )
-              .sort(([a], [b]) => b.localeCompare(a)) // 年份键会被对象按数值升序排,这里按新→旧
-              .map(([year, list]) => (
-                <optgroup key={year} label={year}>
-                  {list.map((s) => (
-                    <option key={s} value={s}>
-                      {fmtSeason(s)}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-          </select>
+            value={seasonSel}
+            onChange={(v) => withViewTransition(() => setSeasonSel(v))}
+            groups={[
+              { options: [{ value: 'live', label: `${season.label}${t('(当季)')}` }] },
+              ...Object.entries(
+                seasonList
+                  .filter((s) => s !== season.yyyymm)
+                  .reduce<Record<string, string[]>>((acc, s) => {
+                    ;(acc[s.slice(0, 4)] ??= []).push(s)
+                    return acc
+                  }, {}),
+              )
+                .sort(([a], [b]) => b.localeCompare(a)) // 年份键会被对象按数值升序排,这里按新→旧
+                .map(([year, list]) => ({ label: year, options: list.map((s) => ({ value: s, label: fmtSeason(s) })) })),
+            ]}
+          />
         </h1>
         {stats && (
           <span className="stats">
@@ -753,31 +761,23 @@ export default function App() {
             </a>
           ))}
         </span>
-        <select
+        <Dropdown
           className="season-sel theme-sel"
           title={t('色彩模式')}
+          align="right"
           value={settings.theme}
-          onChange={(e) => patchSettings({ theme: e.target.value as Settings['theme'] })}
-        >
-          {THEMES.map(([k, label]) => (
-            <option key={k} value={k}>
-              {t(label)}
-            </option>
-          ))}
-        </select>
-        <select
+          onChange={(v) => patchSettings({ theme: v as Settings['theme'] })}
+          groups={[{ options: THEMES.map(([k, label]) => ({ value: k, label: t(label) })) }]}
+        />
+        <Dropdown
           className="season-sel lang-sel"
           title={t('语言')}
+          align="right"
           value={settings.lang}
-          onChange={(e) => patchSettings({ lang: e.target.value as Lang })}
-        >
-          {LANGS.map(([k, label]) => (
-            <option key={k} value={k}>
-              {label}
-            </option>
-          ))}
-        </select>
-        <button className="iconbtn" onClick={() => setShowStats(true)}>
+          onChange={(v) => patchSettings({ lang: v as Lang })}
+          groups={[{ options: LANGS.map(([k, label]) => ({ value: k, label })) }]}
+        />
+        <button className={'iconbtn' + (page === 'stats' ? ' accent' : '')} onClick={() => gotoPage(page === 'stats' ? 'timetable' : 'stats')}>
           {t('📊 统计')}
         </button>
         <button className="iconbtn" onClick={() => setShowAbout(true)}>
@@ -788,6 +788,7 @@ export default function App() {
         </button>
       </header>
 
+      {page === 'timetable' && (
       <div className="toolbar">
         <span className="seg">
           {(
@@ -939,7 +940,25 @@ export default function App() {
         )}
       </div>
 
-      {loadError ? (
+      )}
+
+      {page === 'stats' ? (
+        <div className="content-row">
+          <div className="view-area">
+            <StatsPage
+              account={account}
+              tracking={tracking}
+              shows={shows}
+              seasonList={seasonList}
+              onOpenSeason={(s) => {
+                gotoPage('timetable')
+                withViewTransition(() => setSeasonSel(s))
+              }}
+              onClose={() => gotoPage('timetable')}
+            />
+          </div>
+        </div>
+      ) : loadError ? (
         <div className="error-box">
           {t('数据加载失败:')}
           {loadError}
@@ -1047,19 +1066,6 @@ export default function App() {
       )}
 
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
-      {showStats && (
-        <StatsModal
-          account={account}
-          tracking={tracking}
-          shows={shows}
-          seasonList={seasonList}
-          onOpenSeason={(s) => {
-            setShowStats(false)
-            withViewTransition(() => setSeasonSel(s))
-          }}
-          onClose={() => setShowStats(false)}
-        />
-      )}
 
       {showSettings && (
         <SettingsPanel

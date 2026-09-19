@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import Dropdown from './Dropdown'
 import type { BgmAccount, Settings } from '../types'
 import { clearApiCache } from '../lib/api'
 import { t, wdFull } from '../lib/i18n'
@@ -207,18 +208,13 @@ export default function SettingsPanel({
             </button>
           </span>
           {settings.lateNightCutoff > 0 && (
-            <select
+            <Dropdown
               className="cut-sel"
               title={t('几点之前算前一天的深夜档')}
-              value={settings.lateNightCutoff}
-              onChange={(e) => onChange({ lateNightCutoff: +e.target.value })}
-            >
-              {[1, 2, 3, 4, 5, 6].map((h) => (
-                <option key={h} value={h}>
-                  {t('{h}:00 前(表记到 {e}:59)', { h, e: 23 + h })}
-                </option>
-              ))}
-            </select>
+              value={String(settings.lateNightCutoff)}
+              onChange={(v) => onChange({ lateNightCutoff: +v })}
+              groups={[{ options: [1, 2, 3, 4, 5, 6].map((h) => ({ value: String(h), label: t('{h}:00 前(表记到 {e}:59)', { h, e: 23 + h }) })) }]}
+            />
           )}
         </div>
 

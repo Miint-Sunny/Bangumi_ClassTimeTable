@@ -1,5 +1,5 @@
 /**
- * 追番统计页,按 bgm.tv 新版个人主页的「收藏统计」与「时间胶囊」重做:
+ * 追番统计页(占据主区域的独立页面,不是弹窗),按 bgm.tv 新版个人主页的「收藏统计」与「时间胶囊」重做:
  *   状态胶囊行 → 六色块(收藏/看过/完成率/平均分/标准差/评分数)+ 10→1 评分直方图
  *   → 时间胶囊(p1 时间线,经同源代理)| 换季对比 → 每季追番柱图 → 题材偏好 | 年度足迹 → 9 分神作
  * 数据:登录 bgm 时拉全量收藏(pullLibrary,缓存 24h);未登录退回本机当季 tracking。
@@ -55,7 +55,7 @@ const fmtWhen = (ms: number) => {
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
-export default function StatsModal({ account, tracking, shows, seasonList, onOpenSeason, onClose }: Props) {
+export default function StatsPage({ account, tracking, shows, seasonList, onOpenSeason, onClose }: Props) {
   const [lib, setLib] = useState<Library | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -89,13 +89,11 @@ export default function StatsModal({ account, tracking, shows, seasonList, onOpe
   const finishRate = st.counts[2] + st.counts[5] ? st.counts[2] / (st.counts[2] + st.counts[5]) : null
 
   return (
-    <div className="overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal stats">
-        <button className="close" onClick={onClose} aria-label={t('关闭')}>
-          ×
-        </button>
-
+    <div className="stats-page">
         <div className="st-head">
+          <button className="iconbtn st-back" onClick={onClose}>
+            ← {t('返回课表')}
+          </button>
           <h2>{t('追番统计')}</h2>
           <span className="sub">
             {live && account ? `@${account.nickname || account.username} · ` : ''}
@@ -288,7 +286,6 @@ export default function StatsModal({ account, tracking, shows, seasonList, onOpe
             </div>
           </>
         )}
-      </div>
     </div>
   )
 }

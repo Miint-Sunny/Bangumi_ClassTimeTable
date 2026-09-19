@@ -854,7 +854,8 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
 :root[data-theme='dark'], :root[data-theme='bgm-dark'], :root[data-theme='contrast'] {
   --st-wish: #c96f22; /* 深底上橙色压暗一档,亮度带才过检 */
 }
-.modal.stats { max-width: 980px; }
+.stats-page { max-width: 1000px; margin: 0 auto; padding: 2px 2px 40px; }
+.st-back { margin-right: 4px; }
 .st-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
 .st-head h2 { margin: 0; font-weight: normal; font-size: 20px; color: var(--pink-strong); }
 .st-head .sub { color: var(--text-soft); font-size: 12px; }
@@ -980,3 +981,38 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
 .st-cap .ev .prog { color: var(--text); }
 .st-cap .ev .when { color: var(--text-subtle); font-size: 11px; margin-left: 6px; white-space: nowrap; }
 .st-cap .more { margin-top: 8px; padding-left: 6px; }
+
+/* ── 自绘下拉(Dropdown):触发器沿用 season-sel/cut-sel 的外观,弹层为站内浮层 ── */
+.dd { position: relative; display: inline-flex; align-items: center; }
+.dd:focus-within { border-color: var(--pink); }
+.dd-btn {
+  all: unset; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  color: inherit; font: inherit; line-height: inherit; max-width: 100%;
+}
+.dd-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dd-caret { font-size: 10px; color: var(--text-soft); transition: transform var(--dur-fast) var(--ease-out); }
+.dd.open .dd-caret { transform: rotate(180deg); }
+.dd-menu {
+  position: absolute; top: calc(100% + 5px); left: 0; z-index: 80;
+  min-width: max(100%, 160px); max-height: min(62vh, 520px); overflow-y: auto; overscroll-behavior: contain;
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 4px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.08);
+  animation: dd-in var(--dur-pop) var(--ease-spring);
+  scrollbar-width: thin;
+}
+.dd-menu.right { left: auto; right: 0; }
+@keyframes dd-in { from { opacity: 0; transform: translateY(-4px) scale(0.98); } to { opacity: 1; transform: none; } }
+.dd-gl { font-size: 11px; color: var(--text-subtle); padding: 7px 10px 3px; letter-spacing: 0.3px; }
+.dd-group + .dd-group { border-top: 1px solid var(--border-soft); margin-top: 2px; }
+.dd-opt {
+  position: relative; padding: 5px 12px 5px 26px; border-radius: 5px; cursor: pointer;
+  font-size: 13px; color: var(--text); white-space: nowrap; line-height: 1.5;
+}
+.dd-opt.focus { background: var(--pink-soft); color: var(--pink-strong); }
+.dd-opt.on { color: var(--pink-strong); }
+.dd-opt.on::before { content: '✓'; position: absolute; left: 9px; top: 5px; font-size: 12px; }
+.dd-opt.disabled { color: var(--text-subtle); cursor: default; }
+:root[data-theme='dark'] .dd-opt.focus, :root[data-theme='bgm-dark'] .dd-opt.focus, :root[data-theme='contrast'] .dd-opt.focus {
+  background: rgba(240, 145, 153, 0.18);
+}
+@media (prefers-reduced-motion: reduce) { .dd-menu { animation: none; } }

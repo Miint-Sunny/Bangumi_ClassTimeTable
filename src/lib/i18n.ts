@@ -32,6 +32,7 @@ export function detectLang(): Lang {
 // value = [繁中, 日本語, EN]
 const DICT: Record<string, [string, string, string]> = {
   // ── 追番统计页 ──
+  返回课表: ['返回課表', '時間割へ戻る', 'Back to timetable'],
   平均分: ['平均分', '平均点', 'Avg score'],
   时间胶囊: ['時間膠囊', 'タイムカプセル', 'Time capsule'],
   收藏: ['收藏', '収蔵', 'Collected'],
