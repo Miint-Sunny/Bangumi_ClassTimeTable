@@ -32,6 +32,9 @@ export function detectLang(): Lang {
 // value = [繁中, 日本語, EN]
 const DICT: Record<string, [string, string, string]> = {
   // ── 追番统计页 ──
+  '周几 × 时段': ['週幾 × 時段', '曜日 × 時間帯', 'Weekday × hour'],
+  一天里的时段: ['一天裡的時段', '1日の時間帯', 'Time of day'],
+  '高峰 {h} 点': ['高峰 {h} 點', 'ピーク {h} 時', 'peak at {h}:00'],
   观看节奏: ['觀看節奏', '視聴リズム', 'Watch rhythm'],
   '最近一年,每格一天': ['最近一年,每格一天', '直近1年、1マス=1日', 'Last year, one cell per day'],
   '正在整理时间线…': ['正在整理時間線…', 'タイムラインを集計中…', 'Crunching the timeline…'],

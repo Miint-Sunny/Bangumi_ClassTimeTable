@@ -3,17 +3,32 @@
  * 追新 vs 补番、冷门指数、口味演变、制作/声优榜、好友重合度。全部纯 HTML/CSS 图表。
  */
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { CapsuleEvent, LibItem } from '../lib/bgm'
 import { computeRhythm } from '../lib/rhythm'
 import { TYPE_ORDER, TYPE_VAR, type Catchup, type Deviation, type Drops, type Obscure, type Taste } from '../lib/stats'
 import { aggregateStaff, fetchStaff, type StaffInfo, type StaffRanks } from '../lib/staff'
 import { fetchFriendLibrary, overlap, type Overlap } from '../lib/friends'
-import { t } from '../lib/i18n'
+import { t, wdFull, wdShort } from '../lib/i18n'
 
 const fmt1 = (n: number | null) => (n === null ? '–' : n.toFixed(1))
 const pct = (n: number | null) => (n === null ? '–' : `${Math.round(n * 100)}%`)
 const level = (n: number, max: number) => (n <= 0 ? 0 : n <= max * 0.25 ? 1 : n <= max * 0.5 ? 2 : n <= max * 0.75 ? 3 : 4)
+
+/** 让热力格随容器宽度伸缩:cols 列 + 左侧标签 + 间隙 刚好铺满,夹在 [min, max] 之间 */
+function useCellSize(ref: React.RefObject<HTMLDivElement | null>, cols: number, labelW: number, min: number, max: number) {
+  const [size, setSize] = useState(max)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const calc = () => setSize(Math.max(min, Math.min(max, Math.floor((el.clientWidth - labelW - (cols - 1) * 3) / cols))))
+    calc()
+    const ro = new ResizeObserver(calc)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [ref, cols, labelW, min, max])
+  return size
+}
 
 function Kpi({ n, l, s }: { n: string; l: string; s?: string }) {
   return (
@@ -40,6 +55,11 @@ function Sub({ title, hint }: { title: string; hint?: string }) {
 
 export function RhythmSection({ events, loading, now }: { events: CapsuleEvent[]; loading: boolean; now: number }) {
   const r = useMemo(() => computeRhythm(events, now), [events, now])
+  const calRef = useRef<HTMLDivElement>(null)
+  const whRef = useRef<HTMLDivElement>(null)
+  const cols = Math.ceil(r.days.length / 7)
+  const calCell = useCellSize(calRef, cols, 24, 9, 14)
+  const whCell = useCellSize(whRef, 24, 38, 9, 15)
   if (loading && !events.length) return <div className="st-empty">{t('正在整理时间线…')}</div>
   if (!events.length) return <div className="st-empty">{t('还没有记录')}</div>
   const max = Math.max(1, ...r.days.map((d) => d.n))
@@ -48,61 +68,91 @@ export function RhythmSection({ events, loading, now }: { events: CapsuleEvent[]
   r.days.forEach((d, i) => {
     if (d.date.endsWith('-01')) monthAt[Math.floor(i / 7)] = String(+d.date.slice(5, 7))
   })
-  const cols = Math.ceil(r.days.length / 7)
   const whMax = Math.max(1, ...r.weekHour.flat())
-  const wdLabels = ['一', '二', '三', '四', '五', '六', '日']
+  const hours = Array.from({ length: 24 }, (_, h) => r.weekHour.reduce((a, row) => a + row[h], 0))
+  const hMax = Math.max(1, ...hours)
+  const peak = hours.indexOf(hMax)
   const gapText = r.medianGapH === null ? '–' : r.medianGapH >= 48 ? t('{n} 天', { n: (r.medianGapH / 24).toFixed(1) }) : t('{n} 小时', { n: r.medianGapH.toFixed(1) })
   return (
     <>
-      <div className="st-kpis">
+      <div className="st-kpis grid">
         <Kpi n={r.total.toLocaleString()} l={t('动作')} s={t('{n} 个活跃日', { n: r.activeDays })} />
         <Kpi n={pct(r.nightRatio)} l={t('深夜党指数')} s={t('0–5 点占比')} />
         <Kpi n={gapText} l={t('一集平均耗时')} s={t('同一部相邻两话的中位间隔')} />
         <Kpi n={String(r.streakWeeks)} l={t('连续追番周数')} />
-        {r.longest && <Kpi n={t('{n} 天', { n: r.longest.days })} l={t('最长追番')} s={r.longest.name} />}
-        {r.busiest && <Kpi n={String(r.busiest.n)} l={t('最忙的一天')} s={r.busiest.date} />}
+        <Kpi n={r.longest ? t('{n} 天', { n: r.longest.days }) : '–'} l={t('最长追番')} s={r.longest?.name} />
+        <Kpi n={r.busiest ? String(r.busiest.n) : '–'} l={t('最忙的一天')} s={r.busiest?.date} />
       </div>
-      <div className="hm-wrap">
-        <div className="hm-months" style={{ gridTemplateColumns: `repeat(${cols}, 11px)` }}>
-          {Array.from({ length: cols }, (_, c) => (
-            <span key={c}>{monthAt[c] ? t('{m}月', { m: monthAt[c] }) : ''}</span>
-          ))}
-        </div>
-        <div className="hm-body">
-          <div className="hm-wd">
-            {wdLabels.map((w, i) => (
-              <span key={w}>{i % 2 === 0 ? t(`周${w}`) : ''}</span>
+
+      <div className="hm-scroll" ref={calRef} style={{ '--hm': `${calCell}px` } as React.CSSProperties}>
+        <div className="hm-wrap">
+          <div className="hm-months" style={{ gridTemplateColumns: `repeat(${cols}, var(--hm))` }}>
+            {Array.from({ length: cols }, (_, c) => (
+              <span key={c}>{monthAt[c] ? t('{m}月', { m: monthAt[c] }) : ''}</span>
             ))}
           </div>
-          <div className="hm-cal" style={{ gridTemplateColumns: `repeat(${cols}, 11px)` }}>
-            {r.days.map((d) => (
-              <span key={d.date} className={`hm-c l${level(d.n, max)}`} style={{ gridRow: d.wd + 1 }} title={`${d.date} · ${t('{n} 次', { n: d.n })}`} />
-            ))}
+          <div className="hm-body">
+            <div className="hm-wd">
+              {Array.from({ length: 7 }, (_, i) => (
+                <span key={i}>{i % 2 === 0 ? wdShort(i + 1) : ''}</span>
+              ))}
+            </div>
+            <div className="hm-cal" style={{ gridTemplateColumns: `repeat(${cols}, var(--hm))` }}>
+              {r.days.map((d) => (
+                <span key={d.date} className={`hm-c l${level(d.n, max)}`} style={{ gridRow: d.wd + 1 }} title={`${d.date} · ${t('{n} 次', { n: d.n })}`} />
+              ))}
+            </div>
           </div>
-        </div>
-        <div className="hm-legend">
-          <span>{t('少')}</span>
-          {[0, 1, 2, 3, 4].map((l) => (
-            <i key={l} className={`hm-c l${l}`} />
-          ))}
-          <span>{t('多')}</span>
+          <div className="hm-legend">
+            <span>{t('少')}</span>
+            {[0, 1, 2, 3, 4].map((l) => (
+              <i key={l} className={`hm-c l${l}`} />
+            ))}
+            <span>{t('多')}</span>
+          </div>
         </div>
       </div>
-      <div className="wh-wrap">
-        <div className="wh-hours">
-          <span />
-          {Array.from({ length: 24 }, (_, h) => (
-            <span key={h}>{h % 6 === 0 ? h : ''}</span>
-          ))}
-        </div>
-        {r.weekHour.map((row, wd) => (
-          <div key={wd} className="wh-row">
-            <span className="wh-wd">{t(`周${wdLabels[wd]}`)}</span>
-            {row.map((n, h) => (
-              <i key={h} className={`hm-c l${level(n, whMax)}`} title={`${t(`周${wdLabels[wd]}`)} ${h}:00 · ${t('{n} 次', { n })}`} />
-            ))}
+
+      <div className="st-two">
+        <div>
+          <div className="st-sub">{t('周几 × 时段')}</div>
+          <div className="hm-scroll" ref={whRef} style={{ '--hm': `${whCell}px` } as React.CSSProperties}>
+            <div className="wh-wrap">
+              <div className="wh-hours">
+                <span />
+                {Array.from({ length: 24 }, (_, h) => (
+                  <span key={h}>{h % 6 === 0 ? h : ''}</span>
+                ))}
+              </div>
+              {r.weekHour.map((row, wd) => (
+                <div key={wd} className="wh-row">
+                  <span className="wh-wd">{wdFull(wd + 1)}</span>
+                  {row.map((n, h) => (
+                    <i key={h} className={`hm-c l${level(n, whMax)}`} title={`${wdFull(wd + 1)} ${h}:00 · ${t('{n} 次', { n })}`} />
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+        </div>
+        <div>
+          <div className="st-sub">
+            {t('一天里的时段')}
+            {hMax > 0 && <span className="hint">{t('高峰 {h} 点', { h: peak })}</span>}
+          </div>
+          <div className="st-histwrap hours">
+            <div className="st-hist">
+              {hours.map((n, h) => (
+                <div key={h} className={'b' + (h === peak ? ' peak' : '')} style={{ height: `${(n / hMax) * 100}%` }} title={`${h}:00 · ${t('{n} 次', { n })}`} />
+              ))}
+            </div>
+            <div className="st-hist-x">
+              {hours.map((_, h) => (
+                <span key={h}>{h % 6 === 0 ? h : ''}</span>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </>
   )
