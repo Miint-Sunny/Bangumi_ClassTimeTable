@@ -44,7 +44,7 @@
   "688623": "us"
  },
  "season": "202610",
- "generated_at": "2026-09-17T16:00:58.595671Z",
+ "generated_at": "2026-09-19T12:45:34.498294Z",
  "entries": {
   "255209": {
    "tags": [
@@ -156,6 +156,7 @@
    "pv": "https://www.bilibili.com/video/BV1z1t26KEU9/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/7",
     "broadcast_text": "10/7周三晚间"
    }
   },
@@ -169,6 +170,7 @@
    "pv": "https://www.bilibili.com/video/BV16BbD6nE21/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/7",
     "broadcast_text": "10/7周三深夜"
    }
   },
@@ -187,6 +189,7 @@
    "pv": "https://www.bilibili.com/video/BV1LhMy6uEPB/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/5",
     "broadcast_text": "10/5周一深夜"
    }
   },
@@ -226,6 +229,7 @@
    "pv": "https://www.bilibili.com/video/BV1SoXxB9EZv/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/3",
     "broadcast_text": "10/3周六深夜"
    }
   },
@@ -310,6 +314,7 @@
    "pv": "https://www.bilibili.com/video/BV1d4Y96FE6c/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/7",
     "broadcast_text": "10/7周三晚间"
    }
   },
@@ -366,6 +371,7 @@
    "pv": "https://www.bilibili.com/video/BV11T8v6JEyZ/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/2",
     "broadcast_text": "10/2周五深夜"
    }
   },
@@ -416,6 +422,7 @@
    "pv": "https://www.bilibili.com/video/BV1zHMg67EgK/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/7",
     "broadcast_text": "10/7周三深夜"
    }
   },
@@ -438,6 +445,7 @@
    "pv": "https://www.bilibili.com/video/BV1oD8L6EEzR/",
    "sourceType": "原创动画",
    "yuc": {
+    "start_date": "10/13",
     "broadcast_text": "10/13周二深夜"
    }
   },
@@ -486,6 +494,7 @@
    "pv": "https://www.bilibili.com/video/BV1x6Y76yE6L/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/3",
     "broadcast_text": "10/3周六晚间"
    }
   },
@@ -497,6 +506,7 @@
    "pv": "https://www.bilibili.com/video/BV1K7KS6iEB7/",
    "sourceType": "游戏衍生动画",
    "yuc": {
+    "start_date": "10/20",
     "broadcast_text": "10/20网络放送"
    }
   },
@@ -643,6 +653,7 @@
    "pv": "https://www.bilibili.com/video/BV1azti68E2p/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "9/27",
     "broadcast_text": "9/27周日深夜"
    }
   },
@@ -751,6 +762,7 @@
    "pv": "https://www.bilibili.com/video/BV1Ma496NE5o/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周日晚间"
    }
   },
@@ -762,6 +774,7 @@
    "pv": "https://www.bilibili.com/video/BV1VGTt6WEjZ/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/9",
     "broadcast_text": "10/9周五晚间"
    }
   },
@@ -867,6 +880,7 @@
    "pv": "https://www.bilibili.com/video/BV1nqbN6sEnT/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/3",
     "broadcast_text": "10/3周六晚间"
    }
   },
@@ -893,6 +907,19 @@
      "24": "2026-06-27T15:55:00Z"
     },
     "source": "https://bgm.wiki"
+   }
+  },
+  "544378": {
+   "tags": [
+    "TCG",
+    "武士",
+    "决斗"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1rChG6nEfi/",
+   "sourceType": "原创动画",
+   "yuc": {
+    "start_date": "10/6",
+    "broadcast_text": "10/6周二深夜"
    }
   },
   "545008": {
@@ -988,6 +1015,7 @@
    "pv": "https://www.bilibili.com/video/BV1t58X6BEdb/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周四下午"
    }
   },
@@ -1032,6 +1060,7 @@
    "pv": "https://www.bilibili.com/video/BV19u816ZEx8/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/3",
     "broadcast_text": "10/3周六深夜"
    }
   },
@@ -1044,6 +1073,7 @@
    "pv": "https://www.bilibili.com/video/BV1WmtE6cE3M/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周日下午"
    }
   },
@@ -1172,6 +1202,7 @@
    "pv": "https://www.bilibili.com/video/BV1qrMu6yErm/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/3",
     "broadcast_text": "10/3周六深夜"
    }
   },
@@ -1184,6 +1215,7 @@
    "pv": "https://www.bilibili.com/video/BV1nMb16iEbp/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/2",
     "broadcast_text": "10/2周五深夜"
    }
   },
@@ -1196,6 +1228,7 @@
    "pv": "https://www.bilibili.com/video/BV1sPMb6kEGz/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/10",
     "broadcast_text": "10/10周六下午"
    }
   },
@@ -1555,6 +1588,7 @@
    "pv": "https://www.bilibili.com/video/BV17fY76YEYS/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/13",
     "broadcast_text": "10/13周二深夜"
    }
   },
@@ -1608,6 +1642,7 @@
    "pv": "https://www.bilibili.com/video/BV1yEYq6hEfP/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/3",
     "broadcast_text": "10/3周六深夜"
    }
   },
@@ -1620,6 +1655,7 @@
    "pv": "https://www.bilibili.com/video/BV1SUgK6FEmq/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "9/30",
     "broadcast_text": "9/30周三深夜"
    }
   },
@@ -1645,6 +1681,7 @@
    "pv": "https://www.bilibili.com/video/BV12Hb56xEJz/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周日深夜"
    }
   },
@@ -1656,6 +1693,7 @@
    "pv": "https://www.bilibili.com/video/BV1VuN16aEQm/",
    "sourceType": "原创动画",
    "yuc": {
+    "start_date": "10/8",
     "broadcast_text": "10/8周四深夜"
    }
   },
@@ -1725,6 +1763,7 @@
    "pv": "https://www.bilibili.com/video/BV1Mwt162ECm/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周日深夜"
    }
   },
@@ -1802,6 +1841,7 @@
    "pv": "https://www.bilibili.com/video/BV1uibP6KE1q/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周日晚间"
    }
   },
@@ -1814,6 +1854,7 @@
    "pv": "https://www.bilibili.com/video/BV16wYs69Eox/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/3",
     "broadcast_text": "10/3周六深夜"
    }
   },
@@ -1894,6 +1935,7 @@
    "pv": "https://www.bilibili.com/video/BV1LrTy6BE2o/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "11/6",
     "broadcast_text": "11/6网络放送"
    }
   },
@@ -1962,6 +2004,7 @@
    "pv": "https://www.bilibili.com/video/BV1kDY66KEpC/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/5",
     "broadcast_text": "10/5周一深夜"
    }
   },
@@ -2016,6 +2059,7 @@
    "pv": "https://www.bilibili.com/video/BV1JQuc6fE5G/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/3",
     "broadcast_text": "10/3周六晚间"
    }
   },
@@ -2037,6 +2081,20 @@
      "11": "2026-09-13T17:00:00Z"
     },
     "source": "https://bgm.wiki"
+   }
+  },
+  "617273": {
+   "tags": [
+    "科幻",
+    "喜剧",
+    "无厘头奇妙日常",
+    "重制"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1GYYk64EEt/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "10/3",
+    "broadcast_text": "10/3周六早间"
    }
   },
   "617948": {
@@ -2073,6 +2131,7 @@
    "pv": "https://www.bilibili.com/video/BV1Shtz6aEeL/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/11",
     "broadcast_text": "10/11周日深夜"
    }
   },
@@ -2085,6 +2144,7 @@
    "pv": "https://www.bilibili.com/video/BV1Az3R6sEpN/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/9",
     "broadcast_text": "10/9周五深夜"
    }
   },
@@ -2144,6 +2204,7 @@
    "pv": "https://www.bilibili.com/video/BV1JGt869Ej3/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/1",
     "broadcast_text": "10/1周四晚间"
    }
   },
@@ -2185,6 +2246,19 @@
     "notes": "长篇"
    }
   },
+  "623249": {
+   "tags": [
+    "热血",
+    "战斗",
+    "加强版"
+   ],
+   "pv": "https://www.bilibili.com/video/BV1xxt96AEG3/",
+   "sourceType": "漫画改编动画",
+   "yuc": {
+    "start_date": "10/11",
+    "broadcast_text": "10/11周日深夜"
+   }
+  },
   "623851": {
    "air": {
     "epDates": {
@@ -2219,6 +2293,7 @@
    "pv": "https://www.bilibili.com/video/BV1XsbV6eEXU/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/6",
     "broadcast_text": "10/6周二晚间"
    }
   },
@@ -2231,6 +2306,7 @@
    "pv": "https://www.bilibili.com/video/BV1v3Y16ME82/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/5",
     "broadcast_text": "10/5周一晚间"
    }
   },
@@ -2259,6 +2335,7 @@
    "pv": "https://www.bilibili.com/video/BV1GnYs6rEE3/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/6",
     "broadcast_text": "10/6周二深夜"
    }
   },
@@ -2318,6 +2395,7 @@
    "pv": "https://www.bilibili.com/video/BV1butB6ZEWt/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周日深夜"
    }
   },
@@ -2434,6 +2512,7 @@
    "pv": "https://www.bilibili.com/video/BV14CPQzSEpx/",
    "sourceType": "原创动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周日晚间"
    }
   },
@@ -2445,6 +2524,7 @@
    "pv": "https://www.bilibili.com/video/BV12fYt6GEJR/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/5",
     "broadcast_text": "10/5周一晚间"
    }
   },
@@ -2475,6 +2555,7 @@
    "pv": "https://www.bilibili.com/video/BV1bSuC6cE9N/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周日深夜"
    }
   },
@@ -2487,6 +2568,7 @@
    "pv": "https://www.bilibili.com/video/BV1UZtJ6GEDa/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周日深夜"
    }
   },
@@ -2513,6 +2595,7 @@
    "pv": "https://www.bilibili.com/video/BV19SYX6sEti/",
    "sourceType": "原创动画",
    "yuc": {
+    "start_date": "10/3",
     "broadcast_text": "10/3周六深夜"
    }
   },
@@ -2553,8 +2636,9 @@
     "奇妙日常",
     "治愈"
    ],
-   "sourceType": "吉祥物形象衍生动画",
+   "sourceType": "吉祥物形象 衍生动画",
    "yuc": {
+    "start_date": "10/3",
     "broadcast_text": "10/3周六下午"
    }
   },
@@ -2567,6 +2651,7 @@
    "pv": "https://www.bilibili.com/video/BV1UxY16ZErk/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/3",
     "broadcast_text": "10/3周六深夜"
    }
   },
@@ -2577,6 +2662,7 @@
    ],
    "sourceType": "绘本改编动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周日早间"
    }
   },
@@ -2685,6 +2771,7 @@
    "pv": "https://www.bilibili.com/video/BV16GTs6dEPU/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "9/25",
     "broadcast_text": "9/25网络放送"
    }
   },
@@ -2698,6 +2785,7 @@
    "pv": "https://www.bilibili.com/video/BV1kfhF6QESr/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/7",
     "broadcast_text": "10/7周三晚间"
    }
   },
@@ -2710,6 +2798,7 @@
    "pv": "https://www.bilibili.com/video/BV1T3TQ6GELc/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周日深夜"
    }
   },
@@ -2741,6 +2830,7 @@
    "pv": "https://www.bilibili.com/video/BV1t7YT6SET3/",
    "sourceType": "小说改编动画",
    "yuc": {
+    "start_date": "10/8",
     "broadcast_text": "10/8周四深夜"
    }
   },
@@ -2753,6 +2843,7 @@
    "pv": "https://www.bilibili.com/video/BV1hnt26pE4S/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/4",
     "broadcast_text": "10/4周日深夜"
    }
   },
@@ -2765,6 +2856,7 @@
    "pv": "https://www.bilibili.com/video/BV1vkbA6GEUu/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/3",
     "broadcast_text": "10/3周六下午"
    }
   },
@@ -2789,6 +2881,7 @@
    "pv": "https://www.bilibili.com/video/BV1z4Yv67EJn/",
    "sourceType": "韩漫改编动画",
    "yuc": {
+    "start_date": "10/2",
     "broadcast_text": "10/2周五深夜"
    }
   },
@@ -2801,6 +2894,7 @@
    "pv": "https://www.bilibili.com/video/BV1Zo7X6dExw/",
    "sourceType": "原创动画",
    "yuc": {
+    "start_date": "10/7",
     "broadcast_text": "10/7周三深夜"
    }
   },
@@ -2832,6 +2926,7 @@
    "pv": "https://www.bilibili.com/video/BV1pw8K6cEMA/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "11/26",
     "broadcast_text": "11/26网络放送"
    }
   },
@@ -2862,6 +2957,7 @@
    "pv": "https://www.bilibili.com/video/BV1FTtq63E3c/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/11",
     "broadcast_text": "10/11周日下午"
    }
   },
@@ -2874,6 +2970,7 @@
    "pv": "https://www.bilibili.com/video/BV1Exbk64EB3/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/11",
     "broadcast_text": "10/11周日下午"
    }
   },
@@ -2905,6 +3002,7 @@
    "pv": "https://www.bilibili.com/video/BV1LxYk6wE1s/",
    "sourceType": "漫画改编动画",
    "yuc": {
+    "start_date": "10/1",
     "broadcast_text": "10/1周四深夜"
    }
   }

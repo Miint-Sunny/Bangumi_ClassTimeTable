@@ -1,14 +1,14 @@
 {
   "season": "202610",
-  "scraped_at": "2026-09-17T15:58:21.869515Z",
+  "scraped_at": "2026-09-19T12:43:24.694299Z",
   "source": "yuc.wiki",
   "source_url": null,
-  "count": 65,
+  "count": 68,
   "shows": [
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/3",
       "span_type": "seasonal",
       "title": "顶点武装",
       "title_jp": "VERTEX FORCE",
@@ -36,9 +36,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 3,
       "time": null,
-      "start_date": null,
+      "start_date": "10/7",
       "span_type": "seasonal",
       "title": "兽王武神丹帝拜恩",
       "title_jp": "獣王武神ダンデヴァイン",
@@ -66,9 +66,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 2,
       "time": null,
-      "start_date": null,
+      "start_date": "10/13",
       "span_type": "seasonal",
       "title": "黑暗机器",
       "title_jp": "DARK MACHINE",
@@ -95,9 +95,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 4,
       "time": null,
-      "start_date": null,
+      "start_date": "10/8",
       "span_type": "seasonal",
       "title": "铁旅 邂逅铁道少女",
       "title_jp": "てつりょー！meet with 鉄道むすめ",
@@ -124,9 +124,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "魔法姐妹露露与莉莉 Part.2",
       "title_jp": "魔法の姉妹ルルットリリィ 第2クール",
@@ -154,9 +154,70 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 2,
       "time": null,
-      "start_date": null,
+      "start_date": "10/6",
+      "span_type": "seasonal",
+      "title": "战斗之魂 [Re] 绝界之空",
+      "title_jp": "Battle Spirits [Re] 絶界の空",
+      "source_type": "原创动画",
+      "tags": [
+        "TCG",
+        "武士",
+        "决斗"
+      ],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/ca90973c1a024a48a8a3bd5d1ecb7ba1512995925.jpg",
+      "official_url": "https://www.bn-pictures.co.jp/battlespirits/",
+      "pv_url": "https://www.bilibili.com/video/BV1rChG6nEfi/",
+      "broadcast_text": "10/6周二深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "544378",
+        "url": "https://bgm.tv/subject/544378",
+        "type": "tv",
+        "title_ja": "Battle Spirits [Re] 絶界の空",
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 6,
+      "time": null,
+      "start_date": "10/3",
+      "span_type": "seasonal",
+      "title": "新 Keroro军曹",
+      "title_jp": "ケロロ軍曹☆",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "科幻",
+        "喜剧",
+        "无厘头奇妙日常",
+        "重制"
+      ],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/0d5dd1a78e625dfa6f178295a1b46f25512995925.jpg",
+      "official_url": "https://www.bn-pictures.co.jp/keroro-anime/tv/",
+      "pv_url": "https://www.bilibili.com/video/BV1GYYk64EEt/",
+      "broadcast_text": "10/3周六早间",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "617273",
+        "url": "https://bgm.tv/subject/617273",
+        "type": "tv",
+        "title_ja": "ケロロ軍曹☆",
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
+      "day_of_week": 3,
+      "time": null,
+      "start_date": "10/7",
       "span_type": "seasonal",
       "title": "新 魔法骑士Rayearth",
       "title_jp": "魔法騎士レイアース",
@@ -185,9 +246,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/3",
       "span_type": "seasonal",
       "title": "新 乱马1/2 第3期",
       "title_jp": "らんま1/2 第3期",
@@ -215,9 +276,39 @@
       }
     },
     {
+      "day_of_week": 7,
+      "time": null,
+      "start_date": "10/11",
+      "span_type": "seasonal",
+      "title": "龙珠超 比鲁斯",
+      "title_jp": "ドラゴンボール超 ビルス",
+      "source_type": "漫画改编动画",
+      "tags": [
+        "热血",
+        "战斗",
+        "加强版"
+      ],
+      "platform": null,
+      "cover_url": "https://i0.hdslb.com/bfs/new_dyn/b83e47df37cbb2874d40d1efd215860b512995925.jpg",
+      "official_url": "https://dragonball-super.com/",
+      "pv_url": "https://www.bilibili.com/video/BV1xxt96AEG3/",
+      "broadcast_text": "10/11周日深夜",
+      "notes": null,
+      "source": "yuc.wiki",
+      "bangumi": {
+        "id": "623249",
+        "url": "https://bgm.tv/subject/623249",
+        "type": "tv",
+        "title_ja": "ドラゴンボール超 ビルス",
+        "title_zh_hans": [],
+        "begin": null,
+        "matched_by": "manual_search"
+      }
+    },
+    {
       "day_of_week": null,
       "time": null,
-      "start_date": null,
+      "start_date": "9/25",
       "span_type": "seasonal",
       "title": "JOJO奇妙冒险 飙马野郎 2nd&3rd STAGE",
       "title_jp": "スティール・ボール・ラン ジョジョの奇妙な冒険",
@@ -245,9 +336,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 3,
       "time": null,
-      "start_date": null,
+      "start_date": "9/30",
       "span_type": "seasonal",
       "title": "新 网球王子 U-17世界杯决赛成员决定战",
       "title_jp": "新テニスの王子様 U-17 WORLD CUP 決勝メンバー決定戦",
@@ -275,9 +366,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/11",
       "span_type": "seasonal",
       "title": "钻石王牌 第4期 Part.2 (actⅡ 第2期 Part.2)",
       "title_jp": "ダイヤのA actⅡ-SECOND SEASON- 第2クール",
@@ -305,9 +396,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "青之芦苇 第2期",
       "title_jp": "アオアシ Season2",
@@ -335,9 +426,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 4,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "青春之箱 第2期",
       "title_jp": "アオのハコ",
@@ -365,9 +456,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 5,
       "time": null,
-      "start_date": null,
+      "start_date": "10/2",
       "span_type": "seasonal",
       "title": "东京复仇者 第4期 三天战争篇",
       "title_jp": "東京リベンジャーズ 三天戦争編",
@@ -414,7 +505,7 @@
       "cover_url": "https://i0.hdslb.com/bfs/new_dyn/54f65c1affbdc5f66f3242b0c2ac24a0512995925.jpg",
       "official_url": "https://tougenanki-anime.com/",
       "pv_url": "https://www.bilibili.com/video/BV1uEBvBrEvz/",
-      "broadcast_text": "",
+      "broadcast_text": null,
       "notes": null,
       "source": "yuc.wiki",
       "bangumi": {
@@ -428,9 +519,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/3",
       "span_type": "seasonal",
       "title": "黑色五叶草 第2期",
       "title_jp": "ブラッククローバー 2nd Season",
@@ -474,7 +565,7 @@
       "cover_url": "https://i0.hdslb.com/bfs/new_dyn/04bd6b06da55b2187ed272ee50995c94512995925.jpg",
       "official_url": "https://returners-magic.com/",
       "pv_url": "https://www.bilibili.com/video/BV1958m6AEti/",
-      "broadcast_text": "",
+      "broadcast_text": null,
       "notes": null,
       "source": "yuc.wiki",
       "bangumi": {
@@ -488,9 +579,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "杀手旅店 第2期",
       "title_jp": "HOTEL INHUMANS 第2期",
@@ -517,9 +608,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/11",
       "span_type": "seasonal",
       "title": "夜樱家的大作战 第2期 Part.2",
       "title_jp": "夜桜さんちの大作戦 第2期 第2クール",
@@ -547,9 +638,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 4,
       "time": null,
-      "start_date": null,
+      "start_date": "10/1",
       "span_type": "seasonal",
       "title": "冰之城墙 第2期",
       "title_jp": "氷の城壁 第2期",
@@ -577,9 +668,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 4,
       "time": null,
-      "start_date": null,
+      "start_date": "10/1",
       "span_type": "seasonal",
       "title": "FX战士久留美",
       "title_jp": "FX戦士くるみちゃん",
@@ -607,9 +698,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "大叔喜欢可爱小玩意",
       "title_jp": "おじさんはカワイイものがお好き。",
@@ -637,9 +728,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/10",
       "span_type": "seasonal",
       "title": "朱色假面",
       "title_jp": "朱色の仮面",
@@ -667,9 +758,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 1,
       "time": null,
-      "start_date": null,
+      "start_date": "10/5",
       "span_type": "seasonal",
       "title": "PSYREN 决战游戏",
       "title_jp": "PSYREN -サイレン-",
@@ -697,7 +788,7 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 2,
       "time": null,
       "start_date": null,
       "span_type": "seasonal",
@@ -727,9 +818,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/3",
       "span_type": "seasonal",
       "title": "僵尸搜寻中",
       "title_jp": "#ゾンビさがしてます",
@@ -757,9 +848,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "战车椅子",
       "title_jp": "TANK CHAIR-戦車椅子-",
@@ -789,7 +880,7 @@
     {
       "day_of_week": null,
       "time": null,
-      "start_date": null,
+      "start_date": "11/26",
       "span_type": "seasonal",
       "title": "愚者之夜",
       "title_jp": "フールナイト",
@@ -817,9 +908,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 5,
       "time": null,
-      "start_date": null,
+      "start_date": "10/2",
       "span_type": "seasonal",
       "title": "装备我最强",
       "title_jp": "テムパル～アイテムの力～",
@@ -847,9 +938,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/3",
       "span_type": "seasonal",
       "title": "借出去的魔力 要用【分期还款】强制收回",
       "title_jp": "貸した魔力は【リボ払い】で強制徴収",
@@ -877,9 +968,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 1,
       "time": null,
-      "start_date": null,
+      "start_date": "10/5",
       "span_type": "seasonal",
       "title": "转生成哥布林有什么问题吗",
       "title_jp": "転生ゴブリンだけど質問ある？",
@@ -906,9 +997,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/3",
       "span_type": "seasonal",
       "title": "七叶树王国的七名骑士",
       "title_jp": "マロニエ王国の七人の騎士",
@@ -936,9 +1027,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 5,
       "time": null,
-      "start_date": null,
+      "start_date": "10/9",
       "span_type": "seasonal",
       "title": "萤火虫的出嫁",
       "title_jp": "ホタルの嫁入り",
@@ -966,9 +1057,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "来自远方",
       "title_jp": "彼方から",
@@ -996,9 +1087,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/3",
       "span_type": "seasonal",
       "title": "脑洞学生会",
       "title_jp": "生徒会にも穴はある！",
@@ -1026,9 +1117,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "女友的朋友",
       "title_jp": "彼女の友達",
@@ -1056,9 +1147,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "不擅交际的未亡人雪女与诅咒戒指",
       "title_jp": "人付き合いが苦手な未亡人の雪女さんと呪いの指輪",
@@ -1086,9 +1177,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "黑暗召唤师在地下恋爱中",
       "title_jp": "ダークサモナーとデキている",
@@ -1116,9 +1207,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 5,
       "time": null,
-      "start_date": null,
+      "start_date": "10/9",
       "span_type": "seasonal",
       "title": "某暗部的少女共栖",
       "title_jp": "とある暗部の少女共棲",
@@ -1145,9 +1236,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 1,
       "time": null,
-      "start_date": null,
+      "start_date": "10/5",
       "span_type": "seasonal",
       "title": "魔法少女育成计画restart",
       "title_jp": "魔法少女育成計画restart",
@@ -1175,9 +1266,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 5,
       "time": null,
-      "start_date": null,
+      "start_date": "10/2",
       "span_type": "seasonal",
       "title": "药屋少女的呢喃 第3期",
       "title_jp": "薬屋のひとりごと 第3期",
@@ -1205,9 +1296,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/3",
       "span_type": "seasonal",
       "title": "野生的最终BOSS出现了 第2期",
       "title_jp": "野生のラスボスが現れた！第2期",
@@ -1236,9 +1327,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 3,
       "time": null,
-      "start_date": null,
+      "start_date": "10/7",
       "span_type": "seasonal",
       "title": "转生成为魔剑 第2期",
       "title_jp": "転生したら剣でしたⅡ",
@@ -1267,9 +1358,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 4,
       "time": null,
-      "start_date": null,
+      "start_date": "10/8",
       "span_type": "seasonal",
       "title": "冰剑的魔术师将要统一世界 第2期",
       "title_jp": "冰剣の魔術師が世界を統べるⅡ",
@@ -1297,9 +1388,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "9/27",
       "span_type": "seasonal",
       "title": "转生贵族靠着鉴定技能 一飞冲天 第3期",
       "title_jp": "転生貴族、鑑定スキルで成り上がる 第3期",
@@ -1327,9 +1418,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 3,
       "time": null,
-      "start_date": null,
+      "start_date": "10/7",
       "span_type": "seasonal",
       "title": "佐佐木与文鸟小哔 第2期",
       "title_jp": "佐々木とピーちゃん Season2",
@@ -1358,9 +1449,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 3,
       "time": null,
-      "start_date": null,
+      "start_date": "10/7",
       "span_type": "seasonal",
       "title": "侦探已死 第2期",
       "title_jp": "探偵はもう、死んでいる。 Season2",
@@ -1388,9 +1479,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 2,
       "time": null,
-      "start_date": null,
+      "start_date": "10/13",
       "span_type": "seasonal",
       "title": "弹珠汽水瓶里的千岁同学 Part.2",
       "title_jp": "千歳くんはラムネ瓶のなか 第2クール",
@@ -1433,7 +1524,7 @@
       "cover_url": "https://i0.hdslb.com/bfs/new_dyn/9064b6b530314bfbaf293bcb9a903923512995925.jpg",
       "official_url": "https://shioama-anime.com/",
       "pv_url": "https://www.bilibili.com/video/BV1aTwiz3EiR/",
-      "broadcast_text": "",
+      "broadcast_text": null,
       "notes": null,
       "source": "yuc.wiki",
       "bangumi": {
@@ -1447,9 +1538,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 1,
       "time": null,
-      "start_date": null,
+      "start_date": "10/5",
       "span_type": "seasonal",
       "title": "你好 我是受心上人所托 来做恋爱药的魔女",
       "title_jp": "どうも、好きな人に惚れ薬を依頼された魔女です。",
@@ -1477,9 +1568,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "弱气MAX的大小姐居然 接受了铁腕未婚夫的赌约",
       "title_jp": "弱気MAX令嬢なのに、辣腕婚約者様の賭けに乗ってしまった",
@@ -1507,9 +1598,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/3",
       "span_type": "seasonal",
       "title": "罗梅莉亚战记",
       "title_jp": "ロメリア戦記",
@@ -1537,9 +1628,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 3,
       "time": null,
-      "start_date": null,
+      "start_date": "10/7",
       "span_type": "seasonal",
       "title": "开始成为世界最强的魔女",
       "title_jp": "世界最強の魔女、始めました",
@@ -1568,9 +1659,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 2,
       "time": null,
-      "start_date": null,
+      "start_date": "10/6",
       "span_type": "seasonal",
       "title": "乱世千金 倪亚‧利斯顿 转生为娇弱千金的弑神武人华丽无双录",
       "title_jp": "凶乱令嬢ニア・リストン 病弱令嬢に転生した神殺しの武人の華麗なる無双録",
@@ -1599,9 +1690,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/3",
       "span_type": "seasonal",
       "title": "转生了的大圣女 拼死隐瞒自己身为圣女",
       "title_jp": "転生した大聖女は、聖女であることをひた隠す",
@@ -1630,9 +1721,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/11",
       "span_type": "seasonal",
       "title": "和没有信徒的女神大人 一起攻略异世界",
       "title_jp": "信者ゼロの女神サマと始める異世界攻略",
@@ -1660,9 +1751,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/3",
       "span_type": "seasonal",
       "title": "魔法★探险家 转生为成人游戏万年男二又怎样 我要活用游戏知识自由生活",
       "title_jp": "マジカル★エクスプローラー エロゲの友人キャラに転生したけど、 ゲーム知識使って自由に生きる",
@@ -1692,9 +1783,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "一觉醒来坐拥神装和飞船 我决定以买一套独门独户的房子为目标作为佣兵自由地活下去",
       "title_jp": "目覚めたら最強装備と宇宙船持ちだったので、 一戸建て目指して傭兵として自由に生きたい",
@@ -1723,9 +1814,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 2,
       "time": null,
-      "start_date": null,
+      "start_date": "10/6",
       "span_type": "seasonal",
       "title": "被流放的超能附魔师 讴歌随心所欲的第二人生",
       "title_jp": "追放されたチート付与魔術師は気ままなセカンドライフを謳歌する。",
@@ -1756,7 +1847,7 @@
     {
       "day_of_week": null,
       "time": null,
-      "start_date": null,
+      "start_date": "11/6",
       "span_type": "seasonal",
       "title": "恶魔纹章",
       "title_jp": "デモンズ・クレスト",
@@ -1800,7 +1891,7 @@
       "cover_url": "https://i0.hdslb.com/bfs/new_dyn/399bc37a3e288adb89b99005d58d869c512995925.jpg",
       "official_url": "https://www.nhk-character.com/chara/kyoufucollector/",
       "pv_url": null,
-      "broadcast_text": "",
+      "broadcast_text": null,
       "notes": null,
       "source": "yuc.wiki",
       "bangumi": {
@@ -1816,7 +1907,7 @@
     {
       "day_of_week": null,
       "time": null,
-      "start_date": null,
+      "start_date": "10/20",
       "span_type": "seasonal",
       "title": "赛博朋克 边缘行者2",
       "title_jp": "Cyberpunk：Edgerunners 2",
@@ -1859,7 +1950,7 @@
       "cover_url": "https://i0.hdslb.com/bfs/new_dyn/97392af3803781888607834ee42c5a54512995925.jpg",
       "official_url": "https://www.suikoden-anime.com/",
       "pv_url": "https://www.bilibili.com/video/BV1N5TQ6gE2y/",
-      "broadcast_text": "",
+      "broadcast_text": null,
       "notes": null,
       "source": "yuc.wiki",
       "bangumi": {
@@ -1873,13 +1964,13 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 6,
       "time": null,
-      "start_date": null,
+      "start_date": "10/3",
       "span_type": "seasonal",
       "title": "海豹小白",
       "title_jp": "しろたん",
-      "source_type": "吉祥物形象衍生动画",
+      "source_type": "吉祥物形象 衍生动画",
       "tags": [
         "奇妙日常",
         "治愈"
@@ -1902,9 +1993,9 @@
       }
     },
     {
-      "day_of_week": null,
+      "day_of_week": 7,
       "time": null,
-      "start_date": null,
+      "start_date": "10/4",
       "span_type": "seasonal",
       "title": "小狸猫与小狐狸",
       "title_jp": "タヌキとキツネ",
@@ -1946,7 +2037,7 @@
       "cover_url": "https://i0.hdslb.com/bfs/new_dyn/58218744734a3ff6abfaf06dc478fd16512995925.jpg",
       "official_url": "https://pandorobo-anime.com/",
       "pv_url": null,
-      "broadcast_text": "",
+      "broadcast_text": null,
       "notes": null,
       "source": "yuc.wiki",
       "bangumi": {
@@ -1961,15 +2052,15 @@
     }
   ],
   "match_stats": {
-    "timetable_shows": 65,
-    "detail_cards": 65,
-    "shows_matched": 65,
+    "timetable_shows": 68,
+    "detail_cards": 68,
+    "shows_matched": 68,
     "cards_unmatched": []
   },
-  "aligned_at": "2026-09-17T15:58:21.960724Z",
+  "aligned_at": "2026-09-19T12:43:36.561808Z",
   "bangumi_match_stats": {
     "method_counts": {
-      "unmatched": 65
+      "unmatched": 68
     },
     "window_items": 1,
     "dataset_total": 8829,
@@ -1979,8 +2070,11 @@
       "黑暗机器",
       "铁旅 邂逅铁道少女",
       "魔法姐妹露露与莉莉 Part.2",
+      "战斗之魂 [Re] 绝界之空",
+      "新 Keroro军曹",
       "新 魔法骑士Rayearth",
       "新 乱马1/2 第3期",
+      "龙珠超 比鲁斯",
       "JOJO奇妙冒险 飙马野郎 2nd&3rd STAGE",
       "新 网球王子 U-17世界杯决赛成员决定战",
       "钻石王牌 第4期 Part.2 (actⅡ 第2期 Part.2)",
