@@ -485,6 +485,7 @@ const DICT: Record<string, [string, string, string]> = {
   '登录已过期,请重新登录。': ['登入已過期,請重新登入。', 'ログインの期限が切れました。再ログインしてください。', 'Session expired — sign in again.'],
   令牌无效或已过期: ['權杖無效或已過期', 'トークンが無効か期限切れです', 'Token invalid or expired'],
   '验证失败,请检查网络后重试': ['驗證失敗,請檢查網路後重試', '確認に失敗。ネットワークをご確認ください', 'Verification failed — check your network'],
+  'bgm.tv 接口暂时不可用,请稍后再试': ['bgm.tv 介面暫時無法使用,請稍後再試', 'bgm.tv API が一時的に利用できません。しばらくしてからお試しください', 'bgm.tv API is temporarily unavailable — try again later'],
   '已同步 {t}': ['已同步 {t}', '同期済み {t}', 'Synced {t}'],
   ' · 推回 {n} 条': [' · 推回 {n} 條', ' · {n}件を反映', ' · pushed {n}'],
   '同步失败:{e}': ['同步失敗:{e}', '同期失敗:{e}', 'Sync failed: {e}'],

@@ -3,10 +3,8 @@
  * 官方 API,每部两次请求,结果裁剪后缓存 30 天(再算零请求)。
  */
 
-import { readCache, writeCache } from './api'
+import { bgmFetch, readCache, writeCache } from './api'
 import type { LibItem } from './bgm'
-
-const API = 'https://api.bgm.tv'
 
 export interface StaffInfo {
   studio: string[]
@@ -30,8 +28,8 @@ export async function fetchStaff(id: number): Promise<StaffInfo> {
   const hit = readCache<StaffInfo>(key, 30 * 86400_000)
   if (hit) return hit
   const [subj, chars] = await Promise.all([
-    fetch(`${API}/v0/subjects/${id}`).then((r) => (r.ok ? r.json() : null)),
-    fetch(`${API}/v0/subjects/${id}/characters`).then((r) => (r.ok ? r.json() : [])),
+    bgmFetch(`/v0/subjects/${id}`).then((r) => (r.ok ? r.json() : null)),
+    bgmFetch(`/v0/subjects/${id}/characters`).then((r) => (r.ok ? r.json() : [])),
   ])
   const actors: StaffInfo['actors'] = []
   const seen = new Set<number>()

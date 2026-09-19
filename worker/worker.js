@@ -15,6 +15,7 @@
  *   POST /oauth/token    { code, redirect_uri }          → 授权码换令牌
  *   POST /oauth/refresh  { refresh_token, redirect_uri } → 续期
  *   GET  /api/timeline?user=&limit=&until=    → 转发 bgm 新版 p1 公开时间线(未开 CORS,统计页"时间胶囊"用)
+ *   GET/POST /api/bgm/<v0 路径|calendar>       → 转发 api.bgm.tv(前端直连失败时的同源兜底,透传 Authorization,不缓存私有请求)
  *   其余                                       → 静态资源(ASSETS)
  *
  * 配置(见 README.md):
@@ -37,6 +38,7 @@ export default {
       return Response.redirect(url.toString(), 301)
     }
     if (url.pathname === '/api/timeline') return timelineProxy(url)
+    if (url.pathname.startsWith('/api/bgm/')) return bgmProxy(req, url)
     // 非 OAuth 请求原样落回静态资源(run_worker_first 下所有请求都先到这里)
     if (!url.pathname.startsWith('/oauth/')) {
       return env.ASSETS.fetch(req)
@@ -88,6 +90,41 @@ export default {
     const text = await resp.text()
     return new Response(text, { status: resp.status, headers: { ...cors, 'Content-Type': 'application/json' } })
   },
+}
+
+/**
+ * api.bgm.tv 同源转发:/api/bgm/<path> → https://api.bgm.tv/<path>,前端直连失败时的兜底。
+ * 2026-09 bgm 的 /v0 对一切跨站 Origin 请求回 502,浏览器直连全挂;这里的子请求不带 Origin,不受影响。
+ * 只放 /v0/* 与 /calendar、GET/POST;只服务同源页面(Sec-Fetch-Site / Origin 校验,挡住别站浏览器借用);
+ * Authorization 原样透传、绝不缓存;公开 GET 边缘缓存 5 分钟。不落日志、不存令牌,进出都只在内存里。
+ * 回包统一带 X-Bgm-Proxy: 1,前端据此区分"代理在回话"与"镜像站的静态 404 页"。
+ */
+async function bgmProxy(req, url) {
+  const tag = { 'X-Bgm-Proxy': '1' }
+  const json = (obj, status) =>
+    new Response(JSON.stringify(obj), { status, headers: { ...tag, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } })
+  const site = req.headers.get('Sec-Fetch-Site')
+  const origin = req.headers.get('Origin')
+  if ((site && site !== 'same-origin' && site !== 'none') || (origin && origin !== url.origin)) return json({ error: 'same-origin only' }, 403)
+  if (req.method !== 'GET' && req.method !== 'POST') return json({ error: 'GET/POST only' }, 405)
+  const path = url.pathname.slice('/api/bgm'.length)
+  if (!/^\/(v0\/[\w\-.%~]+(\/[\w\-.%~]+)*|calendar)$/.test(path) || path.includes('..')) return json({ error: 'bad path' }, 400)
+  const headers = { 'User-Agent': UA, Accept: 'application/json' }
+  const auth = req.headers.get('Authorization')
+  if (auth) headers.Authorization = auth
+  const ct = req.headers.get('Content-Type')
+  if (ct) headers['Content-Type'] = ct
+  const cacheable = req.method === 'GET' && !auth
+  const init = { method: req.method, headers }
+  if (req.method === 'POST') init.body = await req.text()
+  if (cacheable) init.cf = { cacheTtl: 300, cacheEverything: true }
+  else init.cache = 'no-store'
+  const resp = await fetch(`https://api.bgm.tv${path}${url.search}`, init)
+  const cacheHdr = cacheable ? 'public, max-age=300' : 'no-store'
+  if (resp.status === 204 || resp.status === 304) return new Response(null, { status: resp.status, headers: { ...tag, 'Cache-Control': 'no-store' } })
+  const upstreamCt = resp.headers.get('Content-Type') ?? ''
+  if (!upstreamCt.includes('json')) return json({ error: 'upstream', status: resp.status }, resp.status >= 400 ? resp.status : 502)
+  return new Response(resp.body, { status: resp.status, headers: { ...tag, 'Content-Type': 'application/json', 'Cache-Control': cacheHdr } })
 }
 
 /** bgm 新版 p1 的公开时间线没开 CORS,同源转一手;参数白名单校验,边缘缓存 2 分钟。 */

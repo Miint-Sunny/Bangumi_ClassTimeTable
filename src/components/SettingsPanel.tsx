@@ -57,8 +57,13 @@ export default function SettingsPanel({
       await onLogin(tok)
       setToken('')
     } catch (e) {
+      const msg = e instanceof Error ? e.message : ''
       setLoginErr(
-        e instanceof Error && e.message.includes('401') ? t('令牌无效或已过期') : t('验证失败,请检查网络后重试'),
+        /40[13]/.test(msg)
+          ? t('令牌无效或已过期')
+          : /HTTP 5\d\d/.test(msg)
+            ? t('bgm.tv 接口暂时不可用,请稍后再试')
+            : t('验证失败,请检查网络后重试'),
       )
     } finally {
       setVerifying(false)

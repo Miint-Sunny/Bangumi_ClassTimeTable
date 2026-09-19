@@ -90,7 +90,8 @@ bgm 账号双向同步。
 **GitHub Pages(纯静态镜像)**:Settings → Pages 选 "GitHub Actions" 即可,
 `deploy.yml` 每次 push main 自动构建发布,每日数据更新也会派发镜像重建,
 与主站保持同步。镜像上 OAuth 按钮自动隐藏(回调域名不匹配),
-个人令牌登录不受影响。
+个人令牌登录不受影响;但镜像没有 Worker,bgm 官方接口跨站故障时
+(如 2026-09 的 `/v0` 对跨站 Origin 一律 502)只有主站能靠同源转发继续登录与同步。
 
 ## 开发
 

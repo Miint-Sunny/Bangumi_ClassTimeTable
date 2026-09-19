@@ -6,7 +6,47 @@
  */
 
 const API = 'https://api.bgm.tv'
+/** 同源转发前缀:生产由 worker.js 的 /api/bgm/* 承担,开发期由 vite proxy 承担;GitHub Pages 镜像没有 */
+const PROXY = `${import.meta.env.BASE_URL}api/bgm`
 const CACHE_PREFIX = 'btt:cache:'
+
+let proxyMissing = false // 镜像站:代理路径落到静态 404/SPA 页,本次会话不再试
+let preferProxy = false // 代理成功过一次后本次会话直接走代理,免得每次先撞一下直连
+
+/**
+ * 请求 api.bgm.tv:直连优先,浏览器层失败(fetch 抛 TypeError,通常是 CORS 或断网)才转同源代理。
+ * 2026-09 bgm 的 /v0 曾对一切跨站 Origin 请求回 502,浏览器直连全挂而 Worker 侧请求不带 Origin 不受影响;
+ * 代理只透传 Authorization,不落日志(见 worker/worker.js bgmProxy)。
+ */
+export async function bgmFetch(path: string, init?: RequestInit): Promise<Response> {
+  if (preferProxy) {
+    const r = await viaProxy(path, init)
+    if (r) return r
+    preferProxy = false
+  }
+  try {
+    return await fetch(API + path, init)
+  } catch (e) {
+    if (proxyMissing) throw e
+    const r = await viaProxy(path, init)
+    if (!r) throw e
+    preferProxy = true
+    return r
+  }
+}
+
+async function viaProxy(path: string, init?: RequestInit): Promise<Response | null> {
+  try {
+    const resp = await fetch(PROXY + path, init)
+    if (!resp.headers.get('X-Bgm-Proxy')) {
+      proxyMissing = true // 不是我们的代理在回话(镜像站的静态 404 / index.html)
+      return null
+    }
+    return resp
+  } catch {
+    return null
+  }
+}
 
 interface CacheEntry<T> {
   t: number
@@ -47,11 +87,11 @@ export function clearCacheKey(key: string) {
   } catch {}
 }
 
-async function cachedJson<T>(key: string, url: string, ttlMs: number, trim: (raw: any) => T): Promise<T> {
+async function cachedJson<T>(key: string, path: string, ttlMs: number, trim: (raw: any) => T): Promise<T> {
   const hit = readCache<T>(key, ttlMs)
   if (hit !== null) return hit
-  const resp = await fetch(url)
-  if (!resp.ok) throw new Error(`${url} → HTTP ${resp.status}`)
+  const resp = await bgmFetch(path)
+  if (!resp.ok) throw new Error(`${API}${path} → HTTP ${resp.status}`)
   const v = trim(await resp.json())
   writeCache(key, v)
   return v
@@ -72,7 +112,7 @@ export interface CalItem {
 }
 
 export function fetchCalendar(): Promise<CalItem[]> {
-  return cachedJson('calendar', `${API}/calendar`, 6 * 3600_000, (raw: any[]) =>
+  return cachedJson('calendar', '/calendar', 6 * 3600_000, (raw: any[]) =>
     raw.flatMap((day) =>
       (day.items ?? []).map((it: any) => ({
         id: it.id,
@@ -103,7 +143,7 @@ export interface SubjectInfo {
 }
 
 export function fetchSubject(id: number): Promise<SubjectInfo> {
-  return cachedJson(`subject:${id}`, `${API}/v0/subjects/${id}`, 7 * 86400_000, (raw: any) => ({
+  return cachedJson(`subject:${id}`, `/v0/subjects/${id}`, 7 * 86400_000, (raw: any) => ({
     id: raw.id,
     eps: raw.total_episodes || raw.eps || undefined,
     summary: raw.summary || undefined,
@@ -135,8 +175,7 @@ export async function fetchUserWatching(username: string): Promise<FriendCollect
   const out: FriendCollection[] = []
   let offset = 0
   for (let page = 0; page < 3; page++) {
-    const url = `${API}/v0/users/${encodeURIComponent(username)}/collections?subject_type=2&type=3&limit=50&offset=${offset}`
-    const resp = await fetch(url)
+    const resp = await bgmFetch(`/v0/users/${encodeURIComponent(username)}/collections?subject_type=2&type=3&limit=50&offset=${offset}`)
     if (!resp.ok) throw new Error(`用户 ${username}: HTTP ${resp.status}`)
     const data = await resp.json()
     for (const c of data.data ?? []) {

@@ -2,11 +2,9 @@
  * 好友重合度:拉好友的公开收藏(全量,只留 id/状态/评分),算共同看过数与评分相关系数。
  */
 
-import { readCache, writeCache } from './api'
+import { bgmFetch, readCache, writeCache } from './api'
 import type { LibItem } from './bgm'
 import { pearson } from './stats'
-
-const API = 'https://api.bgm.tv'
 
 export interface FriendLib {
   items: { id: number; type: number; rate: number }[]
@@ -21,7 +19,7 @@ export async function fetchFriendLibrary(username: string): Promise<FriendLib> {
   for (const type of [2, 3, 5, 4, 1]) {
     let offset = 0
     for (let p = 0; p < 20; p++) {
-      const r = await fetch(`${API}/v0/users/${encodeURIComponent(username)}/collections?subject_type=2&type=${type}&limit=50&offset=${offset}`)
+      const r = await bgmFetch(`/v0/users/${encodeURIComponent(username)}/collections?subject_type=2&type=${type}&limit=50&offset=${offset}`)
       if (!r.ok) {
         if (r.status === 404 || r.status === 403) break
         throw new Error(`HTTP ${r.status}`)

@@ -13,9 +13,8 @@
  *  - bgm 的"搁置"课表不建模:按未追显示,本地进度保留
  */
 import type { BgmAccount, CollectMemo, Tracking, WatchStatus } from '../types'
-import { clearCacheKey, readCache, writeCache } from './api'
+import { bgmFetch, clearCacheKey, readCache, writeCache } from './api'
 
-const API = 'https://api.bgm.tv'
 const ACC_KEY = 'btt:bgm'
 const QUEUE_KEY = 'btt:bgm:queue'
 /** 「看过」全量可达上千条,只拉到最早归档季(2024Q4)之前一点为止 */
@@ -43,7 +42,7 @@ export function saveAccount(a: BgmAccount | null) {
 export class BgmAuthError extends Error {}
 
 async function authed(token: string, path: string, init?: RequestInit): Promise<Response> {
-  const resp = await fetch(API + path, {
+  const resp = await bgmFetch(path, {
     ...init,
     headers: { Authorization: `Bearer ${token}`, ...(init?.headers ?? {}) },
   })

@@ -47,6 +47,15 @@ const CHANGELOG: LogEntry[] = [
     },
   },
   {
+    d: '2026-09-19',
+    x: {
+      'zh-Hans': '修复:粘贴个人令牌提示"验证失败"——bgm.tv 官方接口近日对所有跨站请求回 502,浏览器直连全部失效。现在直连失败时自动改走本站同源转发(令牌只透传、不留存),登录/同步/统计/好友榜恢复可用;bgm 接口自身故障时提示更准确',
+      'zh-Hant': '修復:貼上個人權杖提示「驗證失敗」——bgm.tv 官方介面近日對所有跨站請求回 502,瀏覽器直連全部失效。現在直連失敗時自動改走本站同源轉發(權杖只透傳、不保存),登入/同步/統計/好友榜恢復可用;bgm 介面自身故障時提示更準確',
+      ja: '修正:トークン貼り付けで「確認に失敗」になる問題。bgm.tv 公式 API が最近クロスサイト要求すべてに 502 を返すようになりブラウザ直結が全滅。直結失敗時は自サイトの同一オリジン中継へ自動切替(トークンは透過のみ、保存なし)。ログイン/同期/統計/フレンド比較が復旧。API 自体の障害時は表示を明確化',
+      en: 'Fix: pasting a token showed "Verification failed" — the official bgm.tv API recently began answering every cross-site request with 502, so direct browser calls all failed. Direct calls now fall back to a same-origin relay on this site (token passed through, never stored); login, sync, stats and friend charts work again, and a real API outage is reported as such',
+    },
+  },
+  {
     d: '2026-09-18',
     x: {
       'zh-Hans': '修复:滚动时周表/月表的星期表头上方露出一条缝(翻页条高度随字体带小数,表头吸附位置对不齐);2022~2024 归档补齐 yuc 标签/PV;换季时自动重烘上季归档、刷新终局评分',
