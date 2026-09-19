@@ -49,6 +49,15 @@ const CHANGELOG: LogEntry[] = [
   {
     d: '2026-09-19',
     x: {
+      'zh-Hans': '下季前瞻:季度选择里多了"2026年10月(下季)",顶栏也有 🔭 前瞻 按钮。10 月新番按 yuc 新番表的放送星期排进周表(时刻待 bangumi-data 收录后自动补上),卡片显示首播日与 bgm 想看人数,点开即可看首播信息、简介、PV 并直接标想看;没有星期的作品列在"日期待定"',
+      'zh-Hant': '下季前瞻:季度選擇裡多了「2026年10月(下季)」,頂欄也有 🔭 前瞻 按鈕。10 月新番按 yuc 新番表的放送星期排進週表(時刻待 bangumi-data 收錄後自動補上),卡片顯示首播日與 bgm 想看人數,點開即可看首播資訊、簡介、PV 並直接標想看;沒有星期的作品列在「日期待定」',
+      ja: '次期プレビュー:シーズン選択に「2026年10月(次期)」を追加、ヘッダーにも 🔭 ボタン。10月新作を yuc の新作表の放送曜日で週間表に配置(時刻は bangumi-data 収録後に自動反映)。カードに初回放送日と bgm の「見たい」数を表示、開けば初回情報・あらすじ・PV を確認しそのまま「見たい」に登録可。曜日未定の作品は「日程未定」に',
+      en: 'Next-season preview: the season picker gains "Oct 2026 (next)" and the header a 🔭 button. October shows sit in the week grid by their yuc weekday (air times fill in once bangumi-data has them); cards show the premiere date and bgm wish count, and opening one gives premiere info, synopsis, PV and a one-click wish; shows without a weekday are listed under "Date TBA"',
+    },
+  },
+  {
+    d: '2026-09-19',
+    x: {
       'zh-Hans': '修复:粘贴个人令牌提示"验证失败"——bgm.tv 官方接口近日对所有跨站请求回 502,浏览器直连全部失效。现在直连失败时自动改走本站同源转发(令牌只透传、不留存),登录/同步/统计/好友榜恢复可用;bgm 接口自身故障时提示更准确;v0 挂着的时候登录、收藏同步、统计页收藏、好友重合整体改走 next.bgm.tv 的 p1 接口(同一套令牌,经本站转发),v0 恢复自动切回',
       'zh-Hant': '修復:貼上個人權杖提示「驗證失敗」——bgm.tv 官方介面近日對所有跨站請求回 502,瀏覽器直連全部失效。現在直連失敗時自動改走本站同源轉發(權杖只透傳、不保存),登入/同步/統計/好友榜恢復可用;bgm 介面自身故障時提示更準確;v0 掛著的時候登入、收藏同步、統計頁收藏、好友重合整體改走 next.bgm.tv 的 p1 介面(同一套權杖,經本站轉發),v0 恢復自動切回',
       ja: '修正:トークン貼り付けで「確認に失敗」になる問題。bgm.tv 公式 API が最近クロスサイト要求すべてに 502 を返すようになりブラウザ直結が全滅。直結失敗時は自サイトの同一オリジン中継へ自動切替(トークンは透過のみ、保存なし)。ログイン/同期/統計/フレンド比較が復旧。API 自体の障害時は表示を明確化。v0 停止中はログイン・収蔵同期・統計・フレンド比較をまとめて next.bgm.tv の p1 API へ切替(同じトークン、自サイト経由)。v0 復旧で自動的に戻る',
