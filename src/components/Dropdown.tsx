@@ -23,9 +23,10 @@ interface Props {
   className?: string
   title?: string
   align?: 'left' | 'right' // 弹层贴左还是贴右(靠视口右缘的触发器用 right)
+  inline?: boolean // 分组横排:组名在左、选项在同一行(季度选择:一年一行、四季横排)
 }
 
-export default function Dropdown({ value, onChange, groups, className = '', title, align = 'left' }: Props) {
+export default function Dropdown({ value, onChange, groups, className = '', title, align = 'left', inline = false }: Props) {
   const [open, setOpen] = useState(false)
   const [focus, setFocus] = useState(-1) // 键盘高亮的扁平索引
   const root = useRef<HTMLSpanElement>(null)
@@ -114,9 +115,9 @@ export default function Dropdown({ value, onChange, groups, className = '', titl
         </span>
       </button>
       {open && (
-        <div ref={menu} className={`dd-menu ${align}`} role="listbox">
+        <div ref={menu} className={`dd-menu ${align}${inline ? ' inline' : ''}`} role="listbox">
           {groups.map((g, gi) => (
-            <div key={gi} className="dd-group">
+            <div key={gi} className={'dd-group' + (inline && g.label ? ' inline' : '')}>
               {g.label && <div className="dd-gl">{g.label}</div>}
               {g.options.map((o) => {
                 idx += 1

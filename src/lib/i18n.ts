@@ -32,6 +32,10 @@ export function detectLang(): Lang {
 // value = [繁中, 日本語, EN]
 const DICT: Record<string, [string, string, string]> = {
   // ── 追番统计页 ──
+  演示数据: ['演示資料', 'デモデータ', 'Demo data'],
+  查看演示数据: ['查看演示資料', 'デモデータを見る', 'View demo data'],
+  退出演示: ['退出演示', 'デモを終了', 'Exit demo'],
+  '这是演示数据(从站内归档抽样的真实作品),登录 bgm 后显示你自己的收藏。': ['這是演示資料(從站內歸檔抽樣的真實作品),登入 bgm 後顯示你自己的收藏。', 'これはデモデータです(アーカイブから抽出した実在作品)。bgm にログインすると自分の収蔵が表示されます。', 'Demo data (real shows sampled from the archives). Sign in to bgm to see your own collection.'],
   返回课表: ['返回課表', '時間割へ戻る', 'Back to timetable'],
   平均分: ['平均分', '平均点', 'Avg score'],
   时间胶囊: ['時間膠囊', 'タイムカプセル', 'Time capsule'],

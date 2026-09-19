@@ -26,7 +26,7 @@ import { buildShows, fetchEnhance } from './lib/merge'
 import { behindCount, continuity, type Continuity } from './lib/progress'
 import { weightedScore } from './lib/score'
 import { currentSeason, displayTz, partsInZone, seasonStartInstant } from './lib/time'
-import { fetchSeasonList, fetchSeasonPack, fmtSeason, seasonMonthOf, seasonStartOf } from './lib/seasons'
+import { fetchSeasonList, fetchSeasonPack, fmtSeason, fmtSeasonShort, seasonMonthOf, seasonStartOf } from './lib/seasons'
 import { buildIcs, downloadIcs } from './lib/ics'
 import { loadPersisted, savePersisted, type RegionClass } from './lib/store'
 import WeekView from './components/WeekView'
@@ -724,6 +724,7 @@ export default function App() {
           <Dropdown
             className="season-sel"
             title={t('切换季度')}
+            inline
             value={seasonSel}
             onChange={(v) => withViewTransition(() => setSeasonSel(v))}
             groups={[
@@ -737,7 +738,10 @@ export default function App() {
                   }, {}),
               )
                 .sort(([a], [b]) => b.localeCompare(a)) // 年份键会被对象按数值升序排,这里按新→旧
-                .map(([year, list]) => ({ label: year, options: list.map((s) => ({ value: s, label: fmtSeason(s) })) })),
+                .map(([year, list]) => ({
+                  label: year,
+                  options: [...list].sort().map((s) => ({ value: s, label: fmtSeasonShort(s), title: fmtSeason(s) })), // 一行内 1→10 月
+                })),
             ]}
           />
         </h1>

@@ -12,6 +12,7 @@ import { computeStats, prevSeasonKey, TYPE_LABEL, TYPE_ORDER, TYPE_VAR, type Buc
 import { fmtSeason } from '../lib/seasons'
 import { currentSeason } from '../lib/time'
 import { t } from '../lib/i18n'
+import { buildDemo, type DemoData } from '../lib/demo'
 
 interface Props {
   account: BgmAccount | null
@@ -60,6 +61,8 @@ export default function StatsPage({ account, tracking, shows, seasonList, onOpen
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [refreshN, setRefreshN] = useState(0)
+  const [demo, setDemo] = useState<DemoData | null>(null)
+  const [demoBusy, setDemoBusy] = useState(false)
   const live = !!account && !account.invalid
 
   useEffect(() => {
@@ -82,7 +85,7 @@ export default function StatsPage({ account, tracking, shows, seasonList, onOpen
     }
   }, [account, live, refreshN])
 
-  const items = useMemo(() => (live ? (lib?.items ?? []) : localLibrary(tracking, shows)), [live, lib, tracking, shows])
+  const items = useMemo(() => (live ? (lib?.items ?? []) : demo ? demo.items : localLibrary(tracking, shows)), [live, lib, demo, tracking, shows])
   const st = useMemo(() => computeStats(items), [items])
   const cur = currentSeason(Date.now()).yyyymm
   const prev = prevSeasonKey(cur)
@@ -96,6 +99,7 @@ export default function StatsPage({ account, tracking, shows, seasonList, onOpen
           </button>
           <h2>{t('追番统计')}</h2>
           <span className="sub">
+            {!live && demo ? <span className="st-demo-badge">{t('演示数据')}</span> : null}
             {live && account ? `@${account.nickname || account.username} · ` : ''}
             {t('共 {n} 部', { n: st.total })}
             {live && lib ? ` · ${t('更新于 {t}', { t: new Date(lib.fetchedAt).toLocaleString() })}` : ''}
@@ -107,11 +111,33 @@ export default function StatsPage({ account, tracking, shows, seasonList, onOpen
           )}
         </div>
 
-        {!live && <div className="set-note st-notice">{t('登录 bgm 账号后可统计全部历史收藏;现在只统计本机记录的当季追番。')}</div>}
+        {!live && (
+          <div className="set-note st-notice st-notice-row">
+            <span>{demo ? t('这是演示数据(从站内归档抽样的真实作品),登录 bgm 后显示你自己的收藏。') : t('登录 bgm 账号后可统计全部历史收藏;现在只统计本机记录的当季追番。')}</span>
+            {demo ? (
+              <button className="iconbtn" onClick={() => setDemo(null)}>
+                {t('退出演示')}
+              </button>
+            ) : (
+              <button
+                className="iconbtn accent"
+                disabled={demoBusy}
+                onClick={() => {
+                  setDemoBusy(true)
+                  buildDemo()
+                    .then(setDemo)
+                    .finally(() => setDemoBusy(false))
+                }}
+              >
+                {demoBusy ? '…' : t('查看演示数据')}
+              </button>
+            )}
+          </div>
+        )}
         {error && <div className="set-note st-notice">{t('拉取失败:{e}', { e: error })}</div>}
         {loading && !lib && <div className="st-empty">{t('正在拉取全部收藏…')}</div>}
 
-        {items.length === 0 && !loading && !live ? ( // 登录态即使收藏为空也照常渲染(时间胶囊不依赖收藏)
+        {items.length === 0 && !loading && !live && !demo ? ( // 登录态即使收藏为空也照常渲染(时间胶囊不依赖收藏)
           <div className="st-empty">{t('暂无数据')}</div>
         ) : (
           <>
@@ -146,7 +172,9 @@ export default function StatsPage({ account, tracking, shows, seasonList, onOpen
               {/* ── 时间胶囊 ── */}
               <div className="st-sec">
                 <div className="st-sec-t">{t('时间胶囊')}</div>
-                {account?.username ? ( // 时间线是公开数据,令牌过期也照样能看
+                {!live && demo ? (
+                  <Capsule events={demo.events} />
+                ) : account?.username ? ( // 时间线是公开数据,令牌过期也照样能看
                   <Capsule username={account.username} />
                 ) : (
                   <div className="st-empty">{t('时间胶囊需要登录 bgm;镜像站点无此功能')}</div>
@@ -311,12 +339,13 @@ const VERB: Record<CapsuleEvent['kind'], string> = {
   ep: '看过',
 }
 
-function Capsule({ username }: { username: string }) {
-  const [events, setEvents] = useState<CapsuleEvent[]>([])
+function Capsule({ username, events: preset }: { username?: string; events?: CapsuleEvent[] }) {
+  const [events, setEvents] = useState<CapsuleEvent[]>(preset ?? [])
   const [lastId, setLastId] = useState<number | null>(null)
-  const [state, setState] = useState<'idle' | 'loading' | 'end' | 'error'>('idle')
+  const [state, setState] = useState<'idle' | 'loading' | 'end' | 'error'>(preset ? 'end' : 'idle')
 
   const load = (until?: number) => {
+    if (!username) return
     setState('loading')
     fetchTimeline(username, until)
       .then(({ events: ev, lastId: id }) => {
@@ -327,9 +356,14 @@ function Capsule({ username }: { username: string }) {
       .catch(() => setState('error'))
   }
   useEffect(() => {
+    if (preset) {
+      setEvents(preset)
+      setState('end')
+      return
+    }
     load()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username])
+  }, [username, preset])
 
   if (state === 'error' && events.length === 0) return <div className="st-empty">{t('时间胶囊需要登录 bgm;镜像站点无此功能')}</div>
   if (state !== 'loading' && events.length === 0) return <div className="st-empty">{t('还没有记录')}</div>

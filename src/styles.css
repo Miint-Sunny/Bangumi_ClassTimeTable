@@ -1016,3 +1016,21 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
   background: rgba(240, 145, 153, 0.18);
 }
 @media (prefers-reduced-motion: reduce) { .dd-menu { animation: none; } }
+
+/* inline 分组:组名(年份)在左,四个季度横排在同一行 */
+.dd-menu.inline { min-width: 250px; }
+.dd-group.inline { display: flex; align-items: center; gap: 2px; padding: 1px 2px; }
+.dd-group.inline .dd-gl { width: 48px; flex-shrink: 0; padding: 0 6px; font-size: 12px; color: var(--text-soft); }
+.dd-group.inline .dd-opt { flex: 1 1 0; padding: 4px 6px; text-align: center; }
+.dd-group.inline .dd-opt.on { background: var(--pink); color: var(--accent-ink); }
+.dd-group.inline .dd-opt.on::before { content: none; }
+.dd-group.inline .dd-opt.focus:not(.on) { background: var(--pink-soft); }
+.dd-menu.inline .dd-group + .dd-group { border-top: none; margin-top: 0; }
+.dd-menu.inline .dd-group:not(.inline) + .dd-group { border-top: 1px solid var(--border-soft); margin-top: 3px; padding-top: 3px; }
+
+.st-notice-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.st-notice-row span { flex: 1 1 260px; }
+.st-demo-badge {
+  display: inline-block; background: var(--pink); color: var(--accent-ink); border-radius: 10px;
+  padding: 0 8px; font-size: 11px; line-height: 1.7; margin-right: 8px; vertical-align: 1px;
+}

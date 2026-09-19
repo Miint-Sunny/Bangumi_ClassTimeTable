@@ -4,10 +4,16 @@
  */
 
 import type { Show } from '../types'
-import { seasonLabel } from './i18n'
+import { getLang, seasonLabel } from './i18n'
 
 export function fmtSeason(yyyymm: string): string {
   return seasonLabel(+yyyymm.slice(0, 4), +yyyymm.slice(4))
+}
+
+/** 短季度名,给"一年一行"的季度菜单用:1月 / Jan */
+export function fmtSeasonShort(yyyymm: string): string {
+  const m = +yyyymm.slice(4)
+  return getLang() === 'en' ? ['Jan', 'Apr', 'Jul', 'Oct'][(m - 1) / 3] ?? String(m) : `${m}月`
 }
 
 /** 该季度起点(JST 首月 1 日 0 点)的时刻 */
