@@ -70,6 +70,7 @@ export async function buildDemo(now = Date.now()): Promise<DemoData> {
         eps,
         score: s.score ?? 0,
         total: Math.round((s.ratingTotal ?? 50) * (3 + r())), // 站内收藏人数 ≈ 评分人数的 3~4 倍
+        image: s.image ?? '',
         tags: s.tags ?? [],
       })
     }

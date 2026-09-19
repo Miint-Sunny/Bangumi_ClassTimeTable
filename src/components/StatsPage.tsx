@@ -15,7 +15,7 @@ import { t } from '../lib/i18n'
 import { buildDemo, type DemoData } from '../lib/demo'
 import { fetchAllTimeline } from '../lib/bgm'
 import { readLog } from '../lib/log'
-import { CatchupSection, DeviationSection, DropsSection, FriendsSection, ObscureSection, RhythmSection, StaffSection, TasteSection } from './StatsExtra'
+import { CatchupSection, CoverGrid, DeviationSection, DropsSection, FriendsSection, ObscureSection, RhythmSection, StaffSection, TasteSection } from './StatsExtra'
 
 interface Props {
   account: BgmAccount | null
@@ -46,6 +46,7 @@ function localLibrary(tracking: Tracking, shows: Show[] | null): LibItem[] {
       eps: s?.epsTotal ?? 0,
       score: s?.score ?? 0,
       total: 0,
+      image: s?.image ?? '',
       tags: s?.tags ?? [],
     }
   })
@@ -369,14 +370,7 @@ export default function StatsPage({ account, tracking, shows, seasonList, friend
             {st.best.length > 0 && (
               <div className="st-sec">
                 <div className="st-sec-t">{t('我的神作(9 分以上)')}</div>
-                <div className="st-best">
-                  {st.best.map((it) => (
-                    <a key={it.id} className="st-pick" href={`https://bgm.tv/subject/${it.id}`} target="_blank" rel="noreferrer">
-                      {it.nameCn}
-                      <b>{it.rate}</b>
-                    </a>
-                  ))}
-                </div>
+                <CoverGrid items={st.best} badge={(it) => String(it.rate)} />
               </div>
             )}
 

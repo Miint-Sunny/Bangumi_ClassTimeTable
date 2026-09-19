@@ -277,6 +277,7 @@ export interface LibItem {
   eps: number
   score: number // 站均分
   total: number // 站内收藏人数(冷门指数用)
+  image: string // 封面(r/200)
   tags: string[] // 条目热门标签(已剔除年份/形态等噪音)
 }
 export interface Library {
@@ -292,7 +293,7 @@ const TAG_NOISE = new Set([
 ])
 
 export async function pullLibrary(acc: BgmAccount, force = false): Promise<Library> {
-  const key = `bgm:lib:${acc.username}`
+  const key = `bgm:lib2:${acc.username}` // lib2:加了封面字段,旧缓存作废
   if (!force) {
     const hit = readCache<Library>(key, 86400_000)
     if (hit) return hit
@@ -327,6 +328,7 @@ export async function pullLibrary(acc: BgmAccount, force = false): Promise<Libra
           eps: s.eps ?? 0,
           score: s.score ?? 0,
           total: s.collection_total ?? 0,
+          image: s.images?.medium ?? s.images?.common ?? '',
           tags: (Array.isArray(s.tags) ? s.tags : [])
             .map((t: any) => String(t?.name ?? ''))
             .filter((n: string) => n && !/^\d{4}$/.test(n) && !TAG_NOISE.has(n))
@@ -343,7 +345,7 @@ export async function pullLibrary(acc: BgmAccount, force = false): Promise<Libra
 }
 
 export function clearLibraryCache(username: string) {
-  clearCacheKey(`bgm:lib:${username}`)
+  clearCacheKey(`bgm:lib2:${username}`)
 }
 
 // ── 统计页:时间胶囊(bgm 新版 p1 公开时间线,经同源 /api/timeline 转发) ────

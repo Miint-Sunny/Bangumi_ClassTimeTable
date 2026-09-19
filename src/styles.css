@@ -1082,3 +1082,25 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
 .st-rank .n { color: var(--text-soft); font-size: 11px; text-align: right; }
 .st-rank .avg { color: var(--pink-strong); font-size: 11px; text-align: right; font-variant-numeric: tabular-nums; }
 .st-table td a { color: var(--link); text-decoration: none; }
+
+/* 封面墙(bgm 主页同款):封面 5:7、圆角、右上角角标、标题两行截断 */
+.st-covers { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 14px 10px; }
+.st-cover { display: block; text-decoration: none; color: var(--text); min-width: 0; }
+.st-cover .img {
+  position: relative; display: block; aspect-ratio: 5 / 7; border-radius: 6px; overflow: hidden;
+  background: var(--border-soft); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+}
+.st-cover:hover .img { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+.st-cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.st-cover .ph { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--pink); font-size: 22px; }
+.st-cover .badge {
+  position: absolute; top: 6px; right: 6px; background: var(--pink); color: var(--accent-ink);
+  font-size: 11px; line-height: 1.6; padding: 0 7px; border-radius: 10px; font-variant-numeric: tabular-nums; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+.st-cover .t {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  font-size: 12px; line-height: 1.35; margin-top: 5px; color: var(--text);
+}
+.st-cover:hover .t { color: var(--pink-strong); }

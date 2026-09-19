@@ -42,6 +42,23 @@ function Kpi({ n, l, s }: { n: string; l: string; s?: string }) {
   )
 }
 
+/** bgm 主页同款封面墙:封面 + 标题两行 + 右上角角标 */
+export function CoverGrid({ items, badge }: { items: LibItem[]; badge: (it: LibItem) => string }) {
+  return (
+    <div className="st-covers">
+      {items.map((it) => (
+        <a key={it.id} className="st-cover" href={`https://bgm.tv/subject/${it.id}`} target="_blank" rel="noreferrer" title={`${it.nameCn}${it.name && it.name !== it.nameCn ? ` / ${it.name}` : ''}`}>
+          <span className="img">
+            {it.image ? <img src={it.image} loading="lazy" alt="" /> : <span className="ph">{it.nameCn.slice(0, 1)}</span>}
+            <span className="badge">{badge(it)}</span>
+          </span>
+          <span className="t">{it.nameCn}</span>
+        </a>
+      ))}
+    </div>
+  )
+}
+
 function Sub({ title, hint }: { title: string; hint?: string }) {
   return (
     <div className="st-sec-t">
@@ -164,14 +181,7 @@ export function DeviationSection({ d }: { d: Deviation }) {
   if (!d.n) return <div className="st-empty">{t('暂无数据')}</div>
   const max = Math.max(1, ...d.hist)
   const labels = ['≤-4', '-3', '-2', '-1', '0', '+1', '+2', '+3', '≥+4']
-  const pick = (it: LibItem) => (
-    <a key={it.id} className="st-pick" href={`https://bgm.tv/subject/${it.id}`} target="_blank" rel="noreferrer" title={it.name}>
-      {it.nameCn}
-      <b>
-        {it.rate} / {it.score.toFixed(1)}
-      </b>
-    </a>
-  )
+  const badge = (it: LibItem) => `${it.rate} / ${it.score.toFixed(1)}`
   return (
     <>
       <div className="st-kpis">
@@ -196,13 +206,13 @@ export function DeviationSection({ d }: { d: Deviation }) {
       {d.hidden.length > 0 && (
         <>
           <div className="st-sub">{t('私藏神作(我 ≥8,高出站均 ≥1.5)')}</div>
-          <div className="st-best">{d.hidden.map(pick)}</div>
+          <CoverGrid items={d.hidden} badge={badge} />
         </>
       )}
       {d.contrarian.length > 0 && (
         <>
           <div className="st-sub">{t('众人皆醉(我 ≤5,低于站均 ≥2)')}</div>
-          <div className="st-best">{d.contrarian.map(pick)}</div>
+          <CoverGrid items={d.contrarian} badge={badge} />
         </>
       )}
     </>
@@ -313,14 +323,7 @@ export function ObscureSection({ o }: { o: Obscure }) {
         <Kpi n={o.medianTotal.toLocaleString()} l={t('看过作品的站内收藏人数中位数')} />
       </div>
       <div className="st-sub">{t('你看过的最冷门的几部')}</div>
-      <div className="st-best">
-        {o.list.map((it) => (
-          <a key={it.id} className="st-pick" href={`https://bgm.tv/subject/${it.id}`} target="_blank" rel="noreferrer" title={it.name}>
-            {it.nameCn}
-            <b>{t('{n} 人', { n: it.total.toLocaleString() })}</b>
-          </a>
-        ))}
-      </div>
+      <CoverGrid items={o.list} badge={(it) => t('{n} 人', { n: it.total.toLocaleString() })} />
     </>
   )
 }
