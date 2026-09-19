@@ -13,12 +13,16 @@ import { fmtSeason } from '../lib/seasons'
 import { currentSeason } from '../lib/time'
 import { t } from '../lib/i18n'
 import { buildDemo, type DemoData } from '../lib/demo'
+import { fetchAllTimeline } from '../lib/bgm'
+import { readLog } from '../lib/log'
+import { CatchupSection, DeviationSection, DropsSection, FriendsSection, ObscureSection, RhythmSection, StaffSection, TasteSection } from './StatsExtra'
 
 interface Props {
   account: BgmAccount | null
   tracking: Tracking
   shows: Show[] | null
   seasonList: string[]
+  friends: string[]
   onOpenSeason: (yyyymm: string) => void
   onClose: () => void
 }
@@ -41,6 +45,7 @@ function localLibrary(tracking: Tracking, shows: Show[] | null): LibItem[] {
       date: s?.begin ? new Date(s.begin).toISOString().slice(0, 10) : null,
       eps: s?.epsTotal ?? 0,
       score: s?.score ?? 0,
+      total: 0,
       tags: s?.tags ?? [],
     }
   })
@@ -56,13 +61,15 @@ const fmtWhen = (ms: number) => {
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
-export default function StatsPage({ account, tracking, shows, seasonList, onOpenSeason, onClose }: Props) {
+export default function StatsPage({ account, tracking, shows, seasonList, friends, onOpenSeason, onClose }: Props) {
   const [lib, setLib] = useState<Library | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [refreshN, setRefreshN] = useState(0)
   const [demo, setDemo] = useState<DemoData | null>(null)
   const [demoBusy, setDemoBusy] = useState(false)
+  const [tl, setTl] = useState<CapsuleEvent[] | null>(null) // 全量时间线(节奏图)
+  const [tlLoading, setTlLoading] = useState(false)
   const live = !!account && !account.invalid
 
   useEffect(() => {
@@ -85,7 +92,23 @@ export default function StatsPage({ account, tracking, shows, seasonList, onOpen
     }
   }, [account, live, refreshN])
 
+  useEffect(() => {
+    if (!account?.username || demo) return
+    let alive = true
+    setTlLoading(true)
+    fetchAllTimeline(account.username, refreshN > 0)
+      .then((ev) => alive && setTl(ev))
+      .catch(() => alive && setTl([]))
+      .finally(() => alive && setTlLoading(false))
+    return () => {
+      alive = false
+    }
+  }, [account?.username, demo, refreshN])
+
   const items = useMemo(() => (live ? (lib?.items ?? []) : demo ? demo.items : localLibrary(tracking, shows)), [live, lib, demo, tracking, shows])
+  const now = Date.now()
+  // 节奏图的事件源:演示 > bgm 全量时间线 > 本机事件日志
+  const rhythmEvents = useMemo(() => (demo && !live ? demo.events : account?.username ? (tl ?? []) : readLog()), [demo, live, account?.username, tl])
   const st = useMemo(() => computeStats(items), [items])
   const cur = currentSeason(Date.now()).yyyymm
   const prev = prevSeasonKey(cur)
@@ -177,7 +200,7 @@ export default function StatsPage({ account, tracking, shows, seasonList, onOpen
                 ) : account?.username ? ( // 时间线是公开数据,令牌过期也照样能看
                   <Capsule username={account.username} />
                 ) : (
-                  <div className="st-empty">{t('时间胶囊需要登录 bgm;镜像站点无此功能')}</div>
+                  <Capsule events={readLog().slice(0, 30)} /> // 未登录:本机操作日志
                 )}
               </div>
 
@@ -218,6 +241,15 @@ export default function StatsPage({ account, tracking, shows, seasonList, onOpen
                 </div>
                 <div className="st-note">{t('完走率 = 看过 ÷ (看过 + 抛弃)')}</div>
               </div>
+            </div>
+
+            {/* ── 观看节奏 ── */}
+            <div className="st-sec">
+              <div className="st-sec-t">
+                {t('观看节奏')}
+                <span className="hint">{t('最近一年,每格一天')}</span>
+              </div>
+              <RhythmSection events={rhythmEvents} loading={tlLoading} now={now} />
             </div>
 
             {/* ── 时间轴 ── */}
@@ -291,6 +323,46 @@ export default function StatsPage({ account, tracking, shows, seasonList, onOpen
                   <div className="st-empty">{t('暂无数据')}</div>
                 )}
               </div>
+            </div>
+
+            <div className="st-two">
+              <div className="st-sec">
+                <div className="st-sec-t">{t('口味逆风盘')}</div>
+                <DeviationSection d={st.deviation} />
+              </div>
+              <div className="st-sec">
+                <div className="st-sec-t">{t('弃番解剖')}</div>
+                <DropsSection d={st.drops} />
+              </div>
+            </div>
+
+            <div className="st-two">
+              <div className="st-sec">
+                <div className="st-sec-t">{t('追新 vs 补番')}</div>
+                <CatchupSection c={st.catchup} />
+              </div>
+              <div className="st-sec">
+                <div className="st-sec-t">{t('冷门指数')}</div>
+                <ObscureSection o={st.obscure} />
+              </div>
+            </div>
+
+            <div className="st-sec">
+              <div className="st-sec-t">
+                {t('口味演变')}
+                <span className="hint">{t('按首播年,看过/在看作品的题材占比')}</span>
+              </div>
+              <TasteSection ts={st.taste} />
+            </div>
+
+            <div className="st-sec">
+              <div className="st-sec-t">{t('制作公司 / 导演 / 声优榜')}</div>
+              <StaffSection items={items} />
+            </div>
+
+            <div className="st-sec">
+              <div className="st-sec-t">{t('好友重合度')}</div>
+              <FriendsSection items={items} friends={friends} />
             </div>
 
             {/* ── 9 分神作 ── */}

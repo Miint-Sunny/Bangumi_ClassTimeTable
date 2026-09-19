@@ -13,6 +13,15 @@ const CHANGELOG: LogEntry[] = [
   {
     d: '2026-09-19',
     x: {
+      'zh-Hans': '统计页「魔怔」扩展:观看节奏(GitHub 贡献图式日历 + 周几×小时热力、深夜党指数、一集耗时、连续周数)、口味逆风盘(挑剔度、私藏神作/众人皆醉)、弃番解剖、追新 vs 补番、冷门指数、口味演变、制作/导演/声优榜、好友口味相似度;应用内操作也会记进本机日志,未登录同样有胶囊与节奏图',
+      'zh-Hant': '統計頁「魔怔」擴展:觀看節奏(GitHub 貢獻圖式日曆 + 週幾×小時熱力、深夜黨指數、一集耗時、連續週數)、口味逆風盤(挑剔度、私藏神作/眾人皆醉)、棄番解剖、追新 vs 補番、冷門指數、口味演變、製作/導演/聲優榜、好友口味相似度;應用內操作也會記進本機日誌,未登入同樣有膠囊與節奏圖',
+      ja: '統計ページを大幅拡張:視聴リズム(GitHub風カレンダー+曜日×時間ヒートマップ、深夜派指数、1話あたりの間隔、連続週数)、逆張り度(辛口度、隠れた神作/世間とズレた作品)、切り解剖、新作追い vs 積み消化、マイナー度、嗜好の変化、制作会社/監督/声優ランキング、フレンドとの嗜好類似度。アプリ内操作もローカルに記録され、未ログインでもカプセルとリズムが見られます',
+      en: 'Stats page goes full data-nerd: watch rhythm (GitHub-style calendar + weekday×hour heatmap, night-owl index, per-episode pace, week streak), taste vs crowd (pickiness, hidden gems / against the crowd), drop anatomy, new vs backlog, obscurity index, taste over time, studio/director/VA rankings, friend taste match; in-app actions are logged locally so the capsule and rhythm work without signing in',
+    },
+  },
+  {
+    d: '2026-09-19',
+    x: {
       'zh-Hans': '统计改为独立页面(顶栏 📊 切换,地址栏 #stats,浏览器后退可回课表);季度/主题/语言/深夜档等下拉全部换成站内自绘菜单(分组、键盘操作、选中项自动定位),不再用浏览器默认样式',
       'zh-Hant': '統計改為獨立頁面(頂欄 📊 切換,網址列 #stats,瀏覽器後退可回課表);季度/主題/語言/深夜檔等下拉全部換成站內自繪選單(分組、鍵盤操作、選中項自動定位),不再用瀏覽器預設樣式',
       ja: '統計を独立ページに(上部 📊 で切替、URL #stats、ブラウザの戻るで時間割へ)。シーズン/テーマ/言語/深夜帯のプルダウンをサイト独自のメニューに刷新(グループ表示、キーボード操作、選択項目へ自動スクロール)',

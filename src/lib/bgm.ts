@@ -276,6 +276,7 @@ export interface LibItem {
   date: string | null // 首播日
   eps: number
   score: number // 站均分
+  total: number // 站内收藏人数(冷门指数用)
   tags: string[] // 条目热门标签(已剔除年份/形态等噪音)
 }
 export interface Library {
@@ -325,6 +326,7 @@ export async function pullLibrary(acc: BgmAccount, force = false): Promise<Libra
           date: s.date ?? null,
           eps: s.eps ?? 0,
           score: s.score ?? 0,
+          total: s.collection_total ?? 0,
           tags: (Array.isArray(s.tags) ? s.tags : [])
             .map((t: any) => String(t?.name ?? ''))
             .filter((n: string) => n && !/^\d{4}$/.test(n) && !TAG_NOISE.has(n))
@@ -362,8 +364,8 @@ export interface CapsuleEvent {
 const CAP_KIND: Record<number, CapsuleKind> = { 2: 'wish', 6: 'done', 10: 'watching', 13: 'hold', 14: 'drop' }
 
 /** 最近的动画相关动作;until = 上一页最后一条的 id(翻页)。GitHub Pages 镜像没有代理,会抛错,调用方静默。 */
-export async function fetchTimeline(username: string, until?: number): Promise<{ events: CapsuleEvent[]; lastId: number | null }> {
-  const q = new URLSearchParams({ user: username, limit: '20' })
+export async function fetchTimeline(username: string, until?: number, limit = 20): Promise<{ events: CapsuleEvent[]; lastId: number | null }> {
+  const q = new URLSearchParams({ user: username, limit: String(limit) })
   if (until) q.set('until', String(until))
   const resp = await fetch(`${import.meta.env.BASE_URL}api/timeline?${q}`, { headers: { Accept: 'application/json' } })
   if (!resp.ok) throw new Error(`timeline HTTP ${resp.status}`)
@@ -406,4 +408,26 @@ export async function fetchTimeline(username: string, until?: number): Promise<{
     }
   }
   return { events, lastId: rows.length ? rows[rows.length - 1].id : null }
+}
+
+/** 全量时间线(观看节奏用):按 until 翻页,翻到 400 天前或 40 页封顶;缓存 6 小时 */
+export async function fetchAllTimeline(username: string, force = false): Promise<CapsuleEvent[]> {
+  const key = `bgm:tl:${username}`
+  if (!force) {
+    const hit = readCache<CapsuleEvent[]>(key, 6 * 3600_000)
+    if (hit) return hit
+  }
+  const all: CapsuleEvent[] = []
+  const floor = Date.now() - 400 * 86400_000
+  let until: number | undefined
+  for (let page = 0; page < 40; page++) {
+    const { events, lastId } = await fetchTimeline(username, until, 30)
+    all.push(...events)
+    if (lastId === null) break
+    const oldest = all[all.length - 1]
+    if (oldest && oldest.at < floor) break
+    until = lastId
+  }
+  writeCache(key, all)
+  return all
 }

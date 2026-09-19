@@ -21,6 +21,7 @@ import { LANGS, setLang, t, type Lang } from './lib/i18n'
 import AboutModal from './components/AboutModal'
 import StatsPage from './components/StatsPage'
 import Dropdown from './components/Dropdown'
+import { appendLog, diffTracking } from './lib/log'
 import { fetchBangumiData } from './lib/bangumiData'
 import { buildShows, fetchEnhance } from './lib/merge'
 import { behindCount, continuity, type Continuity } from './lib/progress'
@@ -161,6 +162,20 @@ export default function App() {
     }
   }, [settings.theme])
 
+  // ── 本机事件日志:改状态/加集数/打分记时间戳(未登录也有时间胶囊与节奏图)──
+  const skipLogRef = useRef(false)
+  const prevTrackingRef = useRef(tracking)
+  useEffect(() => {
+    const prev = prevTrackingRef.current
+    prevTrackingRef.current = tracking
+    if (skipLogRef.current) {
+      skipLogRef.current = false
+      return
+    }
+    appendLog(diffTracking(prev, tracking, shows, Date.now()))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tracking])
+
   // ── 页面切换(#stats):进入统计页 pushState,浏览器后退回课表 ──
   const gotoPage = useCallback((p: 'timetable' | 'stats') => {
     if (p === pageRef.current) return
@@ -236,6 +251,7 @@ export default function App() {
       if (acc.mergedOnce) await drainQueue(acc) // 先推后拉,拉到的就包含本机改动
       const remote = await pullCollections(acc, force)
       const { tracking: merged, pushes } = mergeRemote(trackingRef.current, remote, !acc.mergedOnce, queuedIds())
+      skipLogRef.current = true // 同步合并不是本机操作,不进事件日志
       setTracking(merged)
       const pushIds = Object.keys(pushes)
       for (const id of pushIds) enqueuePush(Number(id), pushes[Number(id)])
@@ -954,6 +970,7 @@ export default function App() {
               tracking={tracking}
               shows={shows}
               seasonList={seasonList}
+              friends={settings.friends}
               onOpenSeason={(s) => {
                 gotoPage('timetable')
                 withViewTransition(() => setSeasonSel(s))

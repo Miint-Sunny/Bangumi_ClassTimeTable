@@ -63,43 +63,61 @@ export async function buildDemo(now = Date.now()): Promise<DemoData> {
         type,
         rate,
         ep,
-        at: '',
+        at: new Date(Math.min(now, (s.begin ?? Date.parse(`${key.slice(0, 4)}-${key.slice(4)}-01`)) + (type === 2 ? r() * 200 : r() * 60) * 86400_000)).toISOString().slice(0, 10),
         name: s.nameJp,
         nameCn: s.nameCn,
         date: s.begin ? new Date(s.begin).toISOString().slice(0, 10) : `${key.slice(0, 4)}-${key.slice(4)}-01`,
         eps,
         score: s.score ?? 0,
+        total: Math.round((s.ratingTotal ?? 50) * (3 + r())), // 站内收藏人数 ≈ 评分人数的 3~4 倍
         tags: s.tags ?? [],
       })
     }
   }
 
-  // 时间胶囊:最近 30 天,来自当季条目
+  // 时间线:最近 365 天的动作流 —— 当季条目密集(胶囊看得到),往季稀疏(节奏图有底色)。
+  // 时段分布模拟真实习惯:工作日晚间 20–26 点最密,周末下午也有,凌晨 0–4 点占一成
   const events: CapsuleEvent[] = []
   let id = 900000
-  let tms = now - 2 * 3600_000
-  const step = () => (tms -= (0.3 + r() * 1.4) * 86400_000)
+  const hourPick = () => {
+    const x = r()
+    return x < 0.55 ? 20 + Math.floor(r() * 5) : x < 0.7 ? 14 + Math.floor(r() * 5) : x < 0.82 ? Math.floor(r() * 4) : 8 + Math.floor(r() * 10)
+  }
+  const stamp = (daysAgo: number) => {
+    const d = new Date(now - daysAgo * 86400_000)
+    d.setHours(hourPick() % 24, Math.floor(r() * 60), 0, 0)
+    return d.getTime()
+  }
   const recent = items.filter((it) => seasonKeyOf(it.date) === cur)
   for (const it of recent) {
     const subject = { id: it.id, name: it.name, nameCn: it.nameCn }
+    let day = r() * 4
     if (it.type === 3) {
-      for (let k = it.ep; k >= Math.max(1, it.ep - 2); k--) {
-        events.push({ id: id--, at: tms, kind: 'progress', subject, ep: k, epsTotal: it.eps })
-        step()
+      for (let k = it.ep; k >= 1; k--) {
+        events.push({ id: id--, at: stamp(day), kind: 'progress', subject, ep: k, epsTotal: it.eps })
+        day += 5 + r() * 4
       }
-      events.push({ id: id--, at: tms, kind: 'watching', subject, rate: it.rate || undefined })
-      step()
+      events.push({ id: id--, at: stamp(day + 1), kind: 'watching', subject, rate: it.rate || undefined })
     } else if (it.type === 2) {
-      events.push({ id: id--, at: tms, kind: 'done', subject, rate: it.rate || undefined })
-      step()
-    } else if (it.type === 1) {
-      events.push({ id: id--, at: tms, kind: 'wish', subject })
-      step()
-    } else if (it.type === 5) {
-      events.push({ id: id--, at: tms, kind: 'drop', subject, rate: it.rate || undefined })
-      step()
-    }
+      events.push({ id: id--, at: stamp(day), kind: 'done', subject, rate: it.rate || undefined })
+      for (let k = it.eps; k >= 1; k--) {
+        day += 2 + r() * 5
+        events.push({ id: id--, at: stamp(day), kind: 'progress', subject, ep: k, epsTotal: it.eps })
+      }
+    } else if (it.type === 1) events.push({ id: id--, at: stamp(day), kind: 'wish', subject })
+    else if (it.type === 5) events.push({ id: id--, at: stamp(day), kind: 'drop', subject, rate: it.rate || undefined })
+  }
+  // 往季:随机撒一些"看过"与进度,填满一年
+  for (const it of items.filter((x) => seasonKeyOf(x.date) !== cur)) {
+    if (r() > 0.45) continue
+    const subject = { id: it.id, name: it.name, nameCn: it.nameCn }
+    const base = 30 + r() * 330
+    if (it.type === 2) {
+      events.push({ id: id--, at: stamp(base), kind: 'done', subject, rate: it.rate || undefined })
+      const n = Math.min(it.eps, 4 + Math.floor(r() * 8))
+      for (let k = 0; k < n; k++) events.push({ id: id--, at: stamp(base + 1 + k * (1.5 + r() * 3)), kind: 'progress', subject, ep: it.eps - k, epsTotal: it.eps })
+    } else events.push({ id: id--, at: stamp(base), kind: it.type === 5 ? 'drop' : it.type === 1 ? 'wish' : 'watching', subject })
   }
   events.sort((a, b) => b.at - a.at)
-  return { items, events: events.slice(0, 30) }
+  return { items, events }
 }

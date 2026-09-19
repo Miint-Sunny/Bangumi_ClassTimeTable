@@ -1034,3 +1034,43 @@ a.iconbtn:hover { color: var(--pink-strong); text-decoration: none; }
   display: inline-block; background: var(--pink); color: var(--accent-ink); border-radius: 10px;
   padding: 0 8px; font-size: 11px; line-height: 1.7; margin-right: 8px; vertical-align: 1px;
 }
+
+/* 魔怔区块:小 KPI、GitHub 式日历热力图、周几×小时、榜单 */
+.st-kpis { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 2px 0 12px; }
+.st-kpi .n { font-size: 20px; color: var(--text); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.st-kpi .l { font-size: 11px; color: var(--text-soft); margin-top: 3px; }
+.st-kpi .s { color: var(--text-subtle); }
+.st-sub { font-size: 11px; color: var(--text-soft); margin: 12px 0 6px; }
+:root {
+  --hm-0: var(--border-soft); --hm-1: #fbe5e8; --hm-2: #f5b8c0; --hm-3: #ec8a97; --hm-4: #d9566a;
+}
+:root[data-theme='dark'], :root[data-theme='bgm-dark'], :root[data-theme='contrast'] {
+  --hm-0: rgba(255, 255, 255, 0.06); --hm-1: #5a2f37; --hm-2: #8f3f4c; --hm-3: #c45566; --hm-4: #f07f8f;
+}
+.hm-c { display: block; width: 11px; height: 11px; border-radius: 2px; background: var(--hm-0); }
+.hm-c.l1 { background: var(--hm-1); } .hm-c.l2 { background: var(--hm-2); } .hm-c.l3 { background: var(--hm-3); } .hm-c.l4 { background: var(--hm-4); }
+.hm-wrap { overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+.hm-months { display: grid; gap: 3px; margin-left: 26px; font-size: 10px; color: var(--text-subtle); height: 14px; }
+.hm-months span { white-space: nowrap; }
+.hm-body { display: flex; gap: 4px; }
+.hm-wd { display: grid; grid-template-rows: repeat(7, 11px); gap: 3px; width: 22px; font-size: 10px; color: var(--text-subtle); line-height: 11px; }
+.hm-cal { display: grid; grid-template-rows: repeat(7, 11px); grid-auto-flow: column; gap: 3px; }
+.hm-legend { display: flex; align-items: center; gap: 3px; margin: 6px 0 0 26px; font-size: 10px; color: var(--text-subtle); }
+.hm-legend span { margin: 0 3px; }
+.wh-wrap { margin-top: 14px; overflow-x: auto; scrollbar-width: thin; }
+.wh-hours, .wh-row { display: grid; grid-template-columns: 30px repeat(24, 12px); gap: 3px; align-items: center; }
+.wh-hours span { font-size: 10px; color: var(--text-subtle); text-align: left; }
+.wh-row { margin-top: 3px; }
+.wh-row .hm-c { width: 12px; height: 12px; }
+.wh-wd { font-size: 10px; color: var(--text-subtle); }
+.st-bars.small { height: 110px; }
+.st-bars.pct .st-bar { max-width: 40px; }
+.st-three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 760px) { .st-three { grid-template-columns: minmax(0, 1fr); } }
+.st-rank .row { display: grid; grid-template-columns: 18px minmax(0, 1fr) 44px 30px; gap: 6px; font-size: 12px; padding: 3px 0; border-bottom: 1px solid var(--border-soft); align-items: center; }
+.st-rank .i { color: var(--text-subtle); font-size: 11px; }
+.st-rank .name { color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: none; }
+.st-rank a.name { color: var(--link); }
+.st-rank .n { color: var(--text-soft); font-size: 11px; text-align: right; }
+.st-rank .avg { color: var(--pink-strong); font-size: 11px; text-align: right; font-variant-numeric: tabular-nums; }
+.st-table td a { color: var(--link); text-decoration: none; }
