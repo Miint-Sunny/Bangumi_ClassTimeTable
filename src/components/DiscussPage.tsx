@@ -13,6 +13,8 @@ import { fetchFriendLibrary } from '../lib/friends'
 import type { Upcoming } from '../lib/merge'
 import { fetchStaff, type StaffInfo } from '../lib/staff'
 import { closeRoom, createRoom, joinUrl, loadHostRoom, RoomError, roomState, saveHostRoom, setCurrent, voteRoom, type HostRoom, type RoomState } from '../lib/room'
+import { QrSvg } from '../lib/qr'
+import { boardText, buildBoard, downloadBlob, renderBoardPng, TIER_LABEL, TIERS, type VoteNames } from '../lib/consensus'
 import { fmtSeason } from '../lib/seasons'
 import { displayName, subName, t, wdFull } from '../lib/i18n'
 
@@ -74,6 +76,10 @@ export default function DiscussPage({ upcoming, shows, tracking, settings, frien
   const [roomBusy, setRoomBusy] = useState(false)
   const [roomErr, setRoomErr] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [qrOpen, setQrOpen] = useState(false)
+  const [boardOpen, setBoardOpen] = useState(false)
+  const [textCopied, setTextCopied] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   // ── 顺序:首播日 / bgm 期待 ──
   const list = useMemo(() => {
@@ -100,13 +106,16 @@ export default function DiscussPage({ upcoming, shows, tracking, settings, frien
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
-      if (e.key === 'Escape') onClose()
-      else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(idx + 1)
+      if (e.key === 'Escape') {
+        if (qrOpen) setQrOpen(false)
+        else if (boardOpen) setBoardOpen(false)
+        else onClose()
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(idx + 1)
       else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(idx - 1)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [onClose, go, idx])
+  }, [onClose, go, idx, qrOpen, boardOpen])
 
   useEffect(() => {
     curRef.current?.scrollIntoView({ block: 'nearest' })
@@ -290,6 +299,39 @@ export default function DiscussPage({ upcoming, shows, tracking, settings, frien
 
   const otherFriends = (id: number) => friends.filter((u) => !(friendWish.get(id) ?? []).includes(u))
 
+  /** 一部作品所有人的票:有房间用房间票(主持人的票已在里面),没有就用我的标记;好友 bgm 想看并入想看 */
+  const votesFor = (id: number): VoteNames => {
+    const tl = rs?.tally[String(id)]
+    const v: VoteNames = tl ? { wish: [...tl.wish], maybe: [...tl.maybe], skip: [...tl.skip] } : { wish: [], maybe: [], skip: [] }
+    if (!room) {
+      const m = myMark(id)
+      if (m) v[m].push(hostNick)
+    }
+    for (const u of friendWish.get(id) ?? []) if (!v.wish.includes(u)) v.wish.push(u)
+    return v
+  }
+  const board = useMemo(() => (boardOpen ? buildBoard(list, votesFor) : null), [boardOpen, list, rs, marks, friendWish, room]) // eslint-disable-line react-hooks/exhaustive-deps
+  const boardTitle = t('{s} 新番共识榜', { s: fmtSeason(season) })
+  const copyBoard = async () => {
+    if (!board) return
+    const text = boardText(board, boardTitle, list.length)
+    try {
+      await navigator.clipboard.writeText(text)
+      setTextCopied(true)
+      window.setTimeout(() => setTextCopied(false), 1500)
+    } catch {
+      window.prompt(t('复制下面的文字'), text)
+    }
+  }
+  const exportBoard = async () => {
+    if (!board || exporting) return
+    setExporting(true)
+    try {
+      downloadBlob(await renderBoardPng(board, boardTitle, list.length), `bangumi-${season}-consensus.png`)
+    } catch {}
+    setExporting(false)
+  }
+
   return (
     <div className="stats-page discuss-page">
       <div className="st-head">
@@ -302,6 +344,9 @@ export default function DiscussPage({ upcoming, shows, tracking, settings, frien
           {daysTo > 0 ? ` · ${t('距开播 {n} 天', { n: daysTo })}` : ''}
           {room ? ` · ${t('房间 {code}', { code: room.code })}` : ''}
         </span>
+        <button className="iconbtn st-refresh" onClick={() => setBoardOpen(true)} title={t('按大家的票分层:都想看 / 有人想看 / 观望 / 跳过')}>
+          📋 {t('共识榜')}
+        </button>
       </div>
 
       {!cur ? (
@@ -425,6 +470,9 @@ export default function DiscussPage({ upcoming, shows, tracking, settings, frien
                 {room ? (
                   <>
                     <span className="dc-room">
+                      <button className="dc-qr-mini" onClick={() => setQrOpen(true)} title={t('扫码进入房间')}>
+                        <QrSvg text={joinUrl(room.code)} px={52} />
+                      </button>
                       <b title={joinUrl(room.code)}>{room.code}</b>
                       <button className="iconbtn" onClick={copyLink} title={joinUrl(room.code)}>
                         {copied ? t('已复制') : t('复制链接')}
@@ -470,6 +518,67 @@ export default function DiscussPage({ upcoming, shows, tracking, settings, frien
               </span>
             </div>
           </section>
+        </div>
+      )}
+      {qrOpen && room && (
+        <div className="dc-overlay" onClick={() => setQrOpen(false)}>
+          <div className="dc-qr-big" onClick={(e) => e.stopPropagation()}>
+            <QrSvg text={joinUrl(room.code)} px={320} />
+            <div className="code">{room.code}</div>
+            <div className="url">{joinUrl(room.code)}</div>
+            <div className="soft">{t('扫码或打开链接,填昵称即可投票')}</div>
+          </div>
+        </div>
+      )}
+      {boardOpen && board && (
+        <div className="dc-overlay" onClick={() => setBoardOpen(false)}>
+          <div className="dc-board" onClick={(e) => e.stopPropagation()}>
+            <div className="dc-board-head">
+              <h3>📋 {boardTitle}</h3>
+              <span className="sub">
+                {board.people.length ? `${t('{n} 人参与:{names}', { n: board.people.length, names: board.people.join(' · ') })} · ` : ''}
+                {t('已过 {n} 部', { n: list.length - board.unvoted })} / {list.length}
+              </span>
+              <span className="dc-board-actions">
+                <button className="iconbtn" onClick={copyBoard}>
+                  {textCopied ? t('已复制') : t('复制文本')}
+                </button>
+                <button className="iconbtn" disabled={exporting} onClick={exportBoard}>
+                  {exporting ? t('导出中…') : t('导出图片')}
+                </button>
+                <button className="iconbtn" onClick={() => setBoardOpen(false)}>
+                  {t('关闭')}
+                </button>
+              </span>
+            </div>
+            {board.rows.length === 0 && <div className="st-empty">{t('还没有人表态')}</div>}
+            {TIERS.map((tier) => {
+              const rows = board.rows.filter((r) => r.tier === tier)
+              if (!rows.length) return null
+              return (
+                <div key={tier}>
+                  <h4>
+                    {t(TIER_LABEL[tier])}
+                    <b>{rows.length}</b>
+                  </h4>
+                  {rows.map((r) => (
+                    <div key={r.show.id} className="dc-brow" onClick={() => { setBoardOpen(false); go(list.findIndex((s) => s.id === r.show.id)) }}>
+                      <span className="t">{displayName(r.show)}</span>
+                      {r.show.firstAirDate && <span className="d">{md(r.show.firstAirDate)}</span>}
+                      {(['wish', 'maybe', 'skip'] as const).map((k) =>
+                        r.votes[k].length ? (
+                          <span key={k} className={`v ${k}`}>
+                            {t(MARK_LABEL[k])} {r.votes[k].join(' · ')}
+                          </span>
+                        ) : null,
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )
+            })}
+            <div className="foot">{board.unvoted ? t('未过 {n} 部', { n: board.unvoted }) : ''}</div>
+          </div>
         </div>
       )}
       <p className="pv-foot">{t('名单来自 yuc.wiki 新番表,封面/期待/简介/制作/声优来自 bgm.tv;好友的想看来自其 bgm 公开收藏,每天更新一次。想看会同步到你的 bgm 收藏,观望/跳过只存本机。')}</p>
