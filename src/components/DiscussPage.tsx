@@ -12,6 +12,7 @@ import { fetchSubject, type SubjectInfo } from '../lib/api'
 import { fetchFriendLibrary } from '../lib/friends'
 import type { Upcoming } from '../lib/merge'
 import { fetchStaff, type StaffInfo } from '../lib/staff'
+import { closeRoom, createRoom, joinUrl, loadHostRoom, RoomError, roomState, saveHostRoom, setCurrent, voteRoom, type HostRoom, type RoomState } from '../lib/room'
 import { fmtSeason } from '../lib/seasons'
 import { displayName, subName, t, wdFull } from '../lib/i18n'
 
@@ -21,6 +22,7 @@ interface Props {
   tracking: Tracking
   settings: Settings
   friends: string[]
+  hostNick: string // 主持人在房间里的名字(bgm 昵称或"主持人")
   now: number
   onSetStatus: (id: number, s: WatchStatus | null) => void
   onSubjectInfo: (info: SubjectInfo) => void
@@ -56,7 +58,7 @@ const isoWeekday = (iso: string) => {
 const md = (iso: string) => `${+iso.slice(5, 7)}/${+iso.slice(8, 10)}`
 const fmtN = (n: number) => (n >= 10000 ? `${(n / 10000).toFixed(1)}w` : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n))
 
-export default function DiscussPage({ upcoming, shows, tracking, settings, friends, now, onSetStatus, onSubjectInfo, onClose }: Props) {
+export default function DiscussPage({ upcoming, shows, tracking, settings, friends, hostNick, now, onSetStatus, onSubjectInfo, onClose }: Props) {
   const season = upcoming.season
   const [sort, setSort] = useState<SortKey>('date')
   const [marks, setMarks] = useState<Record<number, Mark>>(() => readJson(marksKey(season), {}))
@@ -66,6 +68,12 @@ export default function DiscussPage({ upcoming, shows, tracking, settings, frien
   const [friendWish, setFriendWish] = useState<Map<number, string[]>>(new Map())
   const [friendState, setFriendState] = useState<'idle' | 'loading' | 'done'>('idle')
   const curRef = useRef<HTMLButtonElement>(null)
+  // ── 房间(手机投票):主持人本机存房间码 + hostKey;3 秒拉一次票 ──
+  const [room, setRoom] = useState<HostRoom | null>(() => loadHostRoom(season))
+  const [rs, setRs] = useState<RoomState | null>(null)
+  const [roomBusy, setRoomBusy] = useState(false)
+  const [roomErr, setRoomErr] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
 
   // ── 顺序:首播日 / bgm 期待 ──
   const list = useMemo(() => {
@@ -154,6 +162,74 @@ export default function DiscussPage({ upcoming, shows, tracking, settings, frien
     }
   }, [friends])
 
+  useEffect(() => {
+    if (!room) {
+      setRs(null)
+      return
+    }
+    let alive = true
+    const tick = async () => {
+      if (document.visibilityState === 'hidden') return
+      try {
+        const s = await roomState(room.code)
+        if (alive) setRs(s)
+      } catch (e) {
+        if (!alive) return
+        if (e instanceof RoomError && e.status === 404) {
+          setRoom(null)
+          saveHostRoom(season, null)
+          setRoomErr(t('房间已过期或已关闭'))
+        }
+      }
+    }
+    tick()
+    const id = window.setInterval(tick, 3000)
+    return () => {
+      alive = false
+      window.clearInterval(id)
+    }
+  }, [room, season])
+
+  // 主持人翻到哪部,房间里的"当前"就切到哪部(参会者手机跟着走)
+  useEffect(() => {
+    if (room && cur) setCurrent(room.code, room.hostKey, cur.id).catch(() => {})
+  }, [room, cur?.id])
+
+  const openRoom = async () => {
+    if (roomBusy) return
+    setRoomBusy(true)
+    setRoomErr(null)
+    try {
+      const r = await createRoom(season, list.map((s) => s.id))
+      const hr = { ...r, season }
+      setRoom(hr)
+      saveHostRoom(season, hr)
+    } catch (e) {
+      setRoomErr(e instanceof RoomError && e.message === 'no room service' ? t('镜像站没有房间服务,请用 bgmtimetable.com 打开') : t('开房间失败:{e}', { e: e instanceof Error ? e.message : String(e) }))
+    } finally {
+      setRoomBusy(false)
+    }
+  }
+  const endRoom = async () => {
+    if (!room || !window.confirm(t('关闭房间?参会者将无法再投票。'))) return
+    try {
+      await closeRoom(room.code, room.hostKey)
+    } catch {}
+    setRoom(null)
+    saveHostRoom(season, null)
+    setRs(null)
+  }
+  const copyLink = async () => {
+    if (!room) return
+    try {
+      await navigator.clipboard.writeText(joinUrl(room.code))
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 1500)
+    } catch {
+      window.prompt(t('复制这个链接发给大家'), joinUrl(room.code))
+    }
+  }
+
   // 我的态度:本机讨论标记优先;没标过但追番状态已是想看(比如 bgm 同步来的)也算想看
   const myMark = (id: number): Mark | null => marks[id] ?? (tracking.status[id] === 'wish' ? 'wish' : null)
   const setMark = (id: number, v: Mark) => {
@@ -165,6 +241,8 @@ export default function DiscussPage({ upcoming, shows, tracking, settings, frien
     const nowWish = next[id] === 'wish'
     if (nowWish && tracking.status[id] !== 'wish') onSetStatus(id, 'wish')
     else if (!nowWish && tracking.status[id] === 'wish') onSetStatus(id, null)
+    // 主持人自己的票也进房间(取消标记时房间里保留上一票,接口没有撤票)
+    if (room && next[id]) voteRoom(room.code, hostNick, id, next[id]).then(setRs).catch(() => {})
   }
 
   const counts = useMemo(() => {
@@ -222,6 +300,7 @@ export default function DiscussPage({ upcoming, shows, tracking, settings, frien
         <span className="sub">
           {t('共 {n} 部', { n: list.length })} · {t('已过 {n} 部', { n: counts.seen })} · {t('想看 {a} · 观望 {b} · 跳过 {c}', { a: counts.wish, b: counts.maybe, c: counts.skip })}
           {daysTo > 0 ? ` · ${t('距开播 {n} 天', { n: daysTo })}` : ''}
+          {room ? ` · ${t('房间 {code}', { code: room.code })}` : ''}
         </span>
       </div>
 
@@ -255,6 +334,7 @@ export default function DiscussPage({ upcoming, shows, tracking, settings, frien
                   <button key={s.id} ref={i === idx ? curRef : undefined} className={'dc-row' + (i === idx ? ' cur' : '') + (m ? ` m-${m}` : '')} onClick={() => go(i)} title={s.nameJp}>
                     {s.image ? <img className="th" src={s.image} loading="lazy" alt="" /> : <span className="th ph" />}
                     <span className="t">{displayName(s)}</span>
+                    {rs && (rs.tally[String(s.id)]?.wish.length ?? 0) > 0 && <b className="rv">♡{rs.tally[String(s.id)].wish.length}</b>}
                     <span className="dots">
                       <i className={m ? `me ${m}` : 'me'} title={m ? t(MARK_LABEL[m]) : ''} />
                       {friends.map((u) => (
@@ -342,18 +422,42 @@ export default function DiscussPage({ upcoming, shows, tracking, settings, frien
               </span>
               <span className="dc-them">
                 <span className="k">{t('大家')}</span>
-                {friends.length === 0 ? (
-                  <span className="soft">{t('在「设置 → 好友」里填上 bgm 用户名,这里会显示他们的想看')}</span>
+                {room ? (
+                  <>
+                    <span className="dc-room">
+                      <b title={joinUrl(room.code)}>{room.code}</b>
+                      <button className="iconbtn" onClick={copyLink} title={joinUrl(room.code)}>
+                        {copied ? t('已复制') : t('复制链接')}
+                      </button>
+                      <span className="soft">{t('{n} 人在线', { n: rs?.members.length ?? 0 })}</span>
+                      <button className="iconbtn" onClick={endRoom}>
+                        {t('关闭房间')}
+                      </button>
+                    </span>
+                    {MARKS.map((v) => {
+                      const names = rs?.tally[String(cur.id)]?.[v] ?? []
+                      return (
+                        <span key={v} className={`dc-pill ${v}`}>
+                          {t(MARK_LABEL[v])} {names.join(' · ') || '—'}
+                        </span>
+                      )
+                    })}
+                  </>
                 ) : (
+                  <button className="iconbtn" disabled={roomBusy} onClick={openRoom} title={t('开一个房间,大家用手机链接投票')}>
+                    {roomBusy ? '…' : t('开房间')}
+                  </button>
+                )}
+                {roomErr && <span className="soft">{roomErr}</span>}
+                {friends.length > 0 ? (
                   <>
                     <span className="dc-pill wish">
-                      {t('想看')} {(friendWish.get(cur.id) ?? []).join(' · ') || '—'}
-                    </span>
-                    <span className="dc-pill">
-                      {t('还没标')} {otherFriends(cur.id).join(' · ') || '—'}
+                      {t('bgm 想看')} {(friendWish.get(cur.id) ?? []).join(' · ') || '—'}
                     </span>
                     {friendState === 'loading' && <span className="soft">…</span>}
                   </>
+                ) : (
+                  !room && <span className="soft">{t('在「设置 → 好友」里填上 bgm 用户名,这里会显示他们的想看')}</span>
                 )}
               </span>
               <span className="dc-nav">

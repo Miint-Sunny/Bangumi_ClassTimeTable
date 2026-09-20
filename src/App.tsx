@@ -21,6 +21,7 @@ import { LANGS, setLang, t, type Lang } from './lib/i18n'
 import AboutModal from './components/AboutModal'
 import StatsPage from './components/StatsPage'
 import DiscussPage from './components/DiscussPage'
+import JoinPage from './components/JoinPage'
 import Dropdown from './components/Dropdown'
 import { appendLog, diffTracking } from './lib/log'
 import { fetchBangumiData } from './lib/bangumiData'
@@ -96,9 +97,12 @@ const THEMES: [Settings['theme'], string][] = [
   ['light', '白色'],
 ]
 
-type Page = 'timetable' | 'stats' | 'discuss'
-const PAGE_HASH: Record<Page, string> = { timetable: '', stats: '#stats', discuss: '#discuss' }
-const pageOfHash = (): Page => (location.hash === '#stats' ? 'stats' : location.hash === '#discuss' ? 'discuss' : 'timetable')
+type Page = 'timetable' | 'stats' | 'discuss' | 'join'
+const PAGE_HASH: Record<Page, string> = { timetable: '', stats: '#stats', discuss: '#discuss', join: '#join' }
+const pageOfHash = (): Page =>
+  location.hash === '#stats' ? 'stats' : location.hash === '#discuss' ? 'discuss' : location.hash.startsWith('#join/') ? 'join' : 'timetable'
+/** 参会者链接 #join/房间码 */
+const joinCodeOfHash = () => /^#join\/([A-Za-z0-9]{6})$/.exec(location.hash)?.[1]?.toUpperCase() ?? ''
 
 export default function App() {
   const init = useRef(loadPersisted())
@@ -768,6 +772,11 @@ export default function App() {
   const panelW = effView === 'day' ? settings.panelWidthDay : settings.panelWidth
   const viewProps = { tracking, settings, now, seasonStart, archive, friendsMap, onOpen: openDetail }
 
+  // 参会者的手机投票页:独立一屏,不带课表的页头与工具栏
+  if (page === 'join') {
+    return <JoinPage code={joinCodeOfHash()} shows={previewShows} onSubjectInfo={applySubjectInfo} onClose={() => gotoPage('timetable')} />
+  }
+
   return (
     <div className="container">
       <header className="site-header">
@@ -1047,6 +1056,7 @@ export default function App() {
               tracking={tracking}
               settings={settings}
               friends={settings.friends}
+              hostNick={account?.nickname || account?.username || t('主持人')}
               now={now}
               onSetStatus={setStatus}
               onSubjectInfo={applySubjectInfo}

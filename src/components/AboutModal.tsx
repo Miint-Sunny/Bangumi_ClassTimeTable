@@ -47,6 +47,15 @@ const CHANGELOG: LogEntry[] = [
     },
   },
   {
+    d: '2026-09-20',
+    x: {
+      'zh-Hans': '讨论会房间:主持人在讨论页点"开房间"得到 6 位房间码和链接,参会者手机打开 #join/房间码、填个昵称就能对当前作品投 想看/观望/跳过,不用登录也不用 bgm 账号;主持人翻到哪部大家的手机自动跟着切,票实时汇总在"大家"一栏,议程列表上显示想看票数。房间 24 小时无活动自动销毁,只存昵称和票',
+      'zh-Hant': '討論會房間:主持人在討論頁點「開房間」得到 6 位房間碼和連結,參會者手機打開 #join/房間碼、填個暱稱就能對當前作品投 想看/觀望/跳過,不用登入也不用 bgm 帳號;主持人翻到哪部大家的手機自動跟著切,票即時彙總在「大家」一欄,議程列表上顯示想看票數。房間 24 小時無活動自動銷毀,只存暱稱和票',
+      ja: '座談会ルーム:司会が座談会ページで「ルームを作る」と 6 桁のコードとリンクが出ます。参加者はスマホで #join/コード を開きニックネームを入れるだけで、今の作品に 見たい/保留/スキップ を投票(ログインも bgm も不要)。司会がページを送るとスマホも自動で追従、票は「みんな」欄にリアルタイム集計、議題リストに「見たい」数を表示。ルームは 24 時間無操作で自動削除、保存するのはニックネームと票だけ',
+      en: 'Discussion rooms: the host opens a room from the discussion page and gets a 6-letter code and link; participants open #join/CODE on their phones, enter a nickname and vote wish / maybe / skip on the current show — no sign-in, no bgm account. Phones follow the host\'s page turns, votes tally live in the "Everyone" bar and wish counts show in the agenda. Rooms self-destruct after 24 idle hours and store only nicknames and votes',
+    },
+  },
+  {
     d: '2026-09-19',
     x: {
       'zh-Hans': '新番讨论会(🗣 按钮):几个人一起过下季新番用的页面。左侧议程列表(标题 + 每个人的态度点,当前行高亮,← → 翻页),右侧一次聚焦一部:封面、首播、来源、制作/导演/系列构成/人物设定、声优、标签、完整简介与 PV/官网/bgm/B站 外链;底部我的想看/观望/跳过(想看同步到 bgm),"大家"一栏显示好友 bgm 公开收藏里的想看。详情面板链接区也加了 B站番剧 / B站搜索',
