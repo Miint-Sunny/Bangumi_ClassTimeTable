@@ -1,5 +1,5 @@
 {
- "bgmwiki_synced_at": "2026-09-21T00:18:21.227550Z",
+ "bgmwiki_synced_at": "2026-09-22T00:53:25.603630Z",
  "regions": {
   "449354": "cn",
   "466759": "cn",
@@ -1276,6 +1276,12 @@
     "start_date": "7/6",
     "time": "24:00",
     "broadcast_text": "7/6周一深夜"
+   },
+   "air": {
+    "epDates": {
+     "11": "2026-09-19T17:00:00Z"
+    },
+    "source": "https://bgm.wiki"
    }
   },
   "569671": {
@@ -1290,6 +1296,12 @@
     "start_date": "7/6",
     "time": "23:00",
     "broadcast_text": "7/6周一深夜"
+   },
+   "air": {
+    "epDates": {
+     "11": "2026-09-18T14:30:00Z"
+    },
+    "source": "https://bgm.wiki"
    }
   },
   "570448": {
@@ -1895,6 +1907,12 @@
     "start_date": "7/6",
     "time": "20:30",
     "broadcast_text": "7/6周一晚间"
+   },
+   "air": {
+    "epDates": {
+     "11": "2026-09-17T14:30:00Z"
+    },
+    "source": "https://bgm.wiki"
    }
   },
   "609175": {
@@ -3034,6 +3052,14 @@
     "epDates": {
      "3": "2026-09-19T11:00:00Z",
      "4": "2026-09-26T11:00:00Z"
+    },
+    "source": "https://bgm.wiki"
+   }
+  },
+  "637339": {
+   "air": {
+    "epDates": {
+     "10": "2026-09-15T18:30:00Z"
     },
     "source": "https://bgm.wiki"
    }
