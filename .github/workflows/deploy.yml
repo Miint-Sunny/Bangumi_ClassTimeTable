@@ -21,7 +21,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
-          node-version: 22
+          # Node 版本只在根目录 .nvmrc 写一处,精确到补丁号:只写大版本号时 setup-node 会直接用
+          # runner 镜像里缓存的旧补丁(2026-10 安全更新发布后 CI 仍跑 22.23.3),安全更新就落不到 CI
+          node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npm run build

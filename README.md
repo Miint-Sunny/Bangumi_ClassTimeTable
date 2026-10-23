@@ -95,6 +95,8 @@ bgm 账号双向同步。
 
 ## 开发
 
+Node 版本以根目录 `.nvmrc` 为准(目前 24 LTS,CI 也读这个文件),安全更新时改这一处即可。
+
 ```bash
 npm install
 npm run dev     # http://localhost:5173
